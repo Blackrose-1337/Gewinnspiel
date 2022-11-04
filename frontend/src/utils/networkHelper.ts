@@ -3,7 +3,7 @@ import { formatISO } from "date-fns";
 
 export default class NetworkHelper {
     private API =
-        import.meta.env.MODE === "production" ? "/api/" : `http://${window.location.host.split(":")[0]}:8080/`;
+        import.meta.env.MODE === "production" ? "/api/" : `http://${window.location.host.split(":")[0]}:8000/`;
 
     private getOptionsAndUrl(url: string, queryParams: any | null) {
         const options = {

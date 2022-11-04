@@ -3,9 +3,17 @@ import { ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useQuasar } from "quasar";
 import Formular from "@/components/Formular.vue";
-import { te } from "date-fns/locale";
+import { useUserStore } from "@/stores/users";
 
 const $q = useQuasar();
+
+const userstore = useUserStore();
+
+const { teststroe } = storeToRefs(userstore);
+
+function test(){
+    userstore.gettestside();
+}
 
 function checkFileSize(files) {
     return files.filter(file => file.size < 2048);
@@ -34,7 +42,7 @@ const teilnahmebedingungenbestätigung = ref(false);
 </script>
 
 <template>
-    <h3>Test</h3>
+    <h3>Wettbewerb</h3>
     <div class="q-pa-md">
         <p>
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Labore ullam optio praesentium in veniam eligendi
@@ -73,7 +81,7 @@ const teilnahmebedingungenbestätigung = ref(false);
                 class="col-4"
             />
             <q-space />
-            <q-btn label="Senden" color="green" class="col-3" />
+            <q-btn label="Senden" color="green" @click="test" class="col-3" />
         </div>
     </div>
 

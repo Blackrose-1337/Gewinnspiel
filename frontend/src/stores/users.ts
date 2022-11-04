@@ -34,5 +34,8 @@ export const useUserStore = defineStore({
                 }
             }
         },
+        async gettestside(){
+            api.get("core/Controller.php")
+        }
     },
 });
