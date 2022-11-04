@@ -37,37 +37,37 @@ const router = createRouter({
             // route level code-splitting
             // this generates a separate chunk (About.[hash].js) for this route
             // which is lazy-loaded when the route is visited.
-            component: () => import("../viewsNew/WettbewerbView.vue"),
+            component: () => import("../views/WettbewerbView.vue"),
         },
         {
             path: "/evaluation",
             name: "evaluation",
             meta: { requiresAuth: false},
-            component: () => import("../viewsNew/BewertungView.vue"),
+            component: () => import("../views/BewertungView.vue"),
         },
         {
             path: "/user",
             name: "user",
             meta: { requiresAuth: false},
-            component: () => import("../viewsNew/UserView.vue")
+            component: () => import("../views/UserView.vue")
         },
         {
             path: "/verwaltung",
             name: "verwaltung",
             meta: { requiresAuth: false },
-            component: () => import("../viewsNew/VerwaltungView.vue")
+            component: () => import("../views/VerwaltungView.vue")
         },
         {
             path: "/project",
             name: "project",
             meta: { requiresAuth: false },
-            component: () => import("../viewsNew/ProjectView.vue")
+            component: () => import("../views/ProjectView.vue")
         },
         {
             path: "/designe",
             name: "designe",
             meta: { requiresAuth: false },
-            component: () => import("../viewsNew/DesigneView.vue")
+            component: () => import("../views/DesigneView.vue")
         }
         // {
         //     path: "/admin-survey",

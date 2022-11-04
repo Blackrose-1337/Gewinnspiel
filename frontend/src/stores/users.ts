@@ -2,31 +2,31 @@ import { defineStore } from "pinia";
 import NetworkHelper from "@/utils/networkHelper";
 import { HTTPError } from "ky";
 import { Notify } from "quasar";
-import type { ValueRange } from "@/stores/interfaces";
+import type { User } from "@/stores/interfaces";
 
 const api = new NetworkHelper();
 
 export type State = {
-    valueranges: ValueRange[];
+    users: User[];
 };
 
-export const useValueStore = defineStore({
-    id: "valueranges",
+export const useUserStore = defineStore({
+    id: "users",
     state: () =>
         ({
-            valueranges: [],
+            users: [],
         } as State),
     getters: {
         // isAuthenticated: state => state._isAuthenticated,
     },
     actions: {
-        async getValueRange() {
+        async getUser() {
             try {
-                const valueranges = await api.get<ValueRange[]>("valueranges");
-                this.valueranges.splice(0);
+                const valueranges = await api.get<User[]>("users");
+                this.users.splice(0);
 
-                valueranges.forEach(u => this.valueranges.push(u));
-                console.log(this.valueranges);
+                valueranges.forEach(u => this.users.push(u));
+                console.log(this.users);
             } catch (err) {
                 console.error(err);
                 if (err instanceof HTTPError) {
