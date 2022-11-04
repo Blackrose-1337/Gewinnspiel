@@ -1,0 +1,46 @@
+version: '3.8'
+
+volumes:
+  mysqldata:
+  mysqlinit:
+  app:
+
+
+services: 
+  php:
+    build: ./backend/php
+    ports:
+      - 8000:80
+    volumes:
+      - ./backend/php:/var/www/html
+
+  vueweb:
+    build: ./frontend
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend/src
+      - ./frontend:/node_modules
+
+  mysql:
+    image: mysql:8
+    ports:
+      - 3306:3306
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: SHlbeWTzV?22
+    volumes:
+      - ./mysql/initscripts:/docker-entrypoint-initdb.d
+      - ./mysql/mysqldata:/var/lib/mysql/
+  
+  adminer:
+    image: adminer
+    ports:
+      - 8085:8080
+
+  # plantuml:
+  #   image: "plantuml/plantuml-server:jetty"
+  #   container_name: plantuml2
+  #   ports:
+  #       - "10050:8080"
+
