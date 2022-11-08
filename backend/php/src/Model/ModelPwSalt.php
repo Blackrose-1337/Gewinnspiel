@@ -1,10 +1,17 @@
 <?php
+require_once PROJECT_ROOT_PATH . "Model/ModelBase.php";
+/**
+*
+*/
 
-class ModelAdministrativePwSalt extends ModelBase
+
+class ModelPwSalt extends ModelBase
 {
-    //Attribute
     private int $pwId;
     private int $saltId;
+
+
+
 
     /**
      * Get the value of pwId
@@ -45,6 +52,9 @@ class ModelAdministrativePwSalt extends ModelBase
 
         return $this;
     }
-}
 
-?>
+    public function getFakeData(){
+        $data = ['id' => $this->getFakeId(),'pwId'=> $this->getFakeId(), 'saltId'=> $this->getFakeId()];
+        return $data;
+    }
+}

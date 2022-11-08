@@ -1,28 +1,32 @@
 <?php
+require_once PROJECT_ROOT_PATH . "Model/ModelBase.php";
+/**
+*
+*/
 
-class ModelAdministrativ extends ModelBase
+
+class ModelAdministrative extends ModelBase
 {
-    //Attribute
     private string $email;
     private string $rolle;
-    private int $administrativPwSaltId;
+    private int $pwSaltId;
 
     /**
-     * Get the value of administrativPwSaltId
+     * Get the value of email
      */ 
-    public function getAdministrativPwSaltId()
+    public function getEmail()
     {
-        return $this->administrativPwSaltId;
+        return $this->email;
     }
 
     /**
-     * Set the value of administrativPwSaltId
+     * Set the value of email
      *
      * @return  self
      */ 
-    public function setAdministrativPwSaltId($administrativPwSaltId)
+    public function setEmail($email)
     {
-        $this->administrativPwSaltId = $administrativPwSaltId;
+        $this->email = $email;
 
         return $this;
     }
@@ -48,24 +52,22 @@ class ModelAdministrativ extends ModelBase
     }
 
     /**
-     * Get the value of email
+     * Get the value of pwSaltId
      */ 
-    public function getEmail()
+    public function getPwSaltId()
     {
-        return $this->email;
+        return $this->pwSaltId;
     }
 
     /**
-     * Set the value of email
+     * Set the value of pwSaltId
      *
      * @return  self
      */ 
-    public function setEmail($email)
+    public function setPwSaltId($pwSaltId)
     {
-        $this->email = $email;
+        $this->pwSaltId = $pwSaltId;
 
         return $this;
     }
 }
-
-?>

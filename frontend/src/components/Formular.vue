@@ -8,15 +8,18 @@ import type {User} from "@/stores/interfaces"
 const props = defineProps<{
     user?: User
 }>();
+const emit = defineEmits<{
+    (event: "change:declarations", u : User ): void;
+}>();
 const { user } = toRefs(props);
 
 const selectOptionsTyp = ["DE", "AU", "CH"];
 const model: User = ref({
         "id": 0,
-        "name": "",
-        "surname": "",
-        "role": "",
-        "mail": "",
+        "name": "name name",
+        "surname": "name",
+        "role": "adadsssss",
+        "mail": "ddddddddddd",
         "land": "DE",
         "plz": null,
         "ort": "",
@@ -26,7 +29,7 @@ const model: User = ref({
         "tel": null,
 });
 
-watch(user, changeUser => {
+watch(model, changeUser => {
     updatemodel(changeUser);
 });
 
@@ -53,7 +56,7 @@ function updatemodel(u: User){
         <q-space class="col-7" />
         <q-select rounded outlined v-model="model.vorwahl" disabled class="col-1"> </q-select>
         <q-input v-model="model.tel" rounded outlined label="Tel-Nummer" class="col-3" type="tel"></q-input>
-
+        
 </template>
 
 <style>

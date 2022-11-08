@@ -17,21 +17,21 @@
 // print_r($json_decoded);
 // echo $json;
 
-class Controller
-{
+// class Controller
+// {
     
-    protected function model($model)
-    {
+//     protected function model($model)
+//     {
 
-        if (file_exists('../Model/' . $model . '.php'))
-        {
-            require_once '../Model/' . $model . '.php';
-            return new $model();
-        }
-        else {
-            echo 'Error : Model does not exists!';
-        }
-    }    
-}
+//         if (file_exists('../Model/' . $model . '.php'))
+//         {
+//             require_once '../Model/' . $model . '.php';
+//             return new $model();
+//         }
+//         else {
+//             echo 'Error : Model does not exists!';
+//         }
+//     }    
+// }
  
 ?>

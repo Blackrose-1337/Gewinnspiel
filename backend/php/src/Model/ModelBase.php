@@ -1,7 +1,7 @@
 <?php
 
 Class ModelBase {
-    private $id;
+    private int $id=42;
 
     /**
      * Get the value of id
@@ -21,6 +21,11 @@ Class ModelBase {
         $this->id = $id;
 
         return $this;
+    }
+
+    public function getFakeId()
+    {
+        return rand(0,200);
     }
 }
 

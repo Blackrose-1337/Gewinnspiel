@@ -1,15 +1,7 @@
 <?php
-
+require_once PROJECT_ROOT_PATH . "Model/ModelBase.php";
 /**
-* Definition der Order-Attribute
-* id -> ID der Bestellung
-* userid -> Referenz auf den User (zukünftig)
-* username -> Benutzername
-* email -> Email des Benutzers
-* comment -> Kommentar
-* refmenue -> Referenz auf das bestellte Menü
-* status -> ein int. 0 => "Bestellt", 1 => "Abholbereit", 2 => "Abgeholt"
-* dateorder -> Datum und Zeitpunkt der Bestellung
+*
 */
 
 
@@ -18,6 +10,7 @@ class ModelTeilnehmende extends ModelBase
     // Alle Attribute des Models
     private string $name;
     private string $surname;
+    private string $rolle;
     private string $email;
     private string $land;
     private int $plz;
@@ -25,7 +18,6 @@ class ModelTeilnehmende extends ModelBase
     private string $strasse;
     private int $strNr;
     private int $tel;
-    private int $textId;
     private int $pwSaltId;
 
     
@@ -39,38 +31,36 @@ class ModelTeilnehmende extends ModelBase
     public function fakewriteData($data)
     {
         die(var_dump($data));
-        
     }
 
     
     /**
      * TestMethode die einfach nur Fake-Daten liefert, solange man noch keine DB hat
-     *
+     * private int $textId;
      * @return $data : Liste aus Orders
      */
-    public function getFakeOrderData()
+    public function getFakeDataUser()
     {
         $data = [
-            ['id' => '2', 'userid' => '', 'username' => 'TestBenutzer1','email' => 'test1@test.ch','comment' => 'TestKommentar1','refmenue' => '1','status' => '0','dateorder' => ''],
-            ['id' => '3', 'userid' => '', 'username' => 'TestBenutzer2','email' => 'test2@test.ch','comment' => 'TestKommentar2','refmenue' => '2','status' => '1','dateorder' => ''],
-            ['id' => '4', 'userid' => '', 'username' => 'TestBenutzer3','email' => 'test3@test.ch','comment' => 'TestKommentar3','refmenue' => '1','status' => '2','dateorder' => ''],
-            ['id' => '5', 'userid' => '', 'username' => 'TestBenutzer4','email' => 'test4@test.ch','comment' => 'TestKommentar4','refmenue' => '3','status' => '0','dateorder' => '']
+            ['id' => $this->getFakeId(), 'name' => 'Peter', 'surname' => 'Laucher','email' => 'test1@test.ch','land' => 'DE','plz' => '84669','ortschaft' => 'rostock','strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '12', 'pwSaltId'=>'32'],
+            ['id' => $this->getFakeId(), 'name' => 'Ricarda', 'surname' => 'Murer','email' => 'test1@test.ch','land' => 'DE','plz' => '84669','ortschaft' => 'rostock','strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '13', 'pwSaltId'=>'33'],
+            ['id' => $this->getFakeId(), 'name' => 'Philippe', 'surname' => 'Egger','email' => 'test1@test.ch','land' => 'DE','plz' => '84669','ortschaft' => 'rostock','strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '14', 'pwSaltId'=>'34'],
+            ['id' => $this->getFakeId(), 'name' => 'Joel', 'surname' => 'Packer','email' => 'test1@test.ch','land' => 'DE','plz' => '84669','ortschaft' => 'rostock','strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '15', 'pwSaltId'=>'35'],
+            ['id' => $this->getFakeId(), 'name' => 'Claudia', 'surname' => 'Schlirrer','email' => 'test1@test.ch','land' => 'DE','plz' => '84669','ortschaft' => 'rostock','strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '16', 'pwSaltId'=>'36'],
         ];
-
         return $data;
     }
 
     /**
      * TestMethode die einfach nur Fake-Daten liefert, solange man noch keine DB hat
-     *
-     * @param  mixed $userid
+     * private int $textId;
      *
      * @return $data : Liste aus Orders
      */
     public function getFakeOrderDataForUserID($userid)
     {
         $data = [
-            ['id' => '2', 'userid' => '1','username' => 'TestBenutzer1','email' => 'test1@test.ch','comment' => 'TestKommentar1','refmenue' => '1','status' => '1','dateorder' => '']
+           ['id' => '2', 'name' => 'Peter', 'surname' => 'Laucher','email' => 'test1@test.ch','land' => 'DE','plz' => '84669','ortschaft' => 'rostock','strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '12', 'pwSaltId'=>'32'],
         ];
 
         return $data;
@@ -299,26 +289,6 @@ class ModelTeilnehmende extends ModelBase
     public function setTel($tel)
     {
         $this->tel = $tel;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of textId
-     */ 
-    public function getTextId()
-    {
-        return $this->textId;
-    }
-
-    /**
-     * Set the value of textId
-     *
-     * @return  self
-     */ 
-    public function setTextId($textId)
-    {
-        $this->textId = $textId;
 
         return $this;
     }

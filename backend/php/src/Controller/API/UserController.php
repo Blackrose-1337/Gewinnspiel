@@ -1,17 +1,18 @@
 <?php
-class ProjectController extends BaseController
+class UserController extends BaseController
 {
-    public function take()
+    public function listAction()
     {   
         $strErrorDesc = '';
         $requestMethod = $_SERVER["REQUEST_METHOD"];
+        
         $arrQueryStringParams = $this->getQueryStringParams();
 
         if (strtoupper($requestMethod) == 'GET'){
             try 
             {
-                $usermodel = new ModelProject();
-                $arr = $usermodel->getFakeOrderData();
+                $usermodel = new ModelTeilnehmende();
+                $arr = $usermodel->getFakeDataUser();
                 $responseData = json_encode($arr);
             } 
             catch (Error $e) 
@@ -19,11 +20,21 @@ class ProjectController extends BaseController
                 $strErrorDesc = $e->getMessage().'Something went wrong! Please contact support.';
                 $strErrorHeader = 'HTTP/1.1 500 Internal Server Error';
             }         
+        } elseif (strtoupper($requestMethod) == 'POST') {
+            try
+            {
+                print_r($_POST);
+            }
+            catch (Error $e) 
+            {
+                $strErrorDesc = $e->getMessage().'Something went wrong! Please contact support.';
+                $strErrorHeader = 'HTTP/1.1 500 Internal Server Error';
+            }
         } else {
             $strErrorDesc = 'Method not supported';
             $strErrorHeader = 'HTTP/1.1 422 Unprocessable Entity';
         }
-        if(!$strErrorDesc)
+        if(!$strErrorDesc && ($requestMethod=='GET'))
         {
             $this->sendOutput($responseData,array('Content-Type: application/json', 'HTTP/1.1 200 Blackrose'));
         } else {

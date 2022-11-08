@@ -4,14 +4,25 @@ import { storeToRefs } from "pinia";
 import { useQuasar } from "quasar";
 import Formular from "@/components/Formular.vue";
 import { useUserStore } from "@/stores/users";
+import type { User } from "@/stores/interfaces";
 
 const $q = useQuasar();
 
 const userstore = useUserStore();
 
 const { teststroe } = storeToRefs(userstore);
+const usermodel = ref() as User;
+
+function changeUserModel(u: User){
+    usermodel.value=u;
+    console.log("change: "+ usermodel.value)
+}
 
 function test(){
+    console.log(usermodel.value)
+    userstore.posttest(usermodel.value);
+}
+function test2(){
     userstore.gettestside();
 }
 
@@ -55,7 +66,7 @@ const teilnahmebedingungenbestätigung = ref(false);
             nam sapiente accusamus praesentium recusandae perspiciatis. Quod!
         </p>
     </div>
-
+    <h4>{{ usermodel}}</h4>
     <div class="row q-pa-md">
         <div class="col-4" style="max-width: 30%">
             <q-input v-model="textbsp.text" label="Beschreibung zum Projekt" autogrow />
@@ -63,7 +74,7 @@ const teilnahmebedingungenbestätigung = ref(false);
         <div class="col-1"></div>
 
         <div class=" muh row col-7 q-gutter-md">
-            <Formular />
+            <Formular @change:declarations="changeUserModel"/>
 
             <q-uploader
                 class="col-11"
@@ -82,8 +93,11 @@ const teilnahmebedingungenbestätigung = ref(false);
             />
             <q-space />
             <q-btn label="Senden" color="green" @click="test" class="col-3" />
+            <q-btn label="Get" color="red" @click="test2" class="col-3" />
         </div>
     </div>
+
+    
 
     <div bordered elevated class="bg-grey-8k">
         <h5>Teilnahmebedingungen</h5>

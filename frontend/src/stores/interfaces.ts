@@ -8,11 +8,28 @@ export interface User {
     surname: string;
     role: string;
     mail: string;
+    land: string;
+    plz: number;
+    ortschaft: string;
+    strasse: string;
+    strNr: string;
+    tel: number;
+    pwSaltId: number;
 }
 export interface Project {
     id: number;
     userID: number;
-    uderBildID: number[];
+    textId: number;
+}
+
+export interface ProjectBild {
+    id: number;
+    projectId: number;
+    bildId: number;
+}
+
+export interface Bild {
+    id: number;
 }
 
 export interface Wettbewerb {

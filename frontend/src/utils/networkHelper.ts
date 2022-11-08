@@ -1,4 +1,4 @@
-import ky from "ky";
+import ky, { type Options } from "ky";
 import { formatISO } from "date-fns";
 
 export default class NetworkHelper {
@@ -9,8 +9,8 @@ export default class NetworkHelper {
         const options = {
             timeout: 30000,
             credentials: import.meta.env.MODE === "production" ? "same-origin" : "include",
-        };
-        let fullUrl = this.API + url.replace(/\/\/$/, "/") + "/?";
+        } as Options;
+        let fullUrl = this.API + url.replace(/\/\/$/, "/") + "/?format=json&";
         const ignoreCache = false;
         if (ignoreCache) {
             if (!queryParams) {
@@ -43,14 +43,34 @@ export default class NetworkHelper {
         return (await ky.get(fullUrl, options)).json();
     }
 
-    async post<T>(url: string, data: object | null = null, expectResponse = true): Promise<T> {
+    // async post<T>(url: string, data: object | null = null, expectResponse = true): Promise<T> {
+    //     const { options, fullUrl } = this.getOptionsAndUrl(url, null);
+    //     if (data instanceof FormData) {
+    //         options.body = data;
+    //     } else if (data) {
+    //         options.json = data;
+    //     }
+    //     const res = await ky.post(fullUrl, options);
+    //     return res;
+    // }
+    async post<T>(url: string, data: object | null = null): Promise<T | null> {
         const { options, fullUrl } = this.getOptionsAndUrl(url, null);
         if (data instanceof FormData) {
             options.body = data;
         } else if (data) {
             options.json = data;
         }
+        // const csrfToken = NetworkHelper.getCookie("csrftoken");
+        // if (csrfToken) {
+        //     options.headers = {
+        //         "X-CSRFToken": csrfToken,
+        //     };
+        // }
         const res = await ky.post(fullUrl, options);
-        return res;
+        if (res.status !== 204) {
+            return res.json();
+        } else {
+            return null;
+        }
     }
 }

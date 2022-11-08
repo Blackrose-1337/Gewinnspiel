@@ -35,7 +35,26 @@ export const useUserStore = defineStore({
             }
         },
         async gettestside(){
-            api.get("core/Controller.php")
+            
+            const test ={
+                "id": 2,
+                "title": "PHP",
+                "site": "GeeksforGeeks",
+                
+             };
+            api.get("src/index.php/user/list")
+        },
+        async posttest(u :User)
+        {
+            console.log(u)
+            const test ={
+                "id": 2,
+                "title": "PHP",
+                "site": "GeeksforGeeks",
+                
+             };
+            api.post<User>("src/index.php/user/list", test);
+            
         }
     },
 });
