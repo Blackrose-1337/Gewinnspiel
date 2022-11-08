@@ -34,15 +34,10 @@ export const useUserStore = defineStore({
                 }
             }
         },
-        async gettestside(){
-            
-            const test ={
-                "id": 2,
-                "title": "PHP",
-                "site": "GeeksforGeeks",
-                
-             };
-            api.get("src/index.php/user/list")
+        async getUsers(){
+            this.users.splice;
+          const users = await api.get<User[]>("src/index.php/user/list");
+          users.forEach(u => this.users.push(u));
         },
         async posttest(u :User)
         {

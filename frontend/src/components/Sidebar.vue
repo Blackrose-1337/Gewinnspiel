@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useAuthStore } from "@/stores/auth";
+import { useUserStore } from "@/stores/users";
 import { storeToRefs } from "pinia";
-import { toRefs } from "vue";
+import { toRefs, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import type { User, Project } from "@/stores/interfaces";
 
@@ -11,41 +12,21 @@ const props = defineProps<{
 const { view } = toRefs(props);
 //---------------Storeload------------------------------
 const authStore = useAuthStore();
+const userStore = useUserStore();
 
 //---------------Routload------------------------------
 const router = useRouter();
 const route = useRoute();
 //---------------storeToRefs------------------------------
 const { isAuthenticated } = storeToRefs(authStore);
+const { users } = storeToRefs(userStore);
 
 const emit = defineEmits<{
     (event: "change:selection", value: User): void;
 }>();
 //---------------Functions------------------------------
 const test = ["DE", "AU", "CH"];
-const personen: User[] = [
-    {
-        id: 1,
-        name: "Peter",
-        surname: "Müller",
-        role: "Teilnehmende",
-        mail: "peter.müller@gmail.com",
-    },
-    {
-        id: 2,
-        name: "Stephan",
-        surname: "Hoese",
-        role: "Jury",
-        mail: "stehan.hoese@gmail.com",
-    },
-    {
-        id: 3,
-        name: "Claudia",
-        surname: "Stimmer",
-        role: "Teilnehmende",
-        mail: "claudia.stimmer@gmail.com",
-    },
-];
+const personen = ref(users.value)
 const project: Project[] = [
     {
         id: 1,
@@ -66,6 +47,17 @@ function changeSelection(p: User) {
 function addUser() {
     console.log("noch in arbeit");
 }
+
+async function loadUsers(){
+userStore.getUsers();
+}
+
+function load(){
+    if (view?.value=='User'){
+        loadUsers()
+    }
+}
+load();
 
 //---------------Executions------------------------------
 </script>
@@ -89,7 +81,7 @@ function addUser() {
                     <h4 class="title">Jury</h4>
                 </q-card-section>
                 <div v-for="p in personen" :key="p.id">
-                    <div v-if="p.role === 'Jury'" class="fullwidth">
+                    <div v-if="p.role === 'jury'" class="fullwidth">
                         <q-btn class="fullwitdh" bordered color="secondary" @click="changeSelection(p)">{{
                             p.surname + " " + p.name
                         }}</q-btn>
@@ -99,7 +91,7 @@ function addUser() {
 
                 <h4 class="title">Teilnehmende</h4>
                 <div v-for="p in personen" :key="p.id" class="fullwidth">
-                    <div v-if="p.role === 'Teilnehmende'">
+                    <div v-if="p.role === 'teilnehmende'">
                         <q-btn class="fullwitdh" color="secondary" @click="changeSelection(p)">{{
                             p.surname + " " + p.name
                         }}</q-btn>

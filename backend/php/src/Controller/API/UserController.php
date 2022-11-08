@@ -23,6 +23,8 @@ class UserController extends BaseController
         } elseif (strtoupper($requestMethod) == 'POST') {
             try
             {
+                $usermodel = new ModelTeilnehmende();
+                $usermodel->fakewriteData($_POST);
                 print_r($_POST);
             }
             catch (Error $e) 

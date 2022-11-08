@@ -1,5 +1,6 @@
 <?php
 require_once PROJECT_ROOT_PATH . "Model/ModelBase.php";
+require_once PROJECT_ROOT_PATH . "Model/ModelPwSalt.php";
 /**
 *
 */
@@ -10,7 +11,7 @@ class ModelTeilnehmende extends ModelBase
     // Alle Attribute des Models
     private string $name;
     private string $surname;
-    private string $rolle;
+    private string $role;
     private string $email;
     private string $land;
     private int $plz;
@@ -42,11 +43,11 @@ class ModelTeilnehmende extends ModelBase
     public function getFakeDataUser()
     {
         $data = [
-            ['id' => $this->getFakeId(), 'name' => 'Peter', 'surname' => 'Laucher','email' => 'test1@test.ch','land' => 'DE','plz' => '84669','ortschaft' => 'rostock','strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '12', 'pwSaltId'=>'32'],
-            ['id' => $this->getFakeId(), 'name' => 'Ricarda', 'surname' => 'Murer','email' => 'test1@test.ch','land' => 'DE','plz' => '84669','ortschaft' => 'rostock','strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '13', 'pwSaltId'=>'33'],
-            ['id' => $this->getFakeId(), 'name' => 'Philippe', 'surname' => 'Egger','email' => 'test1@test.ch','land' => 'DE','plz' => '84669','ortschaft' => 'rostock','strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '14', 'pwSaltId'=>'34'],
-            ['id' => $this->getFakeId(), 'name' => 'Joel', 'surname' => 'Packer','email' => 'test1@test.ch','land' => 'DE','plz' => '84669','ortschaft' => 'rostock','strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '15', 'pwSaltId'=>'35'],
-            ['id' => $this->getFakeId(), 'name' => 'Claudia', 'surname' => 'Schlirrer','email' => 'test1@test.ch','land' => 'DE','plz' => '84669','ortschaft' => 'rostock','strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '16', 'pwSaltId'=>'36'],
+            ['id' => $this->getFakeId(), 'name' => 'Peter', 'surname' => 'Laucher','role' =>'jury','email' => 'test1@test.ch','land' => 'DE','plz' => '84669','ortschaft' => 'rostock','strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '12', 'pwSaltId'=>'32'],
+            ['id' => $this->getFakeId(), 'name' => 'Ricarda', 'surname' => 'Murer','role' =>'teilnehmende','email' => 'test1@test.ch','land' => 'DE','plz' => '84669','ortschaft' => 'rostock','strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '13', 'pwSaltId'=>'33'],
+            ['id' => $this->getFakeId(), 'name' => 'Philippe', 'surname' => 'Egger','role' =>'teilnehmende','email' => 'test1@test.ch','land' => 'DE','plz' => '84669','ortschaft' => 'rostock','strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '14', 'pwSaltId'=>'34'],
+            ['id' => $this->getFakeId(), 'name' => 'Joel', 'surname' => 'Packer','role' =>'teilnehmende','email' => 'test1@test.ch','land' => 'DE','plz' => '84669','ortschaft' => 'rostock','strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '15', 'pwSaltId'=>'35'],
+            ['id' => $this->getFakeId(), 'name' => 'Claudia', 'surname' => 'Schlirrer','role' =>'jury','email' => 'test1@test.ch','land' => 'DE','plz' => '84669','ortschaft' => 'rostock','strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '16', 'pwSaltId'=>'36'],
         ];
         return $data;
     }
