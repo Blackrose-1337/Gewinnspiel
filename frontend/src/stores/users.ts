@@ -14,7 +14,7 @@ export const useUserStore = defineStore({
     id: "users",
     state: () =>
         ({
-            users: [],
+        users: [],
         } as State),
     getters: {
         // isAuthenticated: state => state._isAuthenticated,
@@ -41,12 +41,10 @@ export const useUserStore = defineStore({
         },
         async posttest(u :User)
         {
-            console.log(u)
-            console.log("test")
             const test = {"id":59,"name":"Peter","surname":"Laucher","role":"jury","email":"test1@test.ch","land":"DE","plz":"84669","ortschaft":"rostock","strasse":"Lauerstr.","strNr":"23","tel":"4465155","textid":"12","pwSaltId":"32"};
-            //const test = {test: 1};
-            api.post<User>("src/index.php/user/list", test);
+
+            api.post<User>("src/index.php/user/list", u);
             
-        }
+        },
     },
 });

@@ -26,7 +26,7 @@ const emit = defineEmits<{
 }>();
 //---------------Functions------------------------------
 const test = ["DE", "AU", "CH"];
-const personen = ref(users.value)
+const personen = ref(users.value);
 const project: Project[] = [
     {
         id: 1,
@@ -48,13 +48,13 @@ function addUser() {
     console.log("noch in arbeit");
 }
 
-async function loadUsers(){
-userStore.getUsers();
+async function loadUsers() {
+    userStore.getUsers();
 }
 
-function load(){
-    if (view?.value=='User'){
-        loadUsers()
+function load() {
+    if (view?.value == "User") {
+        loadUsers();
     }
 }
 load();

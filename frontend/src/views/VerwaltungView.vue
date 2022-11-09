@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import Formular from "@/components/Formular.vue"
+import Formular from "@/components/Formular.vue";
 import Sidebar from "@/components/Sidebar.vue";
-import type {Ref} from "vue"
-import { ref, toRefs, watch} from "vue";
-import type {User} from "@/stores/interfaces";
+import type { Ref } from "vue";
+import { ref, toRefs, watch } from "vue";
+import type { User } from "@/stores/interfaces";
 
 const selectedUser = ref(null as unknown) as Ref<User>;
 const view = "User";
@@ -11,21 +11,16 @@ function onUserChanged(u: User) {
     console.log("User: ", u);
     selectedUser.value = u;
 }
-
 </script>
 <template>
     <main>
-        <Sidebar @change:selection="onUserChanged" :view="view"/>
+        <Sidebar @change:selection="onUserChanged" :view="view" />
         <div class="row q-gutter-md q-pa-md">
-            <Formular :user="selectedUser"/>
-        </div>        
+            <Formular :user="selectedUser" />
+        </div>
     </main>
 </template>
 <style></style>
-
-
-
-
 
 <!-- import { ref } from "vue";
 import type { Ref } from "vue";

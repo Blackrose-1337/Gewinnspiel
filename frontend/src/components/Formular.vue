@@ -3,17 +3,17 @@ import { ref, watch } from "vue";
 import { toRefs } from "vue";
 import { storeToRefs } from "pinia";
 import { useQuasar } from "quasar";
-import { useUserStore } from "@/stores/users";
 import type { User } from "@/stores/interfaces";
 
 const props = defineProps<{
     user?: User;
 }>();
 
-const { user } = toRefs(props) as User;
 const emit = defineEmits<{
-    (event: "change:declarations", user: User): void;
+    (event: "change:declarations", u: User): void;
 }>();
+const { user } = toRefs(props) as User;
+
 const selectOptionsTyp = ["DE", "AU", "CH"];
 const model: User = ref({
     id: 0,
@@ -29,16 +29,13 @@ const model: User = ref({
     vorwahl: "",
     tel: null,
 });
-if (!user) {
-    console.log("user: " + user.value);
-    user.value = model.value;
-}
 
 watch(user, changeUser => {
-    console.log(user);
     updatemodel(changeUser);
 });
-
+function changevalue(p: User) {
+    emit("change:declarations", p);
+}
 function updatemodel(u: User) {
     model.value = u;
 }
@@ -50,7 +47,7 @@ function updatemodel(u: User) {
         rounded
         outlined
         label="Nachname"
-        @change="emit('change:declarations', user.surname)"
+        @change="changevalue(model)"
         clearable
         class="col-3"
     />
@@ -59,7 +56,7 @@ function updatemodel(u: User) {
         rounded
         outlined
         label="Vorname"
-        @change="emit('change:declarations', user.name)"
+        @change="changevalue(model)"
         clearable
         class="col-3"
     />
@@ -69,7 +66,7 @@ function updatemodel(u: User) {
         rounded
         outlined
         label="E-Mail"
-        @change="emit('change:declarations', user.email)"
+        @change="changevalue(model)"
         clearable
         class="col-3"
         type="email"
@@ -79,26 +76,18 @@ function updatemodel(u: User) {
         rounded
         outlined
         label="Land"
-        @change="emit('change:declarations', user.land)"
+        @change="changevalue(model)"
         v-model="model.land"
         :options="selectOptionsTyp"
         class="col-2"
     />
-    <q-input
-        v-model="model.plz"
-        rounded
-        outlined
-        label="PLZ"
-        @change="emit('change:declarations', user.plz)"
-        clearable
-        class="col-2"
-    />
+    <q-input v-model="model.plz" rounded outlined label="PLZ" @change="changevalue(model)" clearable class="col-2" />
     <q-input
         v-model="model.ortschaft"
         rounded
         outlined
         label="Ortschaft"
-        @change="emit('change:declarations', user.ortschaft)"
+        @change="changevalue(model)"
         clearable
         class="col-3"
     />
@@ -108,26 +97,18 @@ function updatemodel(u: User) {
         rounded
         outlined
         label="Strasse"
-        @change="emit('change:declarations', user.str)"
+        @change="changevalue(model)"
         clearable
         class="col-3"
     />
-    <q-input
-        v-model="model.nr"
-        rounded
-        outlined
-        label="Nr."
-        @change="emit('change:declarations', user.nr)"
-        class="col-2"
-        type="number"
-    />
+    <q-input v-model="model.nr" rounded outlined label="Nr." @change="changevalue(model)" class="col-2" type="number" />
     <q-space class="col-5" />
     <q-input
         rounded
         outlined
         v-model="model.vorwahl"
         label="Vorwahl"
-        @change="emit('change:declarations', user.vorwahl)"
+        @change="changevalue(model)"
         clearable
         class="col-2"
     />
@@ -136,7 +117,7 @@ function updatemodel(u: User) {
         rounded
         outlined
         label="Tel-Nummer"
-        @change="emit('change:declarations', user.tel)"
+        @change="changevalue(model)"
         clearable
         class="col-3"
         type="tel"
