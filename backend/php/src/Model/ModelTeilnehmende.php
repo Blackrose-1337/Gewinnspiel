@@ -2,8 +2,8 @@
 require_once PROJECT_ROOT_PATH . "Model/ModelBase.php";
 require_once PROJECT_ROOT_PATH . "Model/ModelPwSalt.php";
 /**
-*
-*/
+ *
+ */
 
 
 class ModelTeilnehmende extends ModelBase
@@ -21,20 +21,22 @@ class ModelTeilnehmende extends ModelBase
     private int $tel;
     private int $pwSaltId;
 
-    
+
     /**
      * TestMethode die einfach einen var_dump macht. Sie ist dazu da die GUI-Funktionaltiäten zu testen
      *
-     * @param  mixed $data
+     * 
      *
-     * @return void
+     * @return $data
      */
     public function fakewriteData($data)
     {
-        die(var_dump($data));
+        $test = print_r($data);
+
+        return $test;
     }
 
-    
+
     /**
      * TestMethode die einfach nur Fake-Daten liefert, solange man noch keine DB hat
      * private int $textId;
@@ -43,11 +45,11 @@ class ModelTeilnehmende extends ModelBase
     public function getFakeDataUser()
     {
         $data = [
-            ['id' => $this->getFakeId(), 'name' => 'Peter', 'surname' => 'Laucher','role' =>'jury','email' => 'test1@test.ch','land' => 'DE','plz' => '84669','ortschaft' => 'rostock','strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '12', 'pwSaltId'=>'32'],
-            ['id' => $this->getFakeId(), 'name' => 'Ricarda', 'surname' => 'Murer','role' =>'teilnehmende','email' => 'test1@test.ch','land' => 'DE','plz' => '84669','ortschaft' => 'rostock','strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '13', 'pwSaltId'=>'33'],
-            ['id' => $this->getFakeId(), 'name' => 'Philippe', 'surname' => 'Egger','role' =>'teilnehmende','email' => 'test1@test.ch','land' => 'DE','plz' => '84669','ortschaft' => 'rostock','strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '14', 'pwSaltId'=>'34'],
-            ['id' => $this->getFakeId(), 'name' => 'Joel', 'surname' => 'Packer','role' =>'teilnehmende','email' => 'test1@test.ch','land' => 'DE','plz' => '84669','ortschaft' => 'rostock','strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '15', 'pwSaltId'=>'35'],
-            ['id' => $this->getFakeId(), 'name' => 'Claudia', 'surname' => 'Schlirrer','role' =>'jury','email' => 'test1@test.ch','land' => 'DE','plz' => '84669','ortschaft' => 'rostock','strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '16', 'pwSaltId'=>'36'],
+            ['id' => $this->getFakeId(), 'name' => 'Peter', 'surname' => 'Laucher', 'role' => 'jury', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => '84669', 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '12', 'pwSaltId' => '32'],
+            ['id' => $this->getFakeId(), 'name' => 'Ricarda', 'surname' => 'Murer', 'role' => 'teilnehmende', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => '84669', 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '13', 'pwSaltId' => '33'],
+            ['id' => $this->getFakeId(), 'name' => 'Philippe', 'surname' => 'Egger', 'role' => 'teilnehmende', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => '84669', 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '14', 'pwSaltId' => '34'],
+            ['id' => $this->getFakeId(), 'name' => 'Joel', 'surname' => 'Packer', 'role' => 'teilnehmende', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => '84669', 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '15', 'pwSaltId' => '35'],
+            ['id' => $this->getFakeId(), 'name' => 'Claudia', 'surname' => 'Schlirrer', 'role' => 'jury', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => '84669', 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '16', 'pwSaltId' => '36'],
         ];
         return $data;
     }
@@ -61,7 +63,7 @@ class ModelTeilnehmende extends ModelBase
     public function getFakeOrderDataForUserID($userid)
     {
         $data = [
-           ['id' => '2', 'name' => 'Peter', 'surname' => 'Laucher','email' => 'test1@test.ch','land' => 'DE','plz' => '84669','ortschaft' => 'rostock','strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '12', 'pwSaltId'=>'32'],
+            ['id' => '2', 'name' => 'Peter', 'surname' => 'Laucher', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => '84669', 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '12', 'pwSaltId' => '32'],
         ];
 
         return $data;
@@ -82,21 +84,18 @@ class ModelTeilnehmende extends ModelBase
         // wir sie brauchen
         // Diesen Array wollen wir zusammenbauen, dann der GUI übergeben
         // Etwas ungeschickt ist hier, dass die Arrays aus Orders und Menues übergeben werden. Dabei könnte sich eigentlich das Model selbst um die Listen kümmern
-        
+
         $data = [];
-        foreach($orderArray as $order)
-        {
+        foreach ($orderArray as $order) {
             $orderrow = [];
             foreach ($order as $key => $value) {
 
                 // für jede Bestellung noch das Menü rausfipseln
-                if ($key == 'refmenue')
-                {
-                    
-                    foreach($menueArray as $menue){
-                        
-                        if ($menue['id'] == $value)
-                        {
+                if ($key == 'refmenue') {
+
+                    foreach ($menueArray as $menue) {
+
+                        if ($menue['id'] == $value) {
                             //echo var_dump();
                             $orderrow['menueinfo'] = $menue['title'] . "," . $menue['description'];
                         }
@@ -116,7 +115,7 @@ class ModelTeilnehmende extends ModelBase
 
     /**
      * Get the value of name
-     */ 
+     */
     public function getName()
     {
         return $this->name;
@@ -126,7 +125,7 @@ class ModelTeilnehmende extends ModelBase
      * Set the value of name
      *
      * @return  self
-     */ 
+     */
     public function setName($name)
     {
         $this->name = $name;
@@ -136,7 +135,7 @@ class ModelTeilnehmende extends ModelBase
 
     /**
      * Get the value of surname
-     */ 
+     */
     public function getSurname()
     {
         return $this->surname;
@@ -146,7 +145,7 @@ class ModelTeilnehmende extends ModelBase
      * Set the value of surname
      *
      * @return  self
-     */ 
+     */
     public function setSurname($surname)
     {
         $this->surname = $surname;
@@ -156,7 +155,7 @@ class ModelTeilnehmende extends ModelBase
 
     /**
      * Get the value of email
-     */ 
+     */
     public function getEmail()
     {
         return $this->email;
@@ -166,7 +165,7 @@ class ModelTeilnehmende extends ModelBase
      * Set the value of email
      *
      * @return  self
-     */ 
+     */
     public function setEmail($email)
     {
         $this->email = $email;
@@ -176,7 +175,7 @@ class ModelTeilnehmende extends ModelBase
 
     /**
      * Get the value of land
-     */ 
+     */
     public function getLand()
     {
         return $this->land;
@@ -186,7 +185,7 @@ class ModelTeilnehmende extends ModelBase
      * Set the value of land
      *
      * @return  self
-     */ 
+     */
     public function setLand($land)
     {
         $this->land = $land;
@@ -196,7 +195,7 @@ class ModelTeilnehmende extends ModelBase
 
     /**
      * Get the value of plz
-     */ 
+     */
     public function getPlz()
     {
         return $this->plz;
@@ -206,7 +205,7 @@ class ModelTeilnehmende extends ModelBase
      * Set the value of plz
      *
      * @return  self
-     */ 
+     */
     public function setPlz($plz)
     {
         $this->plz = $plz;
@@ -216,7 +215,7 @@ class ModelTeilnehmende extends ModelBase
 
     /**
      * Get the value of ortschaft
-     */ 
+     */
     public function getOrtschaft()
     {
         return $this->ortschaft;
@@ -226,7 +225,7 @@ class ModelTeilnehmende extends ModelBase
      * Set the value of ortschaft
      *
      * @return  self
-     */ 
+     */
     public function setOrtschaft($ortschaft)
     {
         $this->ortschaft = $ortschaft;
@@ -236,7 +235,7 @@ class ModelTeilnehmende extends ModelBase
 
     /**
      * Get the value of strasse
-     */ 
+     */
     public function getStrasse()
     {
         return $this->strasse;
@@ -246,7 +245,7 @@ class ModelTeilnehmende extends ModelBase
      * Set the value of strasse
      *
      * @return  self
-     */ 
+     */
     public function setStrasse($strasse)
     {
         $this->strasse = $strasse;
@@ -256,7 +255,7 @@ class ModelTeilnehmende extends ModelBase
 
     /**
      * Get the value of strNr
-     */ 
+     */
     public function getStrNr()
     {
         return $this->strNr;
@@ -266,7 +265,7 @@ class ModelTeilnehmende extends ModelBase
      * Set the value of strNr
      *
      * @return  self
-     */ 
+     */
     public function setStrNr($strNr)
     {
         $this->strNr = $strNr;
@@ -276,7 +275,7 @@ class ModelTeilnehmende extends ModelBase
 
     /**
      * Get the value of tel
-     */ 
+     */
     public function getTel()
     {
         return $this->tel;
@@ -286,7 +285,7 @@ class ModelTeilnehmende extends ModelBase
      * Set the value of tel
      *
      * @return  self
-     */ 
+     */
     public function setTel($tel)
     {
         $this->tel = $tel;
@@ -296,7 +295,7 @@ class ModelTeilnehmende extends ModelBase
 
     /**
      * Get the value of pwSaltId
-     */ 
+     */
     public function getPwSaltId()
     {
         return $this->pwSaltId;
@@ -306,7 +305,7 @@ class ModelTeilnehmende extends ModelBase
      * Set the value of pwSaltId
      *
      * @return  self
-     */ 
+     */
     public function setPwSaltId($pwSaltId)
     {
         $this->pwSaltId = $pwSaltId;

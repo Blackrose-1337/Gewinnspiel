@@ -1,5 +1,6 @@
 import ky, { type Options } from "ky";
 import { formatISO } from "date-fns";
+// import { json } from "stream/consumers";
 
 export default class NetworkHelper {
     private API =
@@ -7,8 +8,8 @@ export default class NetworkHelper {
 
     private getOptionsAndUrl(url: string, queryParams: any | null) {
         const options = {
-            timeout: 30000,
-            credentials: import.meta.env.MODE === "production" ? "same-origin" : "include",
+            // timeout: 30000,
+            // credentials: import.meta.env.MODE === "production" ? "same-origin" : "include",
         } as Options;
         let fullUrl = this.API + url.replace(/\/\/$/, "/") + "/?format=json&";
         const ignoreCache = false;
@@ -43,30 +44,22 @@ export default class NetworkHelper {
         return (await ky.get(fullUrl, options)).json();
     }
 
-    // async post<T>(url: string, data: object | null = null, expectResponse = true): Promise<T> {
-    //     const { options, fullUrl } = this.getOptionsAndUrl(url, null);
-    //     if (data instanceof FormData) {
-    //         options.body = data;
-    //     } else if (data) {
-    //         options.json = data;
-    //     }
-    //     const res = await ky.post(fullUrl, options);
-    //     return res;
-    // }
+
     async post<T>(url: string, data: object | null = null): Promise<T | null> {
-        const { options, fullUrl } = this.getOptionsAndUrl(url, null);
-        if (data instanceof FormData) {
-            options.body = data;
-        } else if (data) {
-            options.json = data;
-        }
+        const { fullUrl } = this.getOptionsAndUrl(url, null);
+        const options = {
+            method: "post",
+            body: JSON.stringify(data)
+        } as Options
+    
+        
         // const csrfToken = NetworkHelper.getCookie("csrftoken");
         // if (csrfToken) {
         //     options.headers = {
         //         "X-CSRFToken": csrfToken,
         //     };
         // }
-        const res = await ky.post(fullUrl, options);
+        const res = await ky.post(fullUrl,options);
         if (res.status !== 204) {
             return res.json();
         } else {

@@ -32,10 +32,11 @@ export interface Bild {
     id: number;
 }
 
-export interface Wettbewerb {
+export interface Competition {
     id: number;
     title: string;
-    Wettbewerbtext: string;
+    text: string;
+    teilnehmerbedingung: string;
     Wettbewerbbeginn: Date;
     Wettbewerbende: Date;
     WettbewerbCloseText: string;

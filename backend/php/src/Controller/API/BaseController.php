@@ -19,14 +19,13 @@ class BaseController
         parse_str($_SERVER['QUERY_STRING'], $query);
         return $query;
     }
- 
 
-    protected function sendOutput($data, $httpHeaders=array())
+
+    protected function sendOutput($data, $httpHeaders = array())
     {
         header_remove('Set-Cookie');
-        if(is_array($httpHeaders) && count($httpHeaders))
-        {
-            foreach($httpHeaders as $httpHeader){
+        if (is_array($httpHeaders) && count($httpHeaders)) {
+            foreach ($httpHeaders as $httpHeader) {
                 header($httpHeader);
             }
         }
@@ -34,4 +33,3 @@ class BaseController
         exit;
     }
 }
-

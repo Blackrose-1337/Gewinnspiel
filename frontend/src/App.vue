@@ -30,7 +30,6 @@ console.log("App setup");
             </q-toolbar>
 
             <q-tabs align="left">
-                <q-route-tab to="/" label="Home" />
                 <q-route-tab to="/customer" label="Wettbewerb" />
                 <q-route-tab to="/user" label="User" />
                 <q-btn flat label="Admin" class="fullheight">
