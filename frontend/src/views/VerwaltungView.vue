@@ -21,14 +21,14 @@ function onUserChanged(u: User) {
     <main>
         <Sidebar @change:selection="onUserChanged" :view="view" />
         <div v-if="selectedUser.role == 'unkown' || selectedUser.role == 'jury'" class="row q-gutter-md q-pa-md">
-            <Formular :user="selectedUser" />
+            <Formular :user="selectedUser" :view="view" />
         </div>
         <div v-if="selectedUser.role == 'teilnehmende'" class="row">
             <div class="col 6">
-                <Project :user="selectedUser" :view="view" />
+                <Project :user="selectedUser" />
             </div>
             <div class="col 4 q-gutter-md q-pa-md">
-                <Formular :user="selectedUser" />
+                <Formular :user="selectedUser" :view="view" />
             </div>
         </div>
     </main>

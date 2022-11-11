@@ -21,6 +21,11 @@ switch ($uri[3]) {
     case 'evaluation':
         require_once PROJECT_ROOT_PATH . "Model/ModelEvaluation.php";
         break;
+    case 'admin':
+        require_once PROJECT_ROOT_PATH . "Model/ModelTeilnehmende.php";
+        require_once PROJECT_ROOT_PATH . "Model/ModelPw.php";
+        require_once PROJECT_ROOT_PATH . "Model/ModelSalt.php";
+        break;
     default:
         header("Page can’t be found", true, 404);
 

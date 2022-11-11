@@ -3,8 +3,10 @@ import NetworkHelper from "@/utils/networkHelper";
 import { HTTPError } from "ky";
 import { Notify } from "quasar";
 import type { User } from "@/stores/interfaces";
+import { useQuasar } from "quasar";
 
 const api = new NetworkHelper();
+const $q = useQuasar();
 
 export type State = {
     users: User[];
@@ -18,14 +20,15 @@ export const useUserStore = defineStore({
         } as State),
     getters: {
         // isAuthenticated: state => state._isAuthenticated,
+
     },
     actions: {
         async getUser() {
             try {
-                const valueranges = await api.get<User[]>("users");
+                const answer= await api.get<User[]>("users");
                 this.users.splice(0);
 
-                valueranges.forEach(u => this.users.push(u));
+                answer.forEach(u => this.users.push(u));
                 console.log(this.users);
             } catch (err) {
                 console.error(err);
@@ -43,5 +46,20 @@ export const useUserStore = defineStore({
         {
             api.post<User>("src/index.php/user/list", u);   
         },
+        async resetPW(userId:number) {
+            try {
+                const param =
+                {
+                    "userId": userId,
+                }
+                const info = await api.get<boolean>("src/index.php/admin/pwreset", param);
+                return info;
+            }catch (err) {
+                console.error(err);
+                if (err instanceof HTTPError) {
+                    Notify.create({ message: `HTTP Error: ${err.message}`, type: "negative" });
+                }
+            }
+        }
     },
 });

@@ -24,10 +24,25 @@ class ModelBase
         return $this;
     }
 
-    public function getFakeId()
+    protected function getFakeId()
     {
         return rand(0, 200);
     }
+
+    protected function getString()
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomString = '';
+
+        for ($i = 0; $i < 12; $i++) {
+            $index = rand(0, strlen($characters) - 1);
+            $randomString .= $characters[$index];
+        }
+
+        return $randomString;
+    }
+
+
     protected function sonderzeichen($string)
     {
         $string = str_replace("ä", "ae", $string);

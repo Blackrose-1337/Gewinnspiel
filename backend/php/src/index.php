@@ -34,6 +34,10 @@ switch ($uri[3]) {
         require PROJECT_ROOT_PATH . "Controller/API/EvaluationController.php";
         $objFeedController = new EvaluationController();
         break;
+    case 'admin':
+        require PROJECT_ROOT_PATH . "Controller/API/AdminController.php";
+        $objFeedController = new AdminController();
+        break;
     default:
         header("Page can’t be found", true, 404);
 

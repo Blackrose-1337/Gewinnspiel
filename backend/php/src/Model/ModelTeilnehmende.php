@@ -1,6 +1,5 @@
 <?php
 require_once PROJECT_ROOT_PATH . "Model/ModelBase.php";
-require_once PROJECT_ROOT_PATH . "Model/ModelPwSalt.php";
 /**
  *
  */
@@ -19,7 +18,8 @@ class ModelTeilnehmende extends ModelBase
     private string $strasse;
     private int $strNr;
     private int $tel;
-    private int $pwSaltId;
+    private int $pwId;
+    private int $saltId;
 
 
     /**
@@ -54,11 +54,11 @@ class ModelTeilnehmende extends ModelBase
     public function getFakeDataUser()
     {
         $data = [
-            ['id' => '2', 'name' => 'Peter', 'surname' => 'Laucher', 'role' => 'jury', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => '84669', 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '12', 'pwSaltId' => '32'],
-            ['id' => '3', 'name' => 'Ricarda', 'surname' => 'Murer', 'role' => 'teilnehmende', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => '84669', 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '13', 'pwSaltId' => '33'],
-            ['id' => '4', 'name' => 'Philippe', 'surname' => 'Egger', 'role' => 'teilnehmende', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => '84669', 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '14', 'pwSaltId' => '34'],
-            ['id' => '5', 'name' => 'Joel', 'surname' => 'Packer', 'role' => 'teilnehmende', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => '84669', 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '15', 'pwSaltId' => '35'],
-            ['id' => '6', 'name' => 'Claudia', 'surname' => 'Schlirrer', 'role' => 'jury', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => '84669', 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '16', 'pwSaltId' => '36'],
+            ['id' => '2', 'name' => 'Peter', 'surname' => 'Laucher', 'role' => 'jury', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => '84669', 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '12', 'pwId' => '32', 'saltId' => '20'],
+            ['id' => '3', 'name' => 'Ricarda', 'surname' => 'Murer', 'role' => 'teilnehmende', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => '84669', 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '13', 'pwId' => '12', 'saltId' => '2'],
+            ['id' => '4', 'name' => 'Philippe', 'surname' => 'Egger', 'role' => 'teilnehmende', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => '84669', 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '14', 'pwId' => '2', 'saltId' => '12'],
+            ['id' => '5', 'name' => 'Joel', 'surname' => 'Packer', 'role' => 'teilnehmende', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => '84669', 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '15', 'pwId' => '3', 'saltId' => '3'],
+            ['id' => '6', 'name' => 'Claudia', 'surname' => 'Schlirrer', 'role' => 'jury', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => '84669', 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '16', 'pwId' => '7', 'saltId' => '4'],
         ];
         return $data;
     }
@@ -72,10 +72,20 @@ class ModelTeilnehmende extends ModelBase
     public function getFakeOrderDataForUserID($userid)
     {
         $data = [
-            ['id' => '2', 'name' => 'Peter', 'surname' => 'Laucher', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => '84669', 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '12', 'pwSaltId' => '32'],
+            ['id' => '2', 'name' => 'Peter', 'surname' => 'Laucher', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => '84669', 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '12', 'pwId' => '32', 'saltId' => '20'],
         ];
 
         return $data;
+    }
+    public function getFakeUser($userId)
+    {
+        $datas = $this->getFakeDataUser();
+        foreach ($datas as $data) {
+            if ($data['id'] == $userId) {
+                return $data;
+            }
+        }
+        return $datas;
     }
 
 
@@ -241,6 +251,7 @@ class ModelTeilnehmende extends ModelBase
 
         return $this;
     }
+
 
     /**
      * Get the value of strasse

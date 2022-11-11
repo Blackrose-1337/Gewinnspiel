@@ -1,0 +1,108 @@
+<?php
+class AdminController extends BaseController
+{
+    public function pwresetAction()
+    {
+        $strErrorDesc = '';
+        $requestMethod = $_SERVER["REQUEST_METHOD"];
+        $arrQueryStringParams = $this->getQueryStringParams();
+
+        if (strtoupper($requestMethod) == 'GET') {
+            try {
+                $usermodel = new ModelTeilnehmende();
+                $pwmodel = new ModelPw();
+                $saltmodel = new ModelSalt();
+                $ids = $usermodel->getFakeUser($arrQueryStringParams['userId']);
+                $salt = $saltmodel->resetSaltbyID($ids['saltId']);
+                $pw = $pwmodel->resetHashbyId($salt, $ids['pwId']);
+
+                $responseData = true;
+
+            } catch (Error $e) {
+                $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+                $strErrorHeader = 'HTTP/1.1 500 Internal Server Error';
+            }
+        } elseif (strtoupper($requestMethod) == 'POST') {
+            try {
+                $usermodel = new ModelTeilnehmende();
+
+
+                $data = json_decode(file_get_contents('php://input'), true);
+                $responseData = $usermodel->fakewriteData($data);
+
+            } catch (Error $e) {
+                $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+                $strErrorHeader = 'HTTP/1.1 500 Internal Server Error';
+            }
+        } else {
+            $strErrorDesc = 'Method not supported';
+            $strErrorHeader = 'HTTP/1.1 422 Unprocessable Entity';
+        }
+        if (!$strErrorDesc && ($requestMethod == 'GET')) {
+            $this->sendOutput($responseData, array('Content-Type: application/json', 'HTTP/1.1 200 Blackrose'));
+        } else {
+            $this->sendOutput(
+                json_encode(array('error' => $strErrorDesc)),
+                array('Content-Type: application/json', $strErrorHeader)
+            );
+        }
+    }
+    public function postAction()
+    {
+
+        //$strErrorDesc = '';
+        //$requestMethod = $_SERVER["REQUEST_METHOD"];
+        //$arrQueryStringParams = $this->getQueryStringParams();
+
+        try {
+
+            $usermodel = new ModelTeilnehmende();
+            $usermodel->fakewriteData($_POST);
+            print_r($_POST);
+        } catch (Error $e) {
+            echo "Error";
+            //$strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+            //$strErrorHeader = 'HTTP/1.1 500 Internal Server Error';
+        }
+    }
+    public function projectAction()
+    {
+        $strErrorDesc = '';
+        $requestMethod = $_SERVER["REQUEST_METHOD"];
+        $arrQueryStringParams = $this->getQueryStringParams();
+
+        if (strtoupper($requestMethod) == 'GET') {
+            try {
+                $usermodel = new ModelTeilnehmende();
+                $arr = $usermodel->getFakeDataUser();
+                $responseData = json_encode($arr);
+            } catch (Error $e) {
+                $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+                $strErrorHeader = 'HTTP/1.1 500 Internal Server Error';
+            }
+        } elseif (strtoupper($requestMethod) == 'POST') {
+            try {
+                $usermodel = new ModelTeilnehmende();
+
+
+                $data = json_decode(file_get_contents('php://input'), true);
+                $responseData = $usermodel->fakewriteData($data);
+
+            } catch (Error $e) {
+                $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+                $strErrorHeader = 'HTTP/1.1 500 Internal Server Error';
+            }
+        } else {
+            $strErrorDesc = 'Method not supported';
+            $strErrorHeader = 'HTTP/1.1 422 Unprocessable Entity';
+        }
+        if (!$strErrorDesc && ($requestMethod == 'GET')) {
+            $this->sendOutput($responseData, array('Content-Type: application/json', 'HTTP/1.1 200 Blackrose'));
+        } else {
+            $this->sendOutput(
+                json_encode(array('error' => $strErrorDesc)),
+                array('Content-Type: application/json', $strErrorHeader)
+            );
+        }
+    }
+}

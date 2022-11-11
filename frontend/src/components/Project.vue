@@ -8,7 +8,6 @@ import { toRefs, ref, watch } from "vue";
 
 const props = defineProps<{
     user?: User;
-    view?: string;
 }>();
 
 //---------------Storeload------------------------------
@@ -59,7 +58,7 @@ loadimage();
             <h3>{{ project.title }}</h3>
             <p>{{ project.text }}</p>
         </div>
-        <div class="row q-gutter-lg">
+        <div class="row q-gutter-lg pic">
             <img v-for="pic in bsp" class="minipic q-pa-md" :src="pic" :ratio="1" @click="expand($event)" />
         </div>
     </div>
@@ -88,6 +87,9 @@ loadimage();
     background-color: rgb(168, 153, 85);
     border-radius: 15px;
     margin: 10px;
+}
+.pic {
+    margin: 5px;
 }
 .expandanimation {
     height: 90vh;
