@@ -18,9 +18,13 @@ class CompetitionController extends BaseController
             }
         } elseif (strtoupper($requestMethod) == 'POST') {
             try {
+                $newproject = new ModelProject();
                 $usermodel = new ModelTeilnehmende();
-                $usermodel->fakewriteData($_POST);
-                print_r($_POST);
+                $data = json_decode(file_get_contents('php://input'), true);
+                $data['user'] = $usermodel->fakewriteData($data['user']);
+                $data['project'] = $newproject->fakeWriteData($data['project']);
+                $responseData = json_encode($data);
+
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
                 $strErrorHeader = 'HTTP/1.1 500 Internal Server Error';
@@ -29,7 +33,7 @@ class CompetitionController extends BaseController
             $strErrorDesc = 'Method not supported';
             $strErrorHeader = 'HTTP/1.1 422 Unprocessable Entity';
         }
-        if (!$strErrorDesc && ($requestMethod == 'GET')) {
+        if (!$strErrorDesc && ($requestMethod == 'GET' || $requestMethod == 'POST')) {
             $this->sendOutput($responseData, array('Content-Type: application/json', 'HTTP/1.1 200 Blackrose'));
         } else {
             $this->sendOutput(
@@ -38,4 +42,5 @@ class CompetitionController extends BaseController
             );
         }
     }
+
 }

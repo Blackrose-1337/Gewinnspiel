@@ -2,12 +2,13 @@ import { defineStore } from "pinia";
 import NetworkHelper from "@/utils/networkHelper";
 import { HTTPError } from "ky";
 import { Notify } from "quasar";
-import type { Competition } from "@/stores/interfaces";
+import type { Competition, CompetitionDetails } from "@/stores/interfaces";
 import { isNull } from "lodash";
 
 const api = new NetworkHelper();
 
 export type State = {
+    competitionDetails: CompetitionDetails;
     competition: Competition;
 };
 
@@ -15,16 +16,17 @@ export const useCompetitionStore = defineStore({
     id: "competition",
     state: () =>
         ({
-            competition: {},
+        competitionDetails: {},
+        competition: {},
         } as State),
     getters: {
         // isAuthenticated: state => state._isAuthenticated,
     },
     actions: {
-        async getCompetition() {
+        async getCompetitiondeclarations() {
             try {
-                this.competition = await api.get<Competition>("src/index.php/competition/competition");
-                this.competition;
+                this.competitionDetails = await api.get<CompetitionDetails>("src/index.php/competition/competition");
+                console.log(this.competitionDetails);
             } catch (err) {
                 console.error(err);
                 if (err instanceof HTTPError) {
@@ -32,5 +34,11 @@ export const useCompetitionStore = defineStore({
                 }
             }
         },
+        async postCompetition(c: Competition) {
+            c.user.role = "Teilnehmende";
+            console.log(c);
+            api.post<Competition>("src/index.php/competition/competition", c);   
+        
+        }
     },
 });

@@ -1,5 +1,6 @@
 import ky, { type Options } from "ky";
 import { formatISO } from "date-fns";
+import _ from "lodash";
 // import { json } from "stream/consumers";
 
 export default class NetworkHelper {
@@ -20,14 +21,7 @@ export default class NetworkHelper {
             queryParams["ts"] = formatISO(Date.now());
         }
 
-        if (queryParams) {
-            const mapped = Object.keys(queryParams)
-                .filter(k => {
-                    const v = queryParams[k];
-                    return (v != null && !Array.isArray(v)) || (Array.isArray(v) && v?.length > 0);
-                })
-                .map(k => `${encodeURIComponent(k)}=${encodeURI(queryParams[k])}`);
-            fullUrl += mapped.join("&");
+         if (queryParams) {
             const withValues = _.pickBy(
                 queryParams,
                 v => (!_.isArray(v) && !_.isNil(v)) || (_.isArray(v) && _.size(v) > 0)
@@ -35,6 +29,21 @@ export default class NetworkHelper {
             const queryString = _.map(withValues, (v, k) => `${encodeURIComponent(k)}=${encodeURI(v)}`);
             fullUrl += _.join(queryString, "&");
         }
+        // if (queryParams) {
+        //     const mapped = Object.keys(queryParams)
+        //         .filter(k => {
+        //             const v = queryParams[k];
+        //             return (v != null && !Array.isArray(v)) || (Array.isArray(v) && v?.length > 0);
+        //         })
+        //         .map(k => `${encodeURIComponent(k)}=${encodeURI(queryParams[k])}`);
+        //     fullUrl += mapped.join("&");
+        //     const withValues = _.pickBy(
+        //         queryParams,
+        //         v => (!_.isArray(v) && !_.isNil(v)) || (_.isArray(v) && _.size(v) > 0)
+        //     );
+        //     const queryString = _.map(withValues, (v, k) => `${encodeURIComponent(k)}=${encodeURI(v)}`);
+        //     fullUrl += _.join(queryString, "&");
+        // }
 
         return { options, fullUrl: fullUrl };
     }

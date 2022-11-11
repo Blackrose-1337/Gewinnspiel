@@ -41,10 +41,7 @@ export const useUserStore = defineStore({
         },
         async posttest(u :User)
         {
-            const test = {"id":59,"name":"Peter","surname":"Laucher","role":"jury","email":"test1@test.ch","land":"DE","plz":"84669","ortschaft":"rostock","strasse":"Lauerstr.","strNr":"23","tel":"4465155","textid":"12","pwSaltId":"32"};
-
-            api.post<User>("src/index.php/user/list", u);
-            
+            api.post<User>("src/index.php/user/list", u);   
         },
     },
 });

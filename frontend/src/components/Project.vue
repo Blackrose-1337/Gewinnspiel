@@ -1,14 +1,40 @@
 <script setup lang="ts">
 import image from "@/components/icons/test.json";
+import { propsToAttrMap } from "@vue/shared";
+import type { User } from "@/stores/interfaces";
+import { useProjectStore } from "@/stores/projects";
+import { storeToRefs } from "pinia";
+import { toRefs, ref, watch } from "vue";
+
+const props = defineProps<{
+    user?: User;
+    view?: string;
+}>();
+
+//---------------Storeload------------------------------
+const projectStore = useProjectStore();
+
+//---------------storeToRefs------------------------------
+//const { isAuthenticated } = storeToRefs(authStore);
+const { project } = storeToRefs(projectStore);
+const { user } = toRefs(props) as User;
 
 const bsp: string[] = [];
 var bild = new Image();
-function test() {
+
+function load() {
+    if (!user) {
+    } else {
+        projectStore.getProject(user.value.id);
+    }
+}
+function loadimage() {
     image.src.forEach(element => {
         bild.src = element;
         bsp.push(bild.src);
     });
 }
+
 function expand($event: any) {
     console.log($event);
     if ($event.target.classList.contains("expandanimation")) {
@@ -20,42 +46,22 @@ function expand($event: any) {
     }
     console.log("still in Production");
 }
+watch(user, changeuser => {
+    load();
+});
 
-test();
+load();
+loadimage();
 </script>
 <template>
-    <div class="row q-gutter-lg">
-        <img v-for="pic in bsp" class="minipic q-pa-md" :src="pic" :ratio="1" @click="expand($event)" />
-    </div>
-    <div class="texts q-gutter-lg">
-        <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad quae dicta officia ea libero, corrupti commodi
-            eligendi molestias sed est ab explicabo maiores unde illum, facere, deserunt atque provident error. omnis
-            quidem earum vero nobis esse vitae soluta veniam eaque. Error, cum. Perferendis, asperiores tempora maxime
-            aut provident dignissimos minus. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, amet
-            voluptas nobis nesciunt necessitatibus molestiae dolores nostrum accusantium ut placeat vero eligendi.
-            Sapiente distinctio aliquid voluptatum provident vel, consequatur corporis? Lorem ipsum dolor sit amet
-            consectetur adipisicing elit. Esse dolores numquam, asperiores excepturi, minus, saepe quibusdam labore a
-            adipisci eos ut consequuntur voluptas ullam fugiat quidem accusamus architecto officiis sint! Lorem ipsum,
-            dolor sit amet consectetur adipisicing elit. Iusto est minima doloribus nisi sunt dolorum ratione, officiis,
-            expedita deleniti dignissimos veritatis vero tenetur fugiat ea eos dolor nam itaque rem. Lorem ipsum dolor
-            sit amet consectetur, adipisicing elit. Facilis ut voluptas excepturi odio eligendi quia quasi placeat iure
-            obcaecati ipsum magnam tempora minima ullam at deserunt vero, aliquid esse vel. Lorem ipsum dolor, sit amet
-            consectetur adipisicing elit. Nulla deleniti ea quidem suscipit autem! Ullam vitae illo unde tempora veniam.
-            Maiores saepe sequi odio ea impedit, molestiae voluptatibus mollitia architecto! omnis quidem earum vero
-            nobis esse vitae soluta veniam eaque. Error, cum. Perferendis, asperiores tempora maxime aut provident
-            dignissimos minus. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta, amet voluptas nobis
-            nesciunt necessitatibus molestiae dolores nostrum accusantium ut placeat vero eligendi. Sapiente distinctio
-            aliquid voluptatum provident vel, consequatur corporis? Lorem ipsum dolor sit amet consectetur adipisicing
-            elit. Esse dolores numquam, asperiores excepturi, minus, saepe quibusdam labore a adipisci eos ut
-            consequuntur voluptas ullam fugiat quidem accusamus architecto officiis sint! Lorem ipsum, dolor sit amet
-            consectetur adipisicing elit. Iusto est minima doloribus nisi sunt dolorum ratione, officiis, expedita
-            deleniti dignissimos veritatis vero tenetur fugiat ea eos dolor nam itaque rem. Lorem ipsum dolor sit amet
-            consectetur, adipisicing elit. Facilis ut voluptas excepturi odio eligendi quia quasi placeat iure obcaecati
-            ipsum magnam tempora minima ullam at deserunt vero, aliquid esse vel. Lorem ipsum dolor, sit amet
-            consectetur adipisicing elit. Nulla deleniti ea quidem suscipit autem! Ullam vitae illo unde tempora veniam.
-            Maiores saepe sequi odio ea impedit, molestiae voluptatibus mollitia architecto!
-        </p>
+    <div>
+        <div class="texts q-pa-lg">
+            <h3>{{ project.title }}</h3>
+            <p>{{ project.text }}</p>
+        </div>
+        <div class="row q-gutter-lg">
+            <img v-for="pic in bsp" class="minipic q-pa-md" :src="pic" :ratio="1" @click="expand($event)" />
+        </div>
     </div>
 </template>
 
@@ -80,6 +86,8 @@ test();
 
 .texts {
     background-color: rgb(168, 153, 85);
+    border-radius: 15px;
+    margin: 10px;
 }
 .expandanimation {
     height: 90vh;

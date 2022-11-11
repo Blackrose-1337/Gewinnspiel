@@ -19,20 +19,24 @@ export interface User {
 export interface Project {
     id: number;
     userID: number;
-    textId: number;
+    text: string;
+    title: string;
 }
+
+export interface Competition {
+    project: Project
+    user : User
+}
+
 
 export interface ProjectBild {
     id: number;
     projectId: number;
-    bildId: number;
+    bildPfad: string;
 }
 
-export interface Bild {
-    id: number;
-}
 
-export interface Competition {
+export interface CompetitionDetails {
     id: number;
     title: string;
     text: string;

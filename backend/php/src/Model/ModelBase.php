@@ -1,11 +1,12 @@
 <?php
 
-Class ModelBase {
-    private int $id=42;
+class ModelBase
+{
+    private int $id = 42;
 
     /**
      * Get the value of id
-     */ 
+     */
     public function getId()
     {
         return $this->id;
@@ -15,7 +16,7 @@ Class ModelBase {
      * Set the value of id
      *
      * @return  self
-     */ 
+     */
     public function setId($id)
     {
         $this->id = $id;
@@ -25,7 +26,26 @@ Class ModelBase {
 
     public function getFakeId()
     {
-        return rand(0,200);
+        return rand(0, 200);
+    }
+    protected function sonderzeichen($string)
+    {
+        $string = str_replace("ä", "ae", $string);
+        $string = str_replace("ü", "ue", $string);
+        $string = str_replace("ö", "oe", $string);
+        $string = str_replace("Ä", "Ae", $string);
+        $string = str_replace("Ü", "Ue", $string);
+        $string = str_replace("Ö", "Oe", $string);
+        $string = str_replace("ß", "ss", $string);
+        return $string;
+    }
+    protected function getById($arrays, $id)
+    {
+        foreach ($arrays as $array) {
+            if ($array['id'] == $id)
+                return $array;
+        }
+        return null;
     }
 }
 

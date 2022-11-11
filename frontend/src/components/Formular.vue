@@ -30,6 +30,16 @@ const model: User = ref({
     tel: null,
 });
 
+function isValidEmail(val: string) {
+    const emailPattern =
+        /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,7}$/;
+    return emailPattern.test(val) || "Invalid email";
+}
+function isValidname(val: string) {
+    const namepattern = /[a-zA-Z]{2,50}$/;
+    return namepattern.test(val) || "Invalid name";
+}
+
 watch(user, changeUser => {
     updatemodel(changeUser);
 });
@@ -48,8 +58,10 @@ function updatemodel(u: User) {
         outlined
         label="Nachname"
         @change="changevalue(model)"
+        lazy-rules
+        :rules="[val => !!val || 'Field is required', isValidname]"
         clearable
-        class="col-3"
+        class="col-4"
     />
     <q-input
         v-model="model.name"
@@ -57,21 +69,25 @@ function updatemodel(u: User) {
         outlined
         label="Vorname"
         @change="changevalue(model)"
+        lazy-rules
+        :rules="[val => !!val || 'Field is required', isValidname]"
         clearable
-        class="col-3"
+        class="col-4"
     />
-    <q-space class="col-3" />
+    <q-space class="col-1" />
     <q-input
         v-model="model.email"
         rounded
         outlined
         label="E-Mail"
         @change="changevalue(model)"
+        lazy-rules
+        :rules="[val => !!val || 'Field is required', isValidEmail]"
         clearable
-        class="col-3"
+        class="col-5"
         type="email"
     />
-    <q-space class="col-8" />
+    <q-space class="col-6" />
     <q-select
         rounded
         outlined

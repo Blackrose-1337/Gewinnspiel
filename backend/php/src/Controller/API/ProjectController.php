@@ -1,7 +1,7 @@
 <?php
 class ProjectController extends BaseController
 {
-    public function take()
+    public function takeAction()
     {
         $strErrorDesc = '';
         $requestMethod = $_SERVER["REQUEST_METHOD"];
@@ -9,9 +9,8 @@ class ProjectController extends BaseController
 
         if (strtoupper($requestMethod) == 'GET') {
             try {
-                $usermodel = new ModelProject();
-                // $arr = $usermodel->getFakeOrderData();
-                // $responseData = json_encode($arr);
+                $projectmodel = new ModelProject();
+                $responseData = json_encode($projectmodel->getFakeProject($arrQueryStringParams['userId']));
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
                 $strErrorHeader = 'HTTP/1.1 500 Internal Server Error';
