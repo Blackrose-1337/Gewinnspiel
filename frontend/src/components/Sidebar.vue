@@ -77,35 +77,28 @@ load();
 //---------------Executions------------------------------
 </script>
 <template>
-    <!-----------------Sidebar-------------------------------->
-    <!-- <q-drawer position="left-top" show-if-above side="left"  width="200" bordered>
-        <q-expansion-item icon="drafts" label="Drafts" header-class="text-orange">
-            <q-card>
-                <q-card-section>
-                    <router-link to="/"> Link <q-btn /> </router-link>
-                </q-card-section>
-            </q-card>
-        </q-expansion-item>
-        
-    </q-drawer> -->
-
     <q-drawer show-if-above :width="300" :breakpoint="700" elevated bordered>
         <q-scroll-area class="fit">
+            <!-- Hier wird überprüft ob das Obere Element 'User' in das view-Element gepackt hat-->
             <q-card v-if="view === 'User'" bordered>
                 <q-card-section color="q-primary" class="fullwitdh">
                     <h4 class="title">Jury</h4>
                 </q-card-section>
+                <!-- Ein For-loop um jede Person im Array durchzugehen-->
                 <div v-for="p in personen" :key="p.id">
+                    <!-- Hier wird überprüft ob das ob das Element bei der Rolle 'jury' hinterlegt ist'-->
                     <div v-if="p.role === 'jury'" class="fullwidth">
                         <q-btn class="fullwitdh" bordered color="secondary" @click="changeSelection(p)">{{
                             p.surname + " " + p.name
                         }}</q-btn>
                     </div>
                 </div>
+                <!-- Button um ein Jurymitglied hinzufügen (noch nicht gespeichert)-->
                 <q-btn class="fullwitdh btn" color="primary" @click="addJury">Jurymitglied hinzufügen</q-btn>
-
                 <h4 class="title">Teilnehmende</h4>
+                <!-- Ein For-loop um jede Person im Array durchzugehen-->
                 <div v-for="p in personen" :key="p.id" class="fullwidth">
+                    <!-- Hier wird überprüft ob das ob das Element bei der Rolle 'teilnehmende' hinterlegt ist'-->
                     <div v-if="p.role === 'teilnehmende'">
                         <q-btn class="fullwitdh" color="secondary" @click="changeSelection(p)">{{
                             p.surname + " " + p.name
@@ -113,10 +106,12 @@ load();
                     </div>
                 </div>
             </q-card>
+            <!-- Hier wird überprüft ob das Obere Element 'Project' in das view-Element gepackt hat-->
             <q-card v-if="view === 'Project'" bordered>
                 <q-card-section color="q-primary" class="fullwitdh">
                     <h4 class="title">Project</h4>
                 </q-card-section>
+                <!-- Ein For-loop um jedes Projekt im Array durchzugehen-->
                 <div v-for="pro in project" :key="pro.id">
                     <div class="fullwidth">
                         <q-btn class="fullwitdh" bordered color="secondary">{{ pro.id }}</q-btn>
@@ -125,7 +120,6 @@ load();
             </q-card>
         </q-scroll-area>
     </q-drawer>
-    <!-----------------Main-------------------------------->
 </template>
 <style>
 .fullwitdh {

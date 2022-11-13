@@ -1,5 +1,7 @@
 <?php
-
+/*
+Hauptcontroller mit bestimmten methoden
+*/
 class BaseController
 {
     public function __call($name, $args)

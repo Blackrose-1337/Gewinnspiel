@@ -1,6 +1,7 @@
 <?php
 class CompetitionController extends BaseController
 {
+    // Funktion zu verarbeitung des eingesendeten projekts  
     public function competitionAction()
     {
         $strErrorDesc = '';
@@ -9,6 +10,7 @@ class CompetitionController extends BaseController
 
         if (strtoupper($requestMethod) == 'GET') {
             try {
+                // Aufruf benötigter Klassen 
                 $usermodel = new ModelCompetition();
                 $arr = $usermodel->getfakecompetition();
                 $responseData = json_encode($arr);
@@ -18,11 +20,16 @@ class CompetitionController extends BaseController
             }
         } elseif (strtoupper($requestMethod) == 'POST') {
             try {
+                // Aufruf benötigter Klassen 
                 $newproject = new ModelProject();
                 $usermodel = new ModelTeilnehmende();
+                // Post Daten holen
                 $data = json_decode(file_get_contents('php://input'), true);
+                // User erstellung Mocking
                 $data['user'] = $usermodel->fakewriteData($data['user']);
+                // Projekt erstellen Mocking
                 $data['project'] = $newproject->fakeWriteData($data['project']);
+                // Reaktion zurücksenden
                 $responseData = json_encode($data);
 
             } catch (Error $e) {

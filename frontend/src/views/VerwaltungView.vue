@@ -34,27 +34,3 @@ function onUserChanged(u: User) {
     </main>
 </template>
 <style></style>
-
-<!-- import { ref } from "vue";
-import type { Ref } from "vue";
-import { useRouter, useRoute } from "vue-router";
-import ValueRangeSidebar from "@/components/ValueRangeSidebar.vue";
-import ValueRangeWorkspace from "@/components/ValueRangeWorkspace.vue";
-import type { ValueRange } from "@/stores/interfaces";
-
-const router = useRouter();
-const route = useRoute();
-
-const selectedValueRange = ref(null as unknown) as Ref<ValueRange>;
-
-function onValueRangeChanged(vr: ValueRange) {
-    console.log("vr: ", vr);
-    selectedValueRange.value = vr;
-}
-</script>
-<template>
-    <main class="fit">
-        <ValueRangeSidebar @change:selection="onValueRangeChanged" />
-        <ValueRangeWorkspace class="row full-width"  />
-    </main>
-</template> -->

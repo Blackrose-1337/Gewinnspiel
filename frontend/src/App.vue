@@ -5,6 +5,7 @@ import { useQuasar } from "quasar";
 
 const $q = useQuasar();
 let change = ref();
+// darmode toggle
 function swap() {
     if (!change.value) {
         change.value = true;
@@ -13,7 +14,6 @@ function swap() {
     }
     $q.dark.set(change.value);
 }
-// $q.dark.set(change.value);
 
 console.log("App setup");
 </script>
@@ -23,7 +23,7 @@ console.log("App setup");
         <q-header elevated class="text-white" height-hint="98">
             <q-toolbar>
                 <q-toolbar-title>
-                    <!-- <q-avatar> <img src=src/assets/Blackrose.png alt="Blackrose"/> </q-avatar>-->
+                    <q-avatar> <img src=src/assets/Blackrose.png alt="Blackrose"/> </q-avatar>
                     Stickstoff
                     <q-btn class="text-right" round @click="swap" push outline icon="light_mode" />
                 </q-toolbar-title>
@@ -33,8 +33,8 @@ console.log("App setup");
                 <q-route-tab to="/customer" label="Wettbewerb" />
                 <q-route-tab to="/user" label="User" />
                 <q-btn flat label="Admin" class="fullheight">
-                    <q-menu >
-                    <q-list style="min-width: 100px">
+                    <q-menu>
+                        <q-list style="min-width: 100px">
                             <q-route-tab
                                 @click="switcher('setup')"
                                 to="/verwaltung"
@@ -42,33 +42,20 @@ console.log("App setup");
                                 icon="dynamic_form"
                                 on-click="{{}}"
                             />
-                            <q-route-tab
-                                @click="switcher('setup')"
-                                to="/project"
-                                label="Projekte"
-                                icon="settings"
-                            />
-                            <q-route-tab
+                            <q-route-tab @click="switcher('setup')" to="/project" label="Projekte" icon="settings" />
+                            <!-- läuft noch nicht -->
+                            <!-- <q-route-tab
                                 @click="switcher('setup')"
                                 to="/designe"
                                 label="Desgine"
                                 icon="settings"
-                            />
-                            
+                            /> -->
                         </q-list>
-                </q-menu>
+                    </q-menu>
                 </q-btn>
                 <q-route-tab to="/evaluation" label="Bewertung" />
             </q-tabs>
         </q-header>
-        <!--TEST-->
-        <!--        <q-drawer show-if-above v-model="leftDrawerOpen" side="left" behavior="desktop" bordered>-->
-        <!--            <RouterLink to="/">Home</RouterLink> <br />-->
-        <!--            <RouterLink to="/login">Login</RouterLink> <br />-->
-        <!--            <RouterLink to="/about">About</RouterLink> <br />-->
-        <!--            foobar-->
-        <!--        </q-drawer>-->
-
         <q-page-container class="wrapper">
             <router-view />
         </q-page-container>
@@ -79,14 +66,7 @@ console.log("App setup");
 /*noinspection CssUnknownTarget*/
 @import "@/assets/base.css";
 
-/* #app {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2rem;
-
-    font-weight: normal;
-} */
-.fullheight{
+.fullheight {
     height: 100%;
 }
 .body--dark {
@@ -141,43 +121,4 @@ nav a {
 nav a:first-of-type {
     border: 0;
 }
-
-/*@media (min-width: 1024px) {*/
-/*    body {*/
-/*        display: flex;*/
-
-/*        place-items: flex-start;*/
-/*    }*/
-
-/*    #app {*/
-/*        !*display: grid;*!*/
-/*        !*grid-template-columns: 1fr 1fr;*!*/
-/*        padding: 0 2rem;*/
-/*    }*/
-
-/*    header {*/
-/*        !*display: flex;*!*/
-/*        place-items: center;*/
-/*        padding-right: calc(var(--section-gap) / 2);*/
-/*    }*/
-
-/*    header .wrapper {*/
-/*        display: flex;*/
-/*        place-items: flex-start;*/
-/*        flex-wrap: wrap;*/
-/*    }*/
-
-/*    .logo {*/
-/*        margin: 0 2rem 0 0;*/
-/*    }*/
-
-/*    nav {*/
-/*        text-align: left;*/
-/*        margin-left: -1rem;*/
-/*        font-size: 1rem;*/
-
-/*        padding: 1rem 0;*/
-/*        margin-top: 1rem;*/
-/*    }*/
-/*}*/
 </style>

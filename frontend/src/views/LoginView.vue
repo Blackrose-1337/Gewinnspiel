@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, ToRefs} from "vue";
+import { ref, ToRefs } from "vue";
 import { useQuasar } from "quasar";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter, useRoute } from "vue-router";

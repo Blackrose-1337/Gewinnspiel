@@ -20,9 +20,6 @@ export const useProjectStore = defineStore({
             projects: [] as Project[],
             selectedProjectId: null,
         } as State),
-    getters: {
-       // selectedProject: state => state.projects.find(p => p.id === state.selectedProjectId),
-    },
     actions: {
         async getProject(userId: number) {
             try {

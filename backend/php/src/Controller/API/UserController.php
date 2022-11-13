@@ -1,16 +1,21 @@
 <?php
 class UserController extends BaseController
 {
+    // Funktion zum Abruf aller UserDaten bei einer GET-Anfrage
     public function listAction()
     {
         $strErrorDesc = '';
+        // Methode entnehmen
         $requestMethod = $_SERVER["REQUEST_METHOD"];
-        $arrQueryStringParams = $this->getQueryStringParams();
 
+        // abfrage ob es eine GET_Methode ist
         if (strtoupper($requestMethod) == 'GET') {
             try {
+                // Aufruf benötigter Klassen 
                 $usermodel = new ModelTeilnehmende();
+                // Userdaten nehmen Mocking
                 $arr = $usermodel->getFakeDataUser();
+                // Daten in json unformen
                 $responseData = json_encode($arr);
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
@@ -41,24 +46,4 @@ class UserController extends BaseController
             );
         }
     }
-    public function postAction()
-    {
-
-        //$strErrorDesc = '';
-        //$requestMethod = $_SERVER["REQUEST_METHOD"];
-        //$arrQueryStringParams = $this->getQueryStringParams();
-
-        try {
-
-            $usermodel = new ModelTeilnehmende();
-            $usermodel->fakewriteData($_POST);
-            print_r($_POST);
-        } catch (Error $e) {
-            echo "Error";
-            //$strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
-            //$strErrorHeader = 'HTTP/1.1 500 Internal Server Error';
-        }
-    }
-
-
 }

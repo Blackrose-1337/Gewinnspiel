@@ -31,8 +31,6 @@ class ModelTeilnehmende extends ModelBase
      */
     public function fakewriteData($data)
     {
-
-
         // preg_match($muster, $testtext)   Muster erkennung möglichkeit   $muster= "/1[0123456789]/"       $testtext= "Wir haben 13 Katzen"  !!!REGEX!!!   regexlip.com/DisplayPatterns.aspx
 
         // input validation  www.owasp.org/index.php/Input_Validation_Cheat_Sheet#Input_validation-strategies
@@ -106,50 +104,6 @@ class ModelTeilnehmende extends ModelBase
         }
         return $datas;
     }
-
-
-    /**
-     * Hilfsmethode : die eine Liste für die GUI zusammenfipselt
-     *
-     * @param  mixed $orderArray, Liste aus Orders
-     * @param  mixed $menueArray, Liste aus Menues
-     *
-     * @return $data : Array für GUI
-     */
-    public function renderOderList4GUI($orderArray, $menueArray)
-    {
-        // Anstatt Dinge in der GUI kompliziert zu machen, bauen wir hier die Dinge so zusammen wie 
-        // wir sie brauchen
-        // Diesen Array wollen wir zusammenbauen, dann der GUI übergeben
-        // Etwas ungeschickt ist hier, dass die Arrays aus Orders und Menues übergeben werden. Dabei könnte sich eigentlich das Model selbst um die Listen kümmern
-
-        $data = [];
-        foreach ($orderArray as $order) {
-            $orderrow = [];
-            foreach ($order as $key => $value) {
-
-                // für jede Bestellung noch das Menü rausfipseln
-                if ($key == 'refmenue') {
-
-                    foreach ($menueArray as $menue) {
-
-                        if ($menue['id'] == $value) {
-                            //echo var_dump();
-                            $orderrow['menueinfo'] = $menue['title'] . "," . $menue['description'];
-                        }
-                    }
-                }
-
-                // alle anderen Dinge einfach rüberkopieren
-                $orderrow[$key] = $value;
-            }
-
-            array_push($data, $orderrow);
-        }
-
-        return $data;
-    }
-
 
     /**
      * Get the value of name

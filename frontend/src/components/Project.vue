@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import image from "@/components/icons/test.json";
+import image from "@/components/icons/base64pic.json";
 import { propsToAttrMap } from "@vue/shared";
 import type { User } from "@/stores/interfaces";
 import { useProjectStore } from "@/stores/projects";
@@ -14,7 +14,6 @@ const props = defineProps<{
 const projectStore = useProjectStore();
 
 //---------------storeToRefs------------------------------
-//const { isAuthenticated } = storeToRefs(authStore);
 const { project } = storeToRefs(projectStore);
 const { user } = toRefs(props) as User;
 

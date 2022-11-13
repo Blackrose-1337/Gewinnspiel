@@ -1,15 +1,19 @@
 <?php
 class ProjectController extends BaseController
 {
+    // Funktion um ein Projekt abzurufen
     public function takeAction()
     {
         $strErrorDesc = '';
         $requestMethod = $_SERVER["REQUEST_METHOD"];
         $arrQueryStringParams = $this->getQueryStringParams();
 
+        // abfrage ob es eine GET_Methode ist
         if (strtoupper($requestMethod) == 'GET') {
             try {
+                // Aufruf benötigter Klassen 
                 $projectmodel = new ModelProject();
+                // Projekt laden Mocking und in ein Json-Format umwandeln
                 $responseData = json_encode($projectmodel->getFakeProject($arrQueryStringParams['userId']));
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';

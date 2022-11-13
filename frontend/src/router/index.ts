@@ -11,32 +11,10 @@ const router = createRouter({
             component: WettbewerbView,
             meta: { requiresAuth: false },
         },
-        // {
-        //     path: "/helloworld",
-        //     name: "helloworld",
-        //     meta: { requiresAuth: true },
-        //     // route level code-splitting
-        //     // this generates a separate chunk (About.[hash].js) for this route
-        //     // which is lazy-loaded when the route is visited.
-        //     component: () => import("../components/HelloWorld.vue"),
-        // },
-        // {
-        //     path: "/login",
-        //     name: "login",
-        //     meta: { requiresAuth: false },
-        //     props: route => ({ redirectTo: route.query.redirectTo }),
-        //     // route level code-splitting
-        //     // this generates a separate chunk (About.[hash].js) for this route
-        //     // which is lazy-loaded when the route is visited.
-        //     component: () => import("../views/LoginView.vue"),
-        // },
         {
             path: "/customer",
             name: "customer",
             meta: { requiresAuth: false },
-            // route level code-splitting
-            // this generates a separate chunk (About.[hash].js) for this route
-            // which is lazy-loaded when the route is visited.
             component: () => import("../views/WettbewerbView.vue"),
         },
         {
@@ -69,15 +47,6 @@ const router = createRouter({
             meta: { requiresAuth: false },
             component: () => import("../views/DesigneView.vue")
         }
-        // {
-        //     path: "/admin-survey",
-        //     name: "admin-survey",
-        //     meta: { requiresAuth: false },
-        //     // route level code-splitting
-        //     // this generates a separate chunk (About.[hash].js) for this route
-        //     // which is lazy-loaded when the route is visited.
-        //     component: () => import("../views/AdminSurveyview.vue"),
-        // },
     ],
 });
 router.beforeEach(async to => {
