@@ -12,11 +12,11 @@ const model: User = ref({
     surname: "",
     role: "",
     email: "",
-    land: "DE",
+    land: "",
     plz: null,
     ortschaft: "",
     str: "",
-    nr: null,
+    strNr: null,
     vorwahl: "",
     tel: null,
 });
@@ -52,7 +52,29 @@ function changevalue(p: User) {
 function updatemodel(u: User) {
     model.value = u;
 }
-function load() {}
+async function savechange() {
+    if (model.value.surname == "") {
+        $q.notify({
+            type: "negative",
+            message: "Der Nachname fehlt",
+            color: "red",
+        });
+    } else if (model.value.name == "") {
+        $q.notify({
+            type: "negative",
+            message: "Der Vorname fehlt",
+            color: "red",
+        });
+    } else if (model.value.email == "") {
+        $q.notify({
+            type: "negative",
+            message: "Die E-Mail fehlt",
+            color: "red",
+        });
+    } else {
+        userStore.saveUserChange(model.value);
+    }
+}
 async function resestpw() {
     const answer = await userStore.resetPW(model.value.id);
     if (answer == true) {
@@ -67,7 +89,6 @@ async function resestpw() {
 watch(user, changeUser => {
     updatemodel(changeUser);
 });
-load();
 </script>
 
 <template>
@@ -138,7 +159,7 @@ load();
             />
             <q-space class="col-3" />
             <q-input
-                v-model="model.str"
+                v-model="model.strasse"
                 rounded
                 outlined
                 label="Strasse"
@@ -147,7 +168,7 @@ load();
                 class="col-3"
             />
             <q-input
-                v-model="model.nr"
+                v-model="model.strNr"
                 rounded
                 outlined
                 label="Nr."
@@ -176,8 +197,9 @@ load();
                 type="tel"
             />
         </div>
-        <div>
-            <q-btn v-if="view == 'User'" label="Passwort zurücksetzen" color="red" @click="resestpw" class="rebtn" />
+        <div v-if="view == 'User'">
+            <q-btn label="Passwort zurücksetzen" color="red" @click="resestpw" class="rebtn" />
+            <q-btn label="Änderungen Speichern" color="blue" @click="savechange" class="rebtn" />
         </div>
     </div>
 </template>
@@ -191,5 +213,6 @@ load();
     max-height: 56px;
     min-height: 56px;
     margin-top: 20px;
+    margin-right: 20px;
 }
 </style>

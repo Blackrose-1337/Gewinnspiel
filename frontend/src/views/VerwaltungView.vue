@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import type { Ref } from "vue";
+import { ref, toRefs, watch } from "vue";
 import Formular from "@/components/Formular.vue";
 import Sidebar from "@/components/Sidebar.vue";
 import Project from "@/components/Project.vue";
-import type { Ref } from "vue";
-import { ref, toRefs, watch } from "vue";
 import type { User } from "@/stores/interfaces";
 
 const selectedUser = ref(null as unknown) as Ref<User>;
@@ -20,10 +20,10 @@ function onUserChanged(u: User) {
 <template>
     <main>
         <Sidebar @change:selection="onUserChanged" :view="view" />
-        <div v-if="selectedUser.role == 'unkown' || selectedUser.role == 'jury'" class="row q-gutter-md q-pa-md">
+        <div v-if="selectedUser.role == 'unkown' || selectedUser.role == 'jury'" class="q-gutter-md q-pa-md">
             <Formular :user="selectedUser" :view="view" />
         </div>
-        <div v-if="selectedUser.role == 'teilnehmende'" class="row">
+        <div v-else class="row">
             <div class="col 6">
                 <Project :user="selectedUser" />
             </div>

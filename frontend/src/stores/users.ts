@@ -46,6 +46,11 @@ export const useUserStore = defineStore({
         {
             api.post<User>("src/index.php/user/list", u);   
         },
+        async saveUserChange(u: User)
+        {
+            api.post<User>("src/index.php/admin/save", u);
+        },
+
         async resetPW(userId:number) {
             try {
                 const param =

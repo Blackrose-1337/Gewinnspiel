@@ -75,9 +75,6 @@ function isValidEmail(val: string) {
         /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,7}$/;
     return emailPattern.test(val) || "Invalid email";
 }
-function test2() {
-    userstore.getUsers();
-}
 
 function checkFileSize(files: any) {
     return files.filter((file: any) => file.size < 2048);
@@ -88,8 +85,6 @@ function checkFileType(files: any) {
 }
 
 function onRejected(rejectedEntries: any) {
-    // Notify plugin needs to be installed
-    // https://quasar.dev/quasar-plugins/notify#Installation
     $q.notify({
         type: "negative",
         message: `${rejectedEntries.length} file(s) did not pass validation constraints`,
@@ -140,7 +135,6 @@ load();
             />
             <q-space />
             <q-btn label="Senden" color="green" @click="sendcompetition" class="col-3" />
-            <q-btn label="Get" color="red" @click="test2" class="col-3" />
         </div>
     </div>
     <div class="textarea">

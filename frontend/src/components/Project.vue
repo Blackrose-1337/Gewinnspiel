@@ -22,7 +22,8 @@ const bsp: string[] = [];
 var bild = new Image();
 
 function load() {
-    if (!user) {
+    if (user.value == null) {
+        projectStore.getProject(4);
     } else {
         projectStore.getProject(user.value.id);
     }

@@ -44,8 +44,23 @@ function changeSelection(p: User) {
     emit("change:selection", p);
 }
 
-function addUser() {
-    console.log("noch in arbeit");
+function addJury() {
+    const u: User = {
+        id: 0,
+        name: "",
+        surname: "",
+        role: "jury",
+        email: "",
+        land: "",
+        plz: null,
+        ortschaft: "",
+        str: "",
+        strNr: null,
+        vorwahl: "",
+        tel: null,
+    };
+    personen.value.push(u);
+    emit("change:selection", u);
 }
 
 async function loadUsers() {
@@ -87,7 +102,7 @@ load();
                         }}</q-btn>
                     </div>
                 </div>
-                <q-btn class="fullwitdh btn" color="primary" @click="addUser">Jurymitglied hinzufügen</q-btn>
+                <q-btn class="fullwitdh btn" color="primary" @click="addJury">Jurymitglied hinzufügen</q-btn>
 
                 <h4 class="title">Teilnehmende</h4>
                 <div v-for="p in personen" :key="p.id" class="fullwidth">

@@ -12,7 +12,7 @@ export interface User {
     plz: number;
     ortschaft: string;
     strasse: string;
-    strNr: string;
+    strNr: number;
     tel: number;
     pwSaltId: number;
 }
