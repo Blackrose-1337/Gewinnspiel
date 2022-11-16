@@ -1,28 +1,32 @@
 <script setup lang="ts">
 import image from "@/components/icons/base64pic.json";
 import { propsToAttrMap } from "@vue/shared";
-import type { User } from "@/stores/interfaces";
+import type { User, Project } from "@/stores/interfaces";
 import { useProjectStore } from "@/stores/projects";
 import { storeToRefs } from "pinia";
 import { toRefs, ref, watch } from "vue";
 
 const props = defineProps<{
     user?: User;
+    selectedproject?: Project;
+    view?: string;
 }>();
 
 //---------------Storeload------------------------------
 const projectStore = useProjectStore();
 
 //---------------storeToRefs------------------------------
-const { project } = storeToRefs(projectStore);
+const { project } = storeToRefs(projectStore) as Project;
 const { user } = toRefs(props) as User;
+const { selectedproject } = toRefs(props) as Project;
+const { view } = toRefs(props);
 
 const bsp: string[] = [];
 var bild = new Image();
 
 function load() {
     if (user.value == null) {
-        projectStore.getProject(4);
+        project;
     } else {
         projectStore.getProject(user.value.id);
     }
@@ -33,9 +37,11 @@ function loadimage() {
         bsp.push(bild.src);
     });
 }
+function loadProject() {
+    projectStore.setProject(selectedproject.value);
+}
 
 function expand($event: any) {
-    console.log($event);
     if ($event.target.classList.contains("expandanimation")) {
         $event.target.classList.remove("expandanimation");
         $event.target.classList.add("reexpandanimation");
@@ -43,10 +49,13 @@ function expand($event: any) {
         $event.target.classList.remove("reexpandanimation");
         $event.target.classList.add("expandanimation");
     }
-    console.log("still in Production");
 }
 watch(user, changeuser => {
     load();
+});
+
+watch(selectedproject, changeselectedproject => {
+    loadProject();
 });
 
 load();

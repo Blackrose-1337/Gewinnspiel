@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useAuthStore } from "@/stores/auth";
 import { useUserStore } from "@/stores/users";
+import { useProjectStore } from "@/stores/projects";
 import { storeToRefs } from "pinia";
 import { toRefs, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -13,6 +14,7 @@ const { view } = toRefs(props);
 //---------------Storeload------------------------------
 const authStore = useAuthStore();
 const userStore = useUserStore();
+const projectStore = useProjectStore();
 
 //---------------Routload------------------------------
 const router = useRouter();
@@ -20,28 +22,21 @@ const route = useRoute();
 //---------------storeToRefs------------------------------
 const { isAuthenticated } = storeToRefs(authStore);
 const { users } = storeToRefs(userStore);
+const { projects } = storeToRefs(projectStore);
 
 const emit = defineEmits<{
     (event: "change:selection", value: User): void;
+    (event: "change:selectproject", value: Project): void;
 }>();
 //---------------Functions------------------------------
-const test = ["DE", "AU", "CH"];
 const personen = ref(users.value);
-const project: Project[] = [
-    {
-        id: 1,
-        userID: 1,
-        userBildID: [1, 2],
-    },
-    {
-        id: 2,
-        userID: 2,
-        userBildID: [3, 4],
-    },
-];
+const poppel = ref(projects.value);
 
 function changeSelection(p: User) {
     emit("change:selection", p);
+}
+function changeSelectProject(pro: Project) {
+    emit("change:selectproject", pro);
 }
 
 function addJury() {
@@ -66,10 +61,15 @@ function addJury() {
 async function loadUsers() {
     userStore.getUsers();
 }
+async function loadProject() {
+    projectStore.getProjects();
+}
 
 function load() {
     if (view?.value == "User") {
         loadUsers();
+    } else {
+        loadProject();
     }
 }
 load();
@@ -112,9 +112,11 @@ load();
                     <h4 class="title">Project</h4>
                 </q-card-section>
                 <!-- Ein For-loop um jedes Projekt im Array durchzugehen-->
-                <div v-for="pro in project" :key="pro.id">
+                <div v-for="pro in projects" :key="pro.id">
                     <div class="fullwidth">
-                        <q-btn class="fullwitdh" bordered color="secondary">{{ pro.id }}</q-btn>
+                        <q-btn class="fullwitdh" bordered color="secondary" @click="changeSelectProject(pro)">{{
+                            pro.id
+                        }}</q-btn>
                     </div>
                 </div>
             </q-card>

@@ -1,17 +1,24 @@
 <script setup lang="ts">
 import { useRouter, useRoute } from "vue-router";
+import type { Ref } from "vue";
+import { ref } from "vue";
 import Sidebar from "@/components/Sidebar.vue";
-import Formular from "@/components/Formular.vue"
+import Formular from "@/components/Formular.vue";
 import Evaluation from "@/components/Evaluation.vue";
+import type { Project } from "@/stores/interfaces";
 
 const router = useRouter();
 const route = useRoute();
-const view ="Project"
+const selectedProject = ref(null as unknown) as Ref<Project>;
+const view = "Project";
+async function projectChange(p: Project) {
+    selectedProject.value = p;
+}
 </script>
 <template>
     <main class="q-pa-md">
-        <Evaluation />
-        <Sidebar :view="view"/>
+        <Evaluation :project="selectedProject" />
+        <Sidebar @change:selectproject="projectChange" :view="view" />
     </main>
 </template>
 <style></style>

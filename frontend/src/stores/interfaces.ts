@@ -54,3 +54,7 @@ export interface Bewertung{
         bewertung: number;
     }]
 }
+export interface Kriterien{
+    id: number;
+    frage: string;
+} 

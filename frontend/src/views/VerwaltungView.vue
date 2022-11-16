@@ -12,7 +12,7 @@ selectedUser.value = {
 };
 const view = "User";
 
-function onUserChanged(u: User) {
+async function onUserChanged(u: User) {
     console.log("User: ", u);
     selectedUser.value = u;
 }
@@ -20,11 +20,8 @@ function onUserChanged(u: User) {
 <template>
     <main>
         <Sidebar @change:selection="onUserChanged" :view="view" />
-        <div v-if="selectedUser.role == 'unkown' || selectedUser.role == 'jury'" class="q-gutter-md q-pa-md">
-            <Formular :user="selectedUser" :view="view" />
-        </div>
-        <div v-else class="row">
-            <div class="col 6">
+        <div class="row">
+            <div v-if="selectedUser.role == 'teilnehmende'" class="col 6">
                 <Project :user="selectedUser" />
             </div>
             <div class="col 4 q-gutter-md q-pa-md">

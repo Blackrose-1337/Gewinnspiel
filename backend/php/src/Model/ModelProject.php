@@ -23,11 +23,22 @@ class ModelProject extends ModelBase
     }
     public function getFakeProject($userId)
     {
+        $datas = $this->getFakeAllProject();
+        foreach ($datas as $data) {
+            if ($data['userId'] == $userId) {
+                return $data;
+            }
+        }
+        return $datas;
+    }
+
+    public function getFakeAllProject()
+    {
         $datas = [
             ['id' => '0', 'userId' => '3', 'title' => 'Olaaa Chica', 'text' => 'Nicht viel zu sagen die Bilder sprechen für sich.'],
             ['id' => '1', 'userId' => '4', 'title' => 'What??', 'text' => 'COOKIES COOOKIES COOOOOOKIES!!!!'],
             [
-                'id' => '1',
+                'id' => '2',
                 'userId' => '5',
                 'title' => 'Moonshine',
                 'text' => 'Im en so geblendet ja behaglich ausdenken gewachsen ernsthaft. Angenommen brotkugeln an getunchten vertreiben ab. Zu er
@@ -36,12 +47,8 @@ class ModelProject extends ModelBase
             wahrhaftig hinstellte als die neidgefuhl. Leuchtete tag verwegene unbemerkt hob tal geburstet.'
             ]
         ];
-        foreach ($datas as $data) {
-            if ($data['userId'] == $userId) {
-                return $data;
-            }
-        }
         return $datas;
+
     }
 
     /**
