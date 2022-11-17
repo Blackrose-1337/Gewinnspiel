@@ -14,13 +14,13 @@ services:
     volumes:
       - ./backend/php:/var/www/html
 
-  # vueweb:
-  #   build: ./frontend
-  #   ports:
-  #     - 3000:3000
-  #   volumes:
-  #     - ./frontend:/src
-  #     - ./frontend:/node_modules
+  vueweb:
+    build: ./frontend
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/src
+      - ./frontend:/node_modules
 
   mysql:
     image: mysql:8

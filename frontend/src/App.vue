@@ -23,7 +23,7 @@ console.log("App setup");
         <q-header elevated class="text-white" height-hint="98">
             <q-toolbar>
                 <q-toolbar-title>
-                    <q-avatar> <img src=src/assets/Blackrose.png alt="Blackrose"/> </q-avatar>
+                    <!-- <q-avatar> <img src=src/assets/Blackrose.png alt="Blackrose"/> </q-avatar> -->
                     Stickstoff
                     <q-btn class="text-right" round @click="swap" push outline icon="light_mode" />
                 </q-toolbar-title>
