@@ -15,6 +15,15 @@ class ModelSalt extends ModelBase
     {
         return rand(1000000000, 9999999999);
     }
+
+    public function createSalt()
+    {
+        $salt = $this->randomSalt();
+        $this->db->query("INSERT INTO Salt (salt) Values (:salt)");
+        $this->db->bind(":salt", $salt);
+        return $this->db->execute();
+    }
+
     /**
      * Get the value of salt
      */

@@ -31,6 +31,16 @@ class ModelProject extends ModelBase
         }
         return $datas;
     }
+    public function getProject($userId)
+    {
+        $datas = $this->getAllProject();
+        foreach ($datas as $data) {
+            if ($data['userId'] == $userId) {
+                return $data;
+            }
+        }
+        return $datas;
+    }
 
     public function getFakeAllProject()
     {
@@ -49,6 +59,12 @@ class ModelProject extends ModelBase
         ];
         return $datas;
 
+    }
+    public function getAllProject()
+    {
+        $this->db->query("SELECT * FROM Project");
+        $data = $this->db->resultSet();
+        return $data;
     }
 
     /**

@@ -1,5 +1,6 @@
 <?php
 require_once PROJECT_ROOT_PATH . "Model/ModelBase.php";
+require_once PROJECT_ROOT_PATH . "Model/ModelSalt.php";
 /**
  *
  */
@@ -46,6 +47,32 @@ class ModelTeilnehmende extends ModelBase
     {
         echo json_encode($data);
     }
+    public function CreateUser($data)
+    {
+        $salt = new ModelSalt;
+        $salt->createSalt();
+        $saltId = $this->db->query("SELECT id FROM Salt ORDER BY ID DESC LIMIT 1");
+        //$this->db->resultSet();
+
+        $this->db->query("INSERT INTO User
+        (`name`, `surname`, `role`, `email`, `land`, `plz`, `ortschaft`, `strasse`, `strNr`, `tel`, `pwId`, `saltId`)
+        VALUES (:name, :surname, :role, :email, :land, :plz, :ortschaft, :strasse, :strNr, :tel, :pwId, :saltId)");
+        $this->db->bind(":name", $data["name"]);
+        $this->db->bind(":surname", $data["surname"]);
+        $this->db->bind(":role", $data["role"]);
+        $this->db->bind(":email", $data["email"]);
+        $this->db->bind(":land", $data["land"]);
+        $this->db->bind(":plz", $data["plz"]);
+        $this->db->bind(":ortschaft", $data["ortschaft"]);
+        $this->db->bind(":strasse", $data["str"]);
+        $this->db->bind(":strNr", $data["strNr"]);
+        $this->db->bind(":tel", $data["tel"]);
+        $this->db->bind(":pwId", 2);
+        //$this->db->bind(":saltId", 2);
+        // $this->db->bind(":pwId", $data["pwId"]);
+        $this->db->bind(":saltId", $saltId);
+        return $this->db->execute();
+    }
 
     public function fakeChangeUser($data)
     {
@@ -80,6 +107,15 @@ class ModelTeilnehmende extends ModelBase
         return $data;
     }
 
+    public function getDataUser()
+    {
+        // Get-Data from Mysql
+        $this->db->query("SELECT * FROM User WHERE role !='admin'");
+        $data = $this->db->resultSet();
+        return $data;
+    }
+
+
     /**
      * TestMethode die einfach nur Fake-Daten liefert, solange man noch keine DB hat
      * private int $textId;
@@ -94,9 +130,22 @@ class ModelTeilnehmende extends ModelBase
 
         return $data;
     }
+    // FAKE Get single User
     public function getFakeUser($userId)
     {
         $datas = $this->getFakeDataUser();
+        foreach ($datas as $data) {
+            if ($data['id'] == $userId) {
+                return $data;
+            }
+        }
+        return $datas;
+    }
+
+    // Get single User
+    public function getUser($userId)
+    {
+        $datas = $this->getDataUser();
         foreach ($datas as $data) {
             if ($data['id'] == $userId) {
                 return $data;
@@ -286,23 +335,4 @@ class ModelTeilnehmende extends ModelBase
         return $this;
     }
 
-    /**
-     * Get the value of pwSaltId
-     */
-    public function getPwSaltId()
-    {
-        return $this->pwSaltId;
-    }
-
-    /**
-     * Set the value of pwSaltId
-     *
-     * @return  self
-     */
-    public function setPwSaltId($pwSaltId)
-    {
-        $this->pwSaltId = $pwSaltId;
-
-        return $this;
-    }
 }

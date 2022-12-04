@@ -13,8 +13,8 @@ class UserController extends BaseController
             try {
                 // Aufruf benötigter Klassen 
                 $usermodel = new ModelTeilnehmende();
-                // Userdaten nehmen Mocking
-                $arr = $usermodel->getFakeDataUser();
+                // Userdaten holen
+                $arr = $usermodel->getDataUser();
                 // Daten in json unformen
                 $responseData = json_encode($arr);
             } catch (Error $e) {
@@ -59,7 +59,7 @@ class UserController extends BaseController
                 // Aufruf benötigter Klassen 
                 $usermodel = new ModelTeilnehmende();
                 // Userdaten nehmen Mocking
-                $user = $usermodel->getFakeUser($arrQueryStringParams['userId']);
+                $user = $usermodel->getUser($arrQueryStringParams['userId']);
                 // Daten in json unformen
                 $responseData = json_encode($user);
             } catch (Error $e) {

@@ -7,7 +7,7 @@ const route = useRoute();
 </script>
 <template>
     <q-page>
-        <Competition/>
+        <Competition />
     </q-page>
 </template>
 <style></style>

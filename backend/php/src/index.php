@@ -5,6 +5,7 @@ header("Access-Control-Allow-Methodes: GET, POST, OPTIONS");
 header('Content-Type: application/json');
 header('Accept: application/json');
 require __DIR__ . "/inc/bootstrap.php";
+require __DIR__ . "/inc/config.php";
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = explode('/', $uri);
@@ -49,5 +50,5 @@ switch ($uri[3]) {
 
 
 $strMethodName = $uri[4] . 'Action';
-$objFeedController->{ $strMethodName}();
+$objFeedController->{$strMethodName}();
 ?>

@@ -5,7 +5,7 @@ class ModelBewertung extends ModelBase
     //Attribute
     private int $administrativeId;
     private int $userId;
-    private int $bewertungsId;
+ 
 
     public function getFakeKritierien()
     {

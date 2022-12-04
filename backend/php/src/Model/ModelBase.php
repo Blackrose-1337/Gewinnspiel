@@ -3,6 +3,12 @@
 class ModelBase
 {
     private int $id = 42;
+    protected $db;
+
+    public function __construct()
+    {
+        $this->db = new Database;
+    }
 
     /**
      * Get the value of id
@@ -41,6 +47,7 @@ class ModelBase
 
         return $randomString;
     }
+
 
 
     protected function sonderzeichen($string)

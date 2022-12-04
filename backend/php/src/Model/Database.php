@@ -1,54 +1,98 @@
 <?php
 class Database
 {
-    protected $connection = null;
- 
+
+    private $host = DB_HOST;
+    private $user = DB_USERNAME;
+    private $pass = DB_PASSWORD;
+    private $dbname = DB_DATABASE_NAME;
+
+
+    private $dbh;
+    private $stmt;
+    private $error;
+
     public function __construct()
     {
+        // Set DSN - Verbindungsstring auf den Server
+        $dsn = 'mysql:host=' . $this->host . ';dbname=' . $this->dbname . ";charset=utf8;";
+        $options = array(
+                //PDO::ATTR_PERSISTENT => true, // Persistent Connection
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // ErrorHandling
+            PDO::FETCH_OBJ // Wir wollen die Resultate als Objekte, und nicht als Arrays
+
+        );
+
+        // Instanz erstellen
         try {
-            $this->connection = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_DATABASE_NAME);
-         
-            if ( mysqli_connect_errno()) {
-                throw new Exception("Could not connect to database.");   
-            }
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage());   
-        }           
+            $this->dbh = new PDO($dsn, $this->user, $this->pass, $options);
+        } catch (PDOException $ex) {
+            $this->error = $ex->getMessage();
+            echo "Hier kommen wir vorbei" . $this->error;
+            exit();
+        }
     }
- 
-    public function select($query = "" , $params = [])
+
+    // Debug Funktion
+    public function debugDumpParams()
     {
-        try 
-        {
-            $stmt = $this->executeStatement( $query , $params );
-            $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);               
-            $stmt->close();
-            return $result;
-        } catch(Exception $e) {
-            throw New Exception( $e->getMessage() );
-        } 
-       
-        return false;
+        $this->stmt->debugDumpParams();
     }
- 
-    private function executeStatement($query = "" , $params = [])
+
+    // Statement vorbereiten mit Query
+    public function query($sql)
     {
-        try {
-            $stmt = $this->connection->prepare( $query );
- 
-            if($stmt === false) {
-                throw New Exception("Unable to do prepared statement: " . $query);
-            }
- 
-            if( $params ) {
-                $stmt->bind_param($params[0], $params[1]);
-            }
- 
-            $stmt->execute();
- 
-            return $stmt;
-        } catch(Exception $e) {
-            throw New Exception( $e->getMessage() );
-        }   
+        $this->stmt = $this->dbh->prepare($sql);
     }
+
+
+    // Bind Values
+    public function bind($param, $value, $type = null)
+    {
+        // Falls der Type nicht mitgegeben wird - überprüfen
+        if (is_null($type)) {
+            switch (true) {
+                case is_int($value):
+                    $type = PDO::PARAM_INT;
+                    break;
+                case is_bool($value):
+                    $type = PDO::PARAM_BOOL;
+                    break;
+                case is_null($value):
+                    $type = PDO::PARAM_NULL;
+                    break;
+                default:
+                    $type = PDO::PARAM_STR;
+            }
+        }
+
+        $this->stmt->bindValue($param, $value, $type);
+    }
+
+    // Ausführen der Prep-Statements
+    public function execute()
+    {
+        return $this->stmt->execute();
+    }
+
+    // Das Ergebnis als Array aus Objekten
+    public function resultSet()
+    {
+        $this->execute();
+        return $this->stmt->fetchALL(PDO::FETCH_ASSOC);
+    }
+
+    // Das Ergebnis als Einzelnes Objekt
+    public function single()
+    {
+        $this->execute();
+        return $this->stmt->fetch();
+    }
+
+    // Anzahl der Resultate // RowCount
+    public function rowCount()
+    {
+        return $this->stmt->rowCount();
+    }
+
 }

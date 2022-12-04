@@ -1,6 +1,11 @@
 <?php
-define("DB_HOST", "localhost");
-define("DB_USERNAME", "demo");
-define('DB_PASSWORD', 'demo');
-define('DB_DATABASE_NAME', 'rest_api_demo');
+define("DB_HOST", "mysql"); // <--- Root? 
+define("DB_USERNAME", "wettbewerbuser");
+define("DB_PASSWORD", "userpass");
+define("DB_DATABASE_NAME", "stickstoff");
+
+define("APPROOT", dirname(dirname(__FILE__)));
+
+define("URLROOT", "http://localhost:8000");
+
 ?>
