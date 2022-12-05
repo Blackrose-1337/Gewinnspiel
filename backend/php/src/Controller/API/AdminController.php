@@ -15,10 +15,14 @@ class AdminController extends BaseController
                 $usermodel = new ModelTeilnehmende();
                 $pwmodel = new ModelPw();
                 $saltmodel = new ModelSalt();
+
                 // benötigte id's zu salt und PW abrufen 
-                $ids = $usermodel->getFakeUser($arrQueryStringParams['userId']);
+                $ids = $usermodel->getUser($arrQueryStringParams['userId']);
+
                 // neuen salt generieren 
-                $salt = $saltmodel->resetSaltbyID($ids['saltId']);
+                $saltmodel->resetSaltbyID($ids['saltId']);
+                $salt = $saltmodel->getSaltbyID($ids['saltId']);
+
                 // passwort erstellen hash genieren mit salt und passwort zurückgeben
                 $pw = $pwmodel->resetHashbyId($salt, $ids['pwId']);
 
@@ -63,7 +67,8 @@ class AdminController extends BaseController
 
                     // Andernfalls wird mit der Id der User gesucht und die Daten überschrieben
                 } else {
-                    $usermodel->fakeChangeUser($data);
+                    $usermodel->ChangeUser($data);
+                    $responseData = true;
                 }
 
             } catch (Error $e) {

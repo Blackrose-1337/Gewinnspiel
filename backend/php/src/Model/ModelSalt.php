@@ -7,16 +7,18 @@ class ModelSalt extends ModelBase
 
     public function resetSaltbyID(int $id)
     {
-        //salt search with id would be here
         $salt = $this->randomSalt();
-        return $salt;
+        $this->db->query("UPDATE Salt SET salt = :salt WHERE id = :id");
+        $this->db->bind(":salt", $salt);
+        $this->db->bind(":id", $id);
+        return $this->db->execute();
     }
     protected function randomSalt()
     {
         return rand(1000000000, 9999999999);
     }
 
-    public function createSalt()
+    public function createSaltDB()
     {
         $salt = $this->randomSalt();
         $this->db->query("INSERT INTO Salt (salt) Values (:salt)");
@@ -27,9 +29,11 @@ class ModelSalt extends ModelBase
     /**
      * Get the value of salt
      */
-    public function getSalt()
+    public function getSaltbyID($id)
     {
-        return $this->salt;
+        $this->db->query("SELECT salt FROM Salt WHERE id= $id");
+        $salt = $this->db->resultSet();
+        return $salt[0]['salt'];
     }
 
     /**

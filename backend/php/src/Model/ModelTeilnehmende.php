@@ -1,6 +1,7 @@
 <?php
 require_once PROJECT_ROOT_PATH . "Model/ModelBase.php";
 require_once PROJECT_ROOT_PATH . "Model/ModelSalt.php";
+require_once PROJECT_ROOT_PATH . "Model/ModelPw.php";
 /**
  *
  */
@@ -49,11 +50,32 @@ class ModelTeilnehmende extends ModelBase
     }
     public function CreateUser($data)
     {
+        // initalisieren von Objekten
         $salt = new ModelSalt;
-        $salt->createSalt();
-        $saltId = $this->db->query("SELECT id FROM Salt ORDER BY ID DESC LIMIT 1");
-        //$this->db->resultSet();
+        $modelpw = new ModelPw;
 
+        // salt erstellen und direkt auf der Datenbank speichern
+        $salt->createSaltDB();
+
+        // den frisch generierten Salteintrag holen
+        $this->db->query("SELECT * FROM Salt ORDER BY ID DESC LIMIT 1");
+
+        // Salteintrag auf Variable festhalten
+        $salt = $this->db->resultSet();
+
+        // random genierten String auf Variable setzen
+        $pw = $this->getString();
+
+        // mit generiertem String und Salt ein Hash generieren, welcher direkt auf der Datenbank gespeichert wird.
+        $modelpw->generateHashDB($pw, $salt[0]["salt"]);
+
+        // frisch generierten Pweintrag (Hash) nur die Id holen
+        $this->db->query("SELECT id FROM Pw ORDER BY ID DESC LIMIT 1");
+
+        // Id eintrag auf Variable festhalten
+        $modelpw = $this->db->resultSet();
+
+        // Eintragsvorbereitung User in die Datenbank
         $this->db->query("INSERT INTO User
         (`name`, `surname`, `role`, `email`, `land`, `plz`, `ortschaft`, `strasse`, `strNr`, `tel`, `pwId`, `saltId`)
         VALUES (:name, :surname, :role, :email, :land, :plz, :ortschaft, :strasse, :strNr, :tel, :pwId, :saltId)");
@@ -67,10 +89,10 @@ class ModelTeilnehmende extends ModelBase
         $this->db->bind(":strasse", $data["str"]);
         $this->db->bind(":strNr", $data["strNr"]);
         $this->db->bind(":tel", $data["tel"]);
-        $this->db->bind(":pwId", 2);
-        //$this->db->bind(":saltId", 2);
-        // $this->db->bind(":pwId", $data["pwId"]);
-        $this->db->bind(":saltId", $saltId);
+        $this->db->bind(":pwId", $modelpw[0]["id"]);
+        $this->db->bind(":saltId", $salt[0]["id"]);
+
+        // Ausführung
         return $this->db->execute();
     }
 
@@ -88,6 +110,28 @@ class ModelTeilnehmende extends ModelBase
         echo $this->strNr = $data['strNr'];
         echo $this->tel = $data['tel'];
 
+    }
+
+    public function ChangeUser($data)
+    {
+        // Eintragsvorbereitung der Datenanpassung über Id
+        $this->db->query("UPDATE User SET
+        name = :name, surname = :surname, role = :role, email = :email, land = :land, plz = :plz, ortschaft = :ortschaft, strasse = :strasse, strNr = :strNr, tel = :tel
+        WHERE id = :id");
+        $this->db->bind(":name", $data["name"]);
+        $this->db->bind(":surname", $data["surname"]);
+        $this->db->bind(":role", $data["role"]);
+        $this->db->bind(":email", $data["email"]);
+        $this->db->bind(":land", $data["land"]);
+        $this->db->bind(":plz", $data["plz"]);
+        $this->db->bind(":ortschaft", $data["ortschaft"]);
+        $this->db->bind(":strasse", $data["strasse"]);
+        $this->db->bind(":strNr", $data["strNr"]);
+        $this->db->bind(":tel", $data["tel"]);
+        $this->db->bind(":id", $data["id"]);
+
+        // Ausführung
+        return $this->db->execute();
     }
 
     /**
