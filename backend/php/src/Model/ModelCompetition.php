@@ -78,6 +78,13 @@ class ModelCompetition extends ModelBase
         return $data;
     }
 
+    public function getCompetition()
+    {
+        $this->db->query("SELECT * FROM Competition");
+        $data = $this->db->resultSet();
+        return $data[0];
+    }
+
 }
 
 ?>

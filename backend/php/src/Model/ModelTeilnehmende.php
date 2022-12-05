@@ -48,6 +48,8 @@ class ModelTeilnehmende extends ModelBase
     {
         echo json_encode($data);
     }
+
+    //Create User
     public function CreateUser($data)
     {
         // initalisieren von Objekten
@@ -112,6 +114,7 @@ class ModelTeilnehmende extends ModelBase
 
     }
 
+    // change User values
     public function ChangeUser($data)
     {
         // Eintragsvorbereitung der Datenanpassung über Id
@@ -151,6 +154,7 @@ class ModelTeilnehmende extends ModelBase
         return $data;
     }
 
+    // get all User expect admin
     public function getDataUser()
     {
         // Get-Data from Mysql

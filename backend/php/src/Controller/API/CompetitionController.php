@@ -12,7 +12,7 @@ class CompetitionController extends BaseController
             try {
                 // Aufruf benötigter Klassen 
                 $usermodel = new ModelCompetition();
-                $arr = $usermodel->getfakecompetition();
+                $arr = $usermodel->getCompetition();
                 $responseData = json_encode($arr);
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
