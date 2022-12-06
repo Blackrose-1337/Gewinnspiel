@@ -43,7 +43,7 @@ class ProjectController extends BaseController
                 // Aufruf benötigter Klassen 
                 $projectmodel = new ModelProject();
                 // Projekt laden Mocking und in ein Json-Format umwandeln
-                $responseData = json_encode($projectmodel->getFakeAllProject());
+                $responseData = json_encode($projectmodel->getAllProject());
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
                 $strErrorHeader = 'HTTP/1.1 500 Internal Server Error';

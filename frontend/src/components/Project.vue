@@ -62,7 +62,16 @@ load();
 loadimage();
 </script>
 <template>
-    <div>
+    <div v-if="view === 'Project'">
+        <div class="texts q-pa-lg">
+            <q-input v-model="project.title" />
+            <q-input v-model="project.text" />
+        </div>
+        <div class="row q-gutter-lg pic">
+            <img v-for="pic in bsp" class="minipic q-pa-md" :src="pic" :ratio="1" @click="expand($event)" />
+        </div>
+    </div>
+    <div v-else>
         <div class="texts q-pa-lg">
             <h3>{{ project.title }}</h3>
             <p>{{ project.text }}</p>
