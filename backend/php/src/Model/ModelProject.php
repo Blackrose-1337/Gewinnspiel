@@ -21,6 +21,18 @@ class ModelProject extends ModelBase
         //echo $test;
         return json_decode($test);
     }
+    public function createProject($data)
+    {
+        $this->db->query("INSERT INTO Project
+        (`userid`, `title`, `text`)
+        VALUES (:userid, :title, :text)");
+        $this->db->bind(":userid", $data['userid']);
+        $this->db->bind(":title", $data['title']);
+        $this->db->bind(":text", $data['text']);
+        $this->db->execute();
+
+        return;
+    }
     public function getFakeProject($userId)
     {
         $datas = $this->getFakeAllProject();

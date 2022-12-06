@@ -43,13 +43,9 @@ console.log("App setup");
                                 on-click="{{}}"
                             />
                             <q-route-tab @click="switcher('setup')" to="/project" label="Projekte" icon="settings" />
+
                             <!-- läuft noch nicht -->
-                            <!-- <q-route-tab
-                                @click="switcher('setup')"
-                                to="/designe"
-                                label="Desgine"
-                                icon="settings"
-                            /> -->
+                            <q-route-tab @click="switcher('setup')" to="/designe" label="Desgine" icon="settings" />
                         </q-list>
                     </q-menu>
                 </q-btn>

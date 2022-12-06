@@ -25,8 +25,11 @@ export const useCompetitionStore = defineStore({
     actions: {
         async getCompetitiondeclarations() {
             try {
-                this.competitionDetails = await api.get<CompetitionDetails>("src/index.php/competition/competition");
+                let competitionDetails = await api.get<CompetitionDetails>("src/index.php/competition/competitionDetails");
                 console.log(this.competitionDetails);
+                competitionDetails.wettbewerbbeginn = competitionDetails.wettbewerbbeginn.replaceAll("-", "/");
+                competitionDetails.wettbewerbende = competitionDetails.wettbewerbende.replaceAll("-", "/");
+                this.competitionDetails = competitionDetails;
             } catch (err) {
                 console.error(err);
                 if (err instanceof HTTPError) {
@@ -34,8 +37,12 @@ export const useCompetitionStore = defineStore({
                 }
             }
         },
+        async postCompetitiondeclatations() {
+            const bool = api.post<boolean>("src/index.php/competition/competitionDetails", this.competitionDetails);
+            return bool;
+        },
         async postCompetition(c: Competition) {
-            c.user.role = "Teilnehmende";
+            c.user.role = "teilnehmende";
             console.log(c);
             api.post<Competition>("src/index.php/competition/competition", c);   
         

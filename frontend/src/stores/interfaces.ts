@@ -41,9 +41,9 @@ export interface CompetitionDetails {
     title: string;
     text: string;
     teilnehmerbedingung: string;
-    Wettbewerbbeginn: Date;
-    Wettbewerbende: Date;
-    WettbewerbCloseText: string;
+    wettbewerbbeginn: string;
+    wettbewerbende: string;
+    wettbewerbCloseText: string;
 }
 
 export interface Bewertung{

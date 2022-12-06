@@ -50,7 +50,7 @@ class ModelTeilnehmende extends ModelBase
     }
 
     //Create User
-    public function CreateUser($data)
+    public function createUser($data)
     {
         // initalisieren von Objekten
         $salt = new ModelSalt;
@@ -95,7 +95,15 @@ class ModelTeilnehmende extends ModelBase
         $this->db->bind(":saltId", $salt[0]["id"]);
 
         // Ausführung
-        return $this->db->execute();
+        $this->db->execute();
+
+        // get Id from DB
+        $this->db->query("SELECT id FROM User ORDER BY ID DESC LIMIT 1");
+        $id = $this->db->resultSet();
+
+        // set Id on Model
+        $this->id = $id[0]['id'];
+        return;
     }
 
     public function fakeChangeUser($data)
@@ -115,7 +123,7 @@ class ModelTeilnehmende extends ModelBase
     }
 
     // change User values
-    public function ChangeUser($data)
+    public function changeUser($data)
     {
         // Eintragsvorbereitung der Datenanpassung über Id
         $this->db->query("UPDATE User SET

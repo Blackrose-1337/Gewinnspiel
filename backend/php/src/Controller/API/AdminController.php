@@ -63,11 +63,11 @@ class AdminController extends BaseController
                 $data = json_decode(file_get_contents('php://input'), true);
                 // Falls id 0 hinterlegt ist wird ein neuer User erstellt
                 if ($data['id'] == 0) {
-                    $usermodel->CreateUser($data);
+                    $usermodel->createUser($data);
 
                     // Andernfalls wird mit der Id der User gesucht und die Daten überschrieben
                 } else {
-                    $usermodel->ChangeUser($data);
+                    $usermodel->changeUser($data);
                     $responseData = true;
                 }
 

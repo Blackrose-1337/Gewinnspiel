@@ -1,82 +1,75 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { storeToRefs } from "pinia";
-import { useQuasar } from "quasar";
 import Formular from "@/components/Formular.vue";
-import type { Wettbewerb } from "@/stores/interfaces"
+import type { Wettbewerb, Competiion } from "@/stores/interfaces";
+import { useQuasar } from "quasar";
+import { useCompetitionStore } from "@/stores/competition";
 
+const $q = useQuasar();
 
+const competitionstore = useCompetitionStore();
 
-const wettbewerb :Wettbewerb= ref({
-    id: 0,
-    title: "",
-    Wettbewerbtext: "",
-    Wettbewerbbeginn: "",
-    Wettbewerbende: "",
-    WettbewerbCloseText: "",
-})
+const { competition, competitionDetails } = storeToRefs(competitionstore);
 
+async function save() {
+    const bool: boolean = await competitionstore.postCompetitiondeclatations();
+    console.log(bool);
+    if (bool == true) {
+        $q.notify({
+            type: "positive",
+            message: "Änderung wurden gespeichert!",
+            color: "green",
+        });
+    } else {
+        $q.notify({
+            type: "negative",
+            message: "Der Speichervorgang ist gescheitert",
+            color: "red",
+        });
+    }
+}
 
+async function load() {
+    await competitionstore.getCompetitiondeclarations();
+}
+load();
 </script>
 
 <template>
-    <h3>
-        <q-input v-model="wettbewerb.title" label="Titel vom Projekt" />
-    </h3>
-    <div class="q-pa-md">
-        <p>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Labore ullam optio praesentium in veniam eligendi
-            voluptas libero, obcaecati sint doloribus!Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Dolore ipsum saepe possimus earum illo nihil nisi quia eum eius nobis labore officia, quo nemo repellendus.
-            Voluptas nesciunt delectus beatae eum? Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem,
-            nam incidunt ab deleniti nulla, officiis obcaecati, qui iusto vitae perspiciatis magnam a cum. Esse,
-            possimus vel illo ullam ratione sed. Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium
-            similique exercitationem eum incidunt atque rerum iusto voluptas placeat, sint expedita molestias quae ipsa
-            nam sapiente accusamus praesentium recusandae perspiciatis. Quod!
-        </p>
-    </div>
+    <div>
+        <q-input class="q-pa-md" v-model="competitionDetails.title" label="Titel vom Projekt" />
 
-    <div class="row q-pa-md">
-        <div class="col-4" style="max-width: 30%">
-            <q-input v-model="textbsp.text" label="Beschreibung zum Projekt" autogrow />
+        <div class="q-pa-md">
+            <q-input v-model="competitionDetails.text" label="Beschreibung Wettbewerb" />
         </div>
-        <div class="col-1"></div>
 
-        <div class=" muh row col-7 q-gutter-md">
-            <Formular />
+        <div class="row q-pa-md">
+            <div class="col-1"></div>
+        </div>
 
-            <q-uploader
-                class="col-11"
-                max-files="3"
-                url="http://localhost:4444/upload"
-                label="Filtered (png only)"
-                multiple
-                :filter="checkFileType"
-                @rejected="onRejected"
-            />
-            <q-checkbox
-                left-label
-                v-model="teilnahmebedingungenbestätigung"
-                label="Teilnahmebedingungen"
-                class="col-4"
-            />
+        <div bordered elevated class="bg-grey-8k q-pa-md">
+            <h5>Teilnahmebedingungen</h5>
+            <q-input v-model="competitionDetails.teilnehmerbedingung" label="" autogrow />
+        </div>
+        <div bordered elevated class="bg-grey-8k q-pa-md row">
+            <div class="q-pa-md col-3">
+                <h5>Wettbewerbbeginn</h5>
+                <q-date v-model="competitionDetails.wettbewerbbeginn" />
+            </div>
+            <div class="q-pa-md col-3">
+                <h5>Wettbewerbende</h5>
+                <q-date v-model="competitionDetails.wettbewerbende" />
+            </div>
+            <div bordered elevated class="bg-grey-8k q-pa-md col-5">
+                <h5>Text wenn Wettbewerb geschlossen ist</h5>
+                <q-input v-model="competitionDetails.wettbewerbCloseText" label="" autogrow />
+            </div>
+        </div>
+
+        <div class="muh row col-7 q-gutter-md">
             <q-space />
-            <q-btn label="Senden" color="green" class="col-3" />
+            <q-btn label="Speichern" color="green" @click="save" class="col-3" />
         </div>
-    </div>
-
-    <div bordered elevated class="bg-grey-8k">
-        <h5>Teilnahmebedingungen</h5>
-    
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque necessitatibus quaerat impedit minima
-            praesentium! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates dolore illum rerum. Ipsum
-            ab earum perferendis voluptatibus natus? Labore, pariatur inventore. Aliquam nulla autem eligendi ad
-            perspiciatis molestias inventore error. Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi rerum
-            iusto, nisi eaque ab repudiandae modi accusamus quia, facilis neque laborum eum at nemo? Earum eaque fugit
-            cumque reprehenderit inventore. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sapiente quis
-            porro et delectus ex debitis blanditiis! Facere expedita quae autem totam ab! Consequuntur facilis quo
-            excepturi amet, voluptates dignissimos autem.
-        </p>
     </div>
 </template>

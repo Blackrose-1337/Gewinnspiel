@@ -85,6 +85,21 @@ class ModelCompetition extends ModelBase
         return $data[0];
     }
 
+    public function updateData($data)
+    {
+        $this->db->query("UPDATE Competition SET
+        title = :title, text = :text, teilnehmerbedingung = :teilnehmerbedingung, wettbewerbbeginn = :wettbewerbbeginn, wettbewerbende = :wettbewerbende, wettbewerbCloseText = :wettbewerbCloseText
+        WHERE id = :id");
+        $this->db->bind(":title", $data["title"]);
+        $this->db->bind(":text", $data["text"]);
+        $this->db->bind(":teilnehmerbedingung", $data["teilnehmerbedingung"]);
+        $this->db->bind(":wettbewerbbeginn", $data["wettbewerbbeginn"]);
+        $this->db->bind(":wettbewerbende", $data["wettbewerbende"]);
+        $this->db->bind(":wettbewerbCloseText", $data["wettbewerbCloseText"]);
+        $this->db->bind(":id", $data["id"]);
+        return $this->db->execute();
+    }
+
 }
 
 ?>
