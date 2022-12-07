@@ -36,7 +36,7 @@ class ModelProject extends ModelBase
 
     public function updateProject($data)
     {
-
+        //Vorbereitung Mysql Eintrag mit überprüfung von id des Projects und entsprechender userId
         $this->db->query("UPDATE Project SET
         title = :title, text = :text
         WHERE id= :id AND userId = :userId");
@@ -45,7 +45,7 @@ class ModelProject extends ModelBase
         $this->db->bind(":id", $data["id"]);
         $this->db->bind(":userId", $data["userId"]);
 
-
+        // Ausführung des eintrags
         return $this->db->execute();
 
     }
