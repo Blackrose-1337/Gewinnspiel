@@ -33,6 +33,23 @@ class ModelProject extends ModelBase
 
         return;
     }
+
+    public function updateProject($data)
+    {
+
+        $this->db->query("UPDATE Project SET
+        title = :title, text = :text
+        WHERE id= :id AND userId = :userId");
+        $this->db->bind(":title", $data["title"]);
+        $this->db->bind(":text", $data["text"]);
+        $this->db->bind(":id", $data["id"]);
+        $this->db->bind(":userId", $data["userId"]);
+
+
+        return $this->db->execute();
+
+    }
+
     public function getFakeProject($userId)
     {
         $datas = $this->getFakeAllProject();

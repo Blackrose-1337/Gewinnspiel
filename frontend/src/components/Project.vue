@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import image from "@/components/icons/base64pic.json";
 import { propsToAttrMap } from "@vue/shared";
+import { useQuasar } from "quasar";
 import type { User, Project } from "@/stores/interfaces";
 import { useProjectStore } from "@/stores/projects";
 import { storeToRefs } from "pinia";
@@ -12,6 +13,7 @@ const props = defineProps<{
     view?: string;
 }>();
 
+const $q = useQuasar();
 //---------------Storeload------------------------------
 const projectStore = useProjectStore();
 
@@ -23,6 +25,24 @@ const { view } = toRefs(props);
 
 const bsp: string[] = [];
 var bild = new Image();
+
+async function save() {
+    const bool: boolean = await projectStore.postProject();
+    console.log(bool);
+    if (bool == true) {
+        $q.notify({
+            type: "positive",
+            message: "Änderung wurden gespeichert!",
+            color: "green",
+        });
+    } else {
+        $q.notify({
+            type: "negative",
+            message: "Der Speichervorgang ist gescheitert",
+            color: "red",
+        });
+    }
+}
 
 function load() {
     if (user.value == null) {
@@ -63,13 +83,16 @@ loadimage();
 </script>
 <template>
     <div v-if="view === 'Project'">
-        <div class="texts q-pa-lg">
-            <q-input v-model="project.title" />
-            <q-input v-model="project.text" />
+        <div>
+            <h4 class="q-ma-md">Projekttitle</h4>
+            <q-input v-model="project.title" outlined class="q-ma-md" />
+            <h4 class="q-ma-md">Projekttext</h4>
+            <q-input v-model="project.text" outlined class="q-ma-md" />
         </div>
         <div class="row q-gutter-lg pic">
             <img v-for="pic in bsp" class="minipic q-pa-md" :src="pic" :ratio="1" @click="expand($event)" />
         </div>
+        <q-btn label="Änderungen Speichern" color="blue" @click="save" class="rebtn" />
     </div>
     <div v-else>
         <div class="texts q-pa-lg">

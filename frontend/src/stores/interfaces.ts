@@ -18,7 +18,7 @@ export interface User {
 }
 export interface Project {
     id: number;
-    userID: number;
+    userId: number;
     text: string;
     title: string;
 }
