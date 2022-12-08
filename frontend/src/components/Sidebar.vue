@@ -29,8 +29,7 @@ const emit = defineEmits<{
     (event: "change:selectproject", value: Project): void;
 }>();
 //---------------Functions------------------------------
-const personen = ref(users.value);
-const poppel = ref(projects.value);
+//const personen = ref(users.value);
 
 function changeSelection(p: User) {
     emit("change:selection", p);
@@ -54,7 +53,7 @@ function addJury() {
         vorwahl: "",
         tel: null,
     };
-    personen.value.push(u);
+    users.value.push(u);
     emit("change:selection", u);
 }
 
@@ -85,7 +84,7 @@ load();
                     <h4 class="title">Jury</h4>
                 </q-card-section>
                 <!-- Ein For-loop um jede Person im Array durchzugehen-->
-                <div v-for="p in personen" :key="p.id">
+                <div v-for="p in users" :key="p.id">
                     <!-- Hier wird überprüft ob das ob das Element bei der Rolle 'jury' hinterlegt ist'-->
                     <div v-if="p.role === 'jury'" class="fullwidth">
                         <q-btn class="fullwitdh" bordered color="secondary" @click="changeSelection(p)">{{
@@ -97,7 +96,7 @@ load();
                 <q-btn class="fullwitdh btn" color="primary" @click="addJury">Jurymitglied hinzufügen</q-btn>
                 <h4 class="title">Teilnehmende</h4>
                 <!-- Ein For-loop um jede Person im Array durchzugehen-->
-                <div v-for="p in personen" :key="p.id" class="fullwidth">
+                <div v-for="p in users" :key="p.id" class="fullwidth">
                     <!-- Hier wird überprüft ob das ob das Element bei der Rolle 'teilnehmende' hinterlegt ist'-->
                     <div v-if="p.role === 'teilnehmende'">
                         <q-btn class="fullwitdh" color="secondary" @click="changeSelection(p)">{{
@@ -106,6 +105,7 @@ load();
                     </div>
                 </div>
             </q-card>
+
             <!-- Hier wird überprüft ob das Obere Element 'Project' in das view-Element gepackt hat-->
             <q-card v-if="view === 'Project'" bordered>
                 <q-card-section color="q-primary" class="fullwitdh">

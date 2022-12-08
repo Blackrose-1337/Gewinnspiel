@@ -87,7 +87,7 @@ loadimage();
             <h4 class="q-ma-md">Projekttitle</h4>
             <q-input v-model="project.title" outlined class="q-ma-md" />
             <h4 class="q-ma-md">Projekttext</h4>
-            <q-input v-model="project.text" outlined class="q-ma-md" />
+            <q-input v-model="project.text" outlined class="q-ma-md" autogrow />
         </div>
         <div class="row q-gutter-lg pic">
             <img v-for="pic in bsp" class="minipic q-pa-md" :src="pic" :ratio="1" @click="expand($event)" />

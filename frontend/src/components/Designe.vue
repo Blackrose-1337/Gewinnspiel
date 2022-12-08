@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import { storeToRefs } from "pinia";
-import Formular from "@/components/Formular.vue";
-import type { Wettbewerb, Competiion } from "@/stores/interfaces";
 import { useQuasar } from "quasar";
 import { useCompetitionStore } from "@/stores/competition";
 
@@ -38,19 +35,15 @@ load();
 
 <template>
     <div>
-        <q-input class="q-pa-md" v-model="competitionDetails.title" label="Titel vom Projekt" />
+        <q-input class="q-pa-md" v-model="competitionDetails.title" label="Titel vom Projekt" outlined />
 
         <div class="q-pa-md">
-            <q-input v-model="competitionDetails.text" label="Beschreibung Wettbewerb" />
-        </div>
-
-        <div class="row q-pa-md">
-            <div class="col-1"></div>
+            <q-input v-model="competitionDetails.text" label="Beschreibung Wettbewerb" outlined autogrow />
         </div>
 
         <div bordered elevated class="bg-grey-8k q-pa-md">
             <h5>Teilnahmebedingungen</h5>
-            <q-input v-model="competitionDetails.teilnehmerbedingung" label="" autogrow />
+            <q-input v-model="competitionDetails.teilnehmerbedingung" label="" outlined autogrow />
         </div>
         <div bordered elevated class="bg-grey-8k q-pa-md row">
             <div class="q-pa-md col-3">
@@ -63,13 +56,13 @@ load();
             </div>
             <div bordered elevated class="bg-grey-8k q-pa-md col-5">
                 <h5>Text wenn Wettbewerb geschlossen ist</h5>
-                <q-input v-model="competitionDetails.wettbewerbCloseText" label="" autogrow />
+                <q-input v-model="competitionDetails.wettbewerbCloseText" label="" outlined autogrow />
             </div>
         </div>
 
-        <div class="muh row col-7 q-gutter-md">
+        <div class="muh row q-gutter-md">
             <q-space />
-            <q-btn label="Speichern" color="green" @click="save" class="col-3" />
+            <q-btn label="Änderungen Speichern" color="blue" @click="save" class="col-2 rebtn" />
         </div>
     </div>
 </template>

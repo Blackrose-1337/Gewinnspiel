@@ -1,22 +1,49 @@
 <?php
-
+require_once PROJECT_ROOT_PATH . "Model/ModelBase.php";
 class ModelBewertung extends ModelBase
 {
     //Attribute
     private int $administrativeId;
     private int $userId;
- 
 
-    public function getFakeKritierien()
+
+    public function getFakeKriterien()
     {
         $data = [
-            ['id' => 2, 'name' => 'Peter', 'surname' => 'Laucher', 'role' => 'jury', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => 84669, 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => 23, 'tel' => 4465155, 'textid' => 12, 'pwId' => 32, 'saltId' => 20],
-            ['id' => 3, 'name' => 'Ricarda', 'surname' => 'Murer', 'role' => 'teilnehmende', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => 84669, 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => 12, 'tel' => 4465155, 'textid' => 13, 'pwId' => 12, 'saltId' => 2],
-            ['id' => 4, 'name' => 'Philippe', 'surname' => 'Egger', 'role' => 'teilnehmende', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => 84669, 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => 3, 'tel' => 4465155, 'textid' => 14, 'pwId' => 2, 'saltId' => 12],
-            ['id' => 5, 'name' => 'Joel', 'surname' => 'Packer', 'role' => 'teilnehmende', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => 84669, 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => 213, 'tel' => 4465155, 'textid' => 15, 'pwId' => 3, 'saltId' => 3],
-            ['id' => 6, 'name' => 'Claudia', 'surname' => 'Schlirrer', 'role' => 'jury', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => 84669, 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => 200, 'tel' => 4465155, 'textid' => 16, 'pwId' => 7, 'saltId' => 4],
+            ['id' => 2, 'frage' => 'Was geht?'],
+            ['id' => 4, 'frage' => 'Wie geht es?'],
+            ['id' => 3, 'frage' => 'Was auch immmer geht?'],
+            ['id' => 5, 'frage' => 'Wohin geht es?'],
         ];
         return $data;
+    }
+
+    public function getKriterien()
+    {
+        $this->db->query("SELECT * FROM Kriterien");
+        $data = $this->db->resultSet();
+        return $data;
+    }
+
+    public function createBewertung($data)
+    {
+        $beispiel = 8;
+        $this->db->query("INSERT INTO Bewertung ('administrativeId','projectId','kriterienId','bewertung')
+        VALUES (:administrativeId, :projectId, :kriterienId, :bewertung");
+        $this->db->bind(":administrativeId", $beispiel);
+        $this->db->bind(":administrativeId", $data['projectId']);
+        $this->db->bind(":kriterienId", $data['kriterienId']);
+        $this->db->bind(":bewertung", $data['bewertung']);
+
+        $answer = $this->db->execute();
+
+        // get Id from DB
+        $this->db->query("SELECT id FROM User ORDER BY ID DESC LIMIT 1");
+        $id = $this->db->resultSet();
+
+        // set Id on Model
+        $this->id = $id[0]['id'];
+        return $answer;
     }
 
     /**

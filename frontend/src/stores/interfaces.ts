@@ -49,12 +49,12 @@ export interface CompetitionDetails {
 export interface Bewertung{
     id: number;
     projectId: number;
-    bewertung: [{
-        kriteriumId: number;
-        bewertung: number;
-    }]
+    kriterienId: number;
+    bewertung: number;
 }
+
 export interface Kriterien{
     id: number;
     frage: string;
+    value: number;
 } 

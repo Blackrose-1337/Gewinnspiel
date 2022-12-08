@@ -46,6 +46,8 @@ class ModelProject extends ModelBase
         $this->db->bind(":userId", $data["userId"]);
 
         // Ausführung des eintrags
+        // $test = $this->db->execute();
+        // print_r($test);
         return $this->db->execute();
 
     }

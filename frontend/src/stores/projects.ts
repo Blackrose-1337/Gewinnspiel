@@ -52,10 +52,10 @@ export const useProjectStore = defineStore({
         async postProject() {
             
             // gezielter Fehler eingebaut
-            this.project.userId = 2342;
+            //this.project.userId = 2342;
             
             //Daten werden an Backendgesendet
-            const bool = api.post<boolean>("src/index.php/project/update", this.project);
+            const bool= api.post<boolean>("src/index.php/project/update", this.project);
             return bool;
         },
     },

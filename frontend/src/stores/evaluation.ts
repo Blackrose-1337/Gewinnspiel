@@ -8,16 +8,16 @@ import type { Bewertung, Kriterien } from "@/stores/interfaces";
 const api = new NetworkHelper();
 
 export type State = {
-    bewertung: Bewertung;
-    krieterin: Kriterien[];
+    bewertung: Bewertung[];
+    kriterien: Kriterien[];
 };
 
-export const useUserStore = defineStore({
-    id: "users",
+export const useEvaluationStore = defineStore({
+    id: "evaluation",
     state: () =>
         ({
-            bewertung: {} as Bewertung,
-            krieterin: [] as Kriterien[],
+            bewertung: [] as Bewertung[],
+            kriterien: [] as Kriterien[],
         } as State),
     getters: {
         // isAuthenticated: state => state._isAuthenticated,
@@ -25,27 +25,26 @@ export const useUserStore = defineStore({
     },
     actions: {
         async getKriterien() {
-            this.krieterin.splice(0);
+            this.kriterien.splice(0);
             const krieterin =await api.get<Kriterien[]>("src/index.php/evaluation/getKriterien");  
-            krieterin.forEach(k => this.krieterin.push(k));
+            krieterin.forEach(k => this.kriterien.push(k));
+            
         },
-        
-      
-
-        async resetPW(userId:number) {
-            try {
-                const param =
-                {
-                    "userId": userId,
-                }
-                const info = await api.get<boolean>("src/index.php/admin/pwreset", param);
-                return info;
-            }catch (err) {
-                console.error(err);
-                if (err instanceof HTTPError) {
-                    Notify.create({ message: `HTTP Error: ${err.message}`, type: "negative" });
-                }
-            }
-        }
+        async postBewertung() {
+            return api.post<boolean>("src/index.php/evaluation/createBewertung", this.bewertung);
+        },
+        async update(idProject: number) {
+            this.bewertung.splice(0);
+            this.kriterien.forEach(e =>
+            {
+                this.bewertung.push({
+                    id: 0,
+                    projectId: idProject,
+                    kriterienId: e.id,
+                    bewertung: e.value
+                });
+            })
+            console.log(this.bewertung);
+        },
     },
 });

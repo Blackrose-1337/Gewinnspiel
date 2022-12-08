@@ -35,7 +35,7 @@ const { user } = toRefs(props) as User;
 
 const userStore = useUserStore();
 
-const selectOptionsTyp = ["DE", "AU", "CH"];
+const selectOptionsTyp = ["DEU", "AUT", "CHE"];
 
 function isValidEmail(val: string) {
     const emailPattern =
