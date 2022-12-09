@@ -1,7 +1,6 @@
 <?php
 define('PROJECT_ROOT_PATH', __DIR__ . '/../');
 require_once PROJECT_ROOT_PATH . "Controller/API/BaseController.php";
-// require_once PROJECT_ROOT_PATH . "inc/config.php";
 require_once PROJECT_ROOT_PATH . "Model/Database.php";
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -27,6 +26,9 @@ switch ($uri[3]) {
         require_once PROJECT_ROOT_PATH . "Model/ModelTeilnehmende.php";
         require_once PROJECT_ROOT_PATH . "Model/ModelPw.php";
         require_once PROJECT_ROOT_PATH . "Model/ModelSalt.php";
+        break;
+    case 'auth':
+        require_once PROJECT_ROOT_PATH . "Model/ModelTeilnehmende.php";
         break;
     default:
         header("Page can’t be found", true, 404);

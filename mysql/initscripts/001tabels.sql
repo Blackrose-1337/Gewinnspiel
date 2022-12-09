@@ -18,13 +18,16 @@ DROP TABLE IF EXISTS `Bewertung`;
 CREATE TABLE `Bewertung` (
     `id` int NOT NULL AUTO_INCREMENT,
     `administrativeId` int NOT NULL,
-    `userId` int NOT NULL,
+    `projectId` int NOT NULL,
+    `kriterienId` int NOT NULL,
     `bewertung` int NOT NULL,
     PRIMARY KEY (`id`),
     KEY `administrativeId` (`administrativeId`),
-    KEY `userId` (`userId`),
-    CONSTRAINT `Bewertung_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `User` (`id`),
-    CONSTRAINT `Bewertung_ibfk_3` FOREIGN KEY (`administrativeId`) REFERENCES `User` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+    KEY `userId` (`projectId`),
+    KEY `kriterienId` (`kriterienId`),
+    CONSTRAINT `Bewertung_ibfk_3` FOREIGN KEY (`administrativeId`) REFERENCES `User` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT `Bewertung_ibfk_6` FOREIGN KEY (`kriterienId`) REFERENCES `Kriterien` (`id`),
+    CONSTRAINT `Bewertung_ibfk_8` FOREIGN KEY (`projectId`) REFERENCES `Project` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 DROP TABLE IF EXISTS `Competition`;
@@ -40,6 +43,14 @@ CREATE TABLE `Competition` (
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 3 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
+DROP TABLE IF EXISTS `Kriterien`;
+
+CREATE TABLE `Kriterien` (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `frage` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB AUTO_INCREMENT = 4 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
 DROP TABLE IF EXISTS `Project`;
 
 CREATE TABLE `Project` (
@@ -50,7 +61,7 @@ CREATE TABLE `Project` (
     PRIMARY KEY (`id`),
     KEY `userId` (`userId`),
     CONSTRAINT `Project_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `User` (`id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 23 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 67 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 DROP TABLE IF EXISTS `Pw`;
 
@@ -58,7 +69,7 @@ CREATE TABLE `Pw` (
     `id` int NOT NULL AUTO_INCREMENT,
     `hash` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
     PRIMARY KEY (`id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 30 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 76 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 DROP TABLE IF EXISTS `Salt`;
 
@@ -66,7 +77,7 @@ CREATE TABLE `Salt` (
     `id` int NOT NULL AUTO_INCREMENT,
     `salt` double NOT NULL,
     PRIMARY KEY (`id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 90 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 136 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 DROP TABLE IF EXISTS `User`;
 
@@ -84,9 +95,10 @@ CREATE TABLE `User` (
     `tel` double DEFAULT NULL,
     `pwId` int NOT NULL,
     `saltId` int NOT NULL,
+    `optIn` int DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY `pwId` (`pwId`),
     KEY `saltId` (`saltId`),
     CONSTRAINT `User_ibfk_1` FOREIGN KEY (`pwId`) REFERENCES `Pw` (`id`),
     CONSTRAINT `User_ibfk_2` FOREIGN KEY (`saltId`) REFERENCES `Salt` (`id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 31 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 77 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;

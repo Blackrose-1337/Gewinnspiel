@@ -43,8 +43,10 @@ export const useCompetitionStore = defineStore({
         },
         async postCompetition(c: Competition) {
             c.user.role = "teilnehmende";
-            console.log(c);
-            api.post<Competition>("src/index.php/competition/competition", c);   
+            
+            const bool = api.post<boolean>("src/index.php/competition/competition", c);   
+            console.log(bool);
+            return bool;
         
         }
     },

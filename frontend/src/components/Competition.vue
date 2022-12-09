@@ -22,12 +22,13 @@ const projectmodel: Project = ref({
     title: "",
     text: "",
 }) as Project;
+const dialog = ref(false);
 
 function changeUserModel(u: User) {
     usermodel.value = u;
 }
 
-function sendcompetition() {
+async function sendcompetition() {
     if (!usermodel.value) {
         $q.notify({
             type: "negative",
@@ -46,10 +47,28 @@ function sendcompetition() {
             message: "Der Vorname fehlt!",
             color: "red",
         });
+    } else if (projectmodel.value.text == "" || projectmodel.value.text == null) {
+        $q.notify({
+            type: "negative",
+            message: "Der Vorname fehlt!",
+            color: "red",
+        });
     } else if (usermodel.value.email == "" || usermodel.value.email == null) {
         $q.notify({
             type: "negative",
             message: "Die E-Mail fehlt!",
+            color: "red",
+        });
+    } else if (projectmodel.value.title == "" || projectmodel.value.title == null) {
+        $q.notify({
+            type: "negative",
+            message: "Titel zum Projekt fehlt",
+            color: "red",
+        });
+    } else if (projectmodel.value.text == "" || projectmodel.value.text == null) {
+        $q.notify({
+            type: "negative",
+            message: "Beschreibungstext zum Projekt fehlt",
             color: "red",
         });
     } else if (!teilnahmebedingungenbestätigung.value) {
@@ -67,7 +86,22 @@ function sendcompetition() {
     } else {
         competition.value.project = projectmodel.value;
         competition.value.user = usermodel.value;
-        competitionstore.postCompetition(competition.value);
+        const bool: boolean = await competitionstore.postCompetition(competition.value);
+        console.log(bool);
+        if (bool) {
+            dialog.value = true;
+            $q.notify({
+                type: "positiv",
+                message: "Ihr Wettbewerbsteilnahme wurde versendet",
+                color: "green",
+            });
+        } else {
+            $q.notify({
+                type: "negative",
+                message: "Da ist was schieff gelaufen",
+                color: "red",
+            });
+        }
     }
 }
 function isValidEmail(val: string) {
@@ -109,8 +143,19 @@ load();
     </div>
     <div class="row q-pa-md">
         <div class="col-4 textarea" style="max-width: 30%">
-            <q-input v-model="projectmodel.title" label="Titel zum Projekt" />
-            <q-input v-model="projectmodel.text" label="Beschreibung zum Projekt" autogrow />
+            <q-input
+                v-model="projectmodel.title"
+                lazy-rules
+                :rules="[val => !!val || 'Pflichtfeld *']"
+                label="Titel zum Projekt *"
+            />
+            <q-input
+                v-model="projectmodel.text"
+                lazy-rules
+                :rules="[val => !!val || 'Pflichtfeld *']"
+                label="Beschreibung zum Projekt *"
+                autogrow
+            />
         </div>
         <div class="col-1"></div>
 
@@ -140,6 +185,22 @@ load();
     <div class="textarea">
         <h5>Teilnahmebedingungen</h5>
         <p>{{ competitionDetails.teilnehmerbedingung }}</p>
+    </div>
+    <div>
+        <q-dialog v-model="dialog" persistent>
+            <q-card>
+                <q-card-section class="row items-center">
+                    <span class="q-ml-sm">
+                        Es wurde eine Bestätigungsmail an die Mailadresse {{ usermodel.email }} gesendet. Diese enthält
+                        das Passwort mit dem Sie sich einloggen können nachdem Sie ihre Bestätigung getätigt haben.
+                    </span>
+                </q-card-section>
+                <!-- Notice v-close-popup -->
+                <q-card-actions align="right">
+                    <q-btn flat label="Cancel" color="primary" v-close-popup />
+                </q-card-actions>
+            </q-card>
+        </q-dialog>
     </div>
 </template>
 

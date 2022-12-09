@@ -1,14 +1,21 @@
 <script setup lang="ts">
-import { ref, ToRefs } from "vue";
+import { ref, toRefs } from "vue";
 import { useQuasar } from "quasar";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter, useRoute } from "vue-router";
 
 const authStore = useAuthStore();
 
-type VForm = { validate: () => boolean };
+function isValidEmail(val: string) {
+    const emailPattern =
+        /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,7}$/;
+    return emailPattern.test(val) || "Invalid email";
+}
+function isValidpw(val: string) {
+    const namepattern = /[a-zA-Z]{2,50}$/;
+    return namepattern.test(val) || "Invalid name";
+}
 
-const form = ref<VForm | null>(null);
 const email = ref("admin");
 const password = ref("");
 const showPassword = ref(false);
@@ -30,28 +37,21 @@ const router = useRouter();
 const route = useRoute();
 
 async function login() {
-    const success = (await form.value?.validate()) || false;
-
-    console.log("submit form: ", {
-        success,
-        email: email.value,
-        password: password.value,
-    });
-    if (!success) {
+    if (isValidEmail(email.value) != true || isValidpw(password.value) != true) {
         $q.notify({
-            message: "Please enter a valid username/password combination",
+            message: "Passwort oder E-Mail sind inakzeptabel",
             type: "negative",
         });
     } else {
         try {
             await authStore.login(email.value, password.value);
-            $q.notify("Successfully logged in");
+            $q.notify("Login aktzeptiert");
 
             await router.push(redirectTo.value);
         } catch (err) {
             console.error("Login failed: ", err);
             $q.notify({
-                message: "Login failed",
+                message: "Login fehlgeschlagen",
                 type: "negative",
             });
         }
@@ -60,7 +60,7 @@ async function login() {
 </script>
 
 <template>
-    <q-page>
+    <q-page class="q-pa-xl">
         <span class="text-h5">Login</span>
 
         <q-form ref="form">

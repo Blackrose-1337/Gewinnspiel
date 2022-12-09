@@ -6,18 +6,12 @@ header('Content-Type: application/json');
 header('Accept: application/json');
 require __DIR__ . "/inc/bootstrap.php";
 require __DIR__ . "/inc/config.php";
+require_once 'helpers/session_helper.php';
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = explode('/', $uri);
 
 
-// if ((isset($uri[2]) && $uri[2] != 'user') || !isset($uri[3])) {
-//     header("Shit");
-//     #echo "index uri = ";
-//     exit();
-
-
-// }
 switch ($uri[3]) {
     case 'user':
         require PROJECT_ROOT_PATH . "Controller/API/UserController.php";
@@ -38,6 +32,10 @@ switch ($uri[3]) {
     case 'admin':
         require PROJECT_ROOT_PATH . "Controller/API/AdminController.php";
         $objFeedController = new AdminController();
+        break;
+    case 'auth':
+        require PROJECT_ROOT_PATH . "Controller/API/AuthController.php";
+        $objFeedController = new AuthController();
         break;
     default:
         header("Page can’t be found", true, 404);

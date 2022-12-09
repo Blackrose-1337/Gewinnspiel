@@ -26,31 +26,39 @@ INSERT INTO
 VALUES
     (
         2,
-        'Wettbewerb der Schattenstickeradsadasdadads',
+        'huibuh',
         'Lang oder über Kurz ergibt der Text nicht viel Sinnasdadada',
-        ' -was geht',
-        '2021-02-14',
-        '2022-08-31',
-        'Der Wettbewerb ist geschlossen seit dem 24 März. Die Auswertung ist im Gange und wird am 12.Mai bekannt gegebensaadadaddsdasdadaddd'
+        '-test\n-test2',
+        '2021-02-09',
+        '2022-08-19',
+        'Der Wettbewerb ist geschlossen seit dem 24 März. Die Auswertung ist im Gange und wird am 12.Mai bekannt '
     );
+
+INSERT INTO
+    `Kriterien` (`id`, `frage`)
+VALUES
+    (1, 'Wie ist die Stoffwahl?'),
+    (2, 'Wie ist das Stickmuster?'),
+    (3, 'Wie ist der Kontrast?');
 
 INSERT INTO
     `Project` (`id`, `userId`, `title`, `text`)
 VALUES
     (1, 1, 'Sankt Nicolaustag', 'nicht viel'),
+    (2, 2, 'HexStick', 'FF or something like that'),
     (
-        2,
-        2,
-        'HexSticktest',
-        'FF or something like that'
+        3,
+        7,
+        'Täglicher Begleiter',
+        'Auch gibt es niemanden, der den Schmerz an sich liebt, sucht oder wünscht, nur, weil er Schmerz ist, es sei denn, es kommt zu zufälligen Umständen, in denen Mühen und Schmerz ihm große Freude bereiten können. Um ein triviales Beispiel zu nehmen, wer von uns unterzieht sich je anstrengender körperlicher Betätigung, außer um Vorteile daraus zu ziehen? Aber wer hat irgend ein Recht, einen Menschen zu tadeln, der die Entscheidung trifft, eine Freude zu genießen, die keine unangenehmen Folgen hat, oder einen, der Schmerz vermeidet, welcher keine daraus resultierende Freude nach sich zieht? Auch gibt es niemanden, der den Schmerz an sich liebt, sucht oder wünscht, nur, weil er Schmerz ist, es sei denn, es kommt zu zufälligen Umständen, in denen Mühen und Schmerz ihm große Freude bereiten können. '
     ),
     (
-        21,
-        29,
-        'asdasdasdwererewrewrewrewr',
-        'asdsadasd'
+        4,
+        8,
+        'Werther',
+        'Eine wunderbare Heiterkeit hat meine ganze Seele eingenommen, gleich den süßen Frühlingsmorgen, die ich mit ganzem Herzen genieße. Ich bin allein und freue mich meines Lebens in dieser Gegend, die für solche Seelen geschaffen ist wie die meine.\r\n\r\nIch bin so glücklich, mein Bester, so ganz in dem Gefühle von ruhigem Dasein versunken, daß meine Kunst darunter leidet. Ich könnte jetzt nicht zeichnen, nicht einen Strich, und bin nie ein größerer Maler gewesen als in diesen Augenblicken. Wenn das liebe Tal um mich dampft, und die hohe Sonne an der Oberfläche der undurchdringlichen Finsternis meines Waldes ruht, und nur einzelne'
     ),
-    (22, 30, 'asdadasd', 'asdasdsadsadasdada');
+    (5, 9, 'Brueggli', 'lange lebe es!');
 
 INSERT INTO
     `Pw` (`id`, `hash`)
@@ -72,20 +80,28 @@ VALUES
         '$2y$12$QjSH496pcT5CEbzjD/vtVeH03tfHKFy36d4J0Ltp3lRtee9HDxY3K'
     ),
     (
-        8,
+        5,
         '397bf6b54622a374516f917d6bb60f4f8a773e883f3fb7b20e4704c056028e322f1c7233ee1bd1bc45fa5da6033ced24d24197657c4d2fa1ae2ae40522fb4da5'
     ),
     (
-        9,
-        '0ca95273ccef77b45d531d5c2ad941fc67c97af14eddfc8fe0da85c27fd0830acc4844a03c2174c8baa2d68d4b5eaa13fe756f848a101921d15f4844ae7dc0a9'
+        6,
+        '96c870fd10376e5e7a070a2d2aa4b621f00041e7f78cbebb3f59e323a9b308641874a48b7013288975c5c3253e536ce894d8efe7dfad78bf00beeb8dec16562c'
     ),
     (
-        28,
+        7,
         '66b6c546912052d4d184baa17caafeae385c3f3dd4ca5b73caa46602fd92f666fc688b88be06c980abacdf1b2ca699e807fc298ccf50139b3041bce11dcd1a0f'
     ),
     (
-        29,
-        '55d77c6541b7ef82040754911764dc48c8347c5c5b073be045533b66d23ceb470aea9c7a68a1a8caa1e5a61aade61e1b6380bd81b09807743f22d6d61ea410c6'
+        8,
+        '30049ee3949b37d2eccaad1a5a674018054017691592558bcdefa6d8f61b943cacd3e170b11982dcf6cf1b3797354e74793efd47a6f0f010676609b9ed1db4c7'
+    ),
+    (
+        9,
+        '33154d550da512da77ce99d0dcf87607b9044dc33bb93c0ec1b21bafc7efce54c54de06cb1c5acba24329dd616a8a9751643aa94e6d0bc0e99cbd6b5ef50846f'
+    ),
+    (
+        10,
+        '3c7e7df167fa197e5deb7eb19e8ba606fa4e8cb43063c083a7a110ce826ab972be76b4866afad5694e50a31be8a5e6e8f04310178d121fe4eb1d29a35711c3a9'
     );
 
 INSERT INTO
@@ -95,10 +111,12 @@ VALUES
     (2, 1000000000),
     (3, 1000000000),
     (4, 1000000000),
-    (68, 1931822859),
-    (69, 5469338098),
-    (88, 7728136415),
-    (89, 4067766816);
+    (5, 1931822859),
+    (6, 3632013457),
+    (7, 7728136415),
+    (8, 4140439885),
+    (9, 3923884473),
+    (10, 2376418949);
 
 INSERT INTO
     `User` (
@@ -114,7 +132,8 @@ INSERT INTO
         `strNr`,
         `tel`,
         `pwId`,
-        `saltId`
+        `saltId`,
+        `optIn`
     )
 VALUES
     (
@@ -130,7 +149,8 @@ VALUES
         69,
         7841411499,
         2,
-        2
+        2,
+        NULL
     ),
     (
         2,
@@ -145,10 +165,11 @@ VALUES
         1111,
         794502143,
         3,
-        3
+        3,
+        NULL
     ),
     (
-        7,
+        3,
         'Yannick',
         'Basler',
         'admin',
@@ -160,10 +181,11 @@ VALUES
         NULL,
         NULL,
         1,
-        1
+        1,
+        NULL
     ),
     (
-        8,
+        4,
         'Joaquin Pablo',
         'Koller Garcia',
         'jury',
@@ -175,10 +197,11 @@ VALUES
         NULL,
         NULL,
         4,
-        4
+        4,
+        NULL
     ),
     (
-        13,
+        5,
         'testen',
         'testen',
         'jury',
@@ -189,11 +212,12 @@ VALUES
         '',
         NULL,
         NULL,
-        8,
-        68
+        5,
+        5,
+        NULL
     ),
     (
-        14,
+        6,
         'Kevin',
         'Doeding',
         'jury',
@@ -204,14 +228,15 @@ VALUES
         '',
         NULL,
         NULL,
-        9,
-        69
+        6,
+        6,
+        NULL
     ),
     (
-        29,
+        7,
         'test',
         'test',
-        'Teilnehmende',
+        'teilnehmende',
         'test@gmail.com',
         '',
         NULL,
@@ -219,11 +244,12 @@ VALUES
         '',
         NULL,
         NULL,
-        28,
-        88
+        7,
+        7,
+        NULL
     ),
     (
-        30,
+        8,
         'Thomas',
         'Weber',
         'teilnehmende',
@@ -234,6 +260,39 @@ VALUES
         '',
         NULL,
         NULL,
-        29,
-        89
+        8,
+        8,
+        NULL
+    ),
+    (
+        9,
+        'Stephan',
+        'Höse',
+        'teilnehmende',
+        'Stephan.hoese@gmail.com',
+        '',
+        NULL,
+        '',
+        '',
+        NULL,
+        NULL,
+        9,
+        9,
+        NULL
+    ),
+    (
+        10,
+        'Douglas',
+        'Duda',
+        'jury',
+        'JSLove@gmail.com',
+        '',
+        NULL,
+        '',
+        '',
+        NULL,
+        NULL,
+        10,
+        10,
+        NULL
     );

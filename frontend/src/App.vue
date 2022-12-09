@@ -20,7 +20,7 @@ console.log("App setup");
 
 <template>
     <q-layout view="hHh lpR fFf">
-        <q-header elevated class="text-white" height-hint="98">
+        <q-header elevated class="text-white float-right" height-hint="98">
             <q-toolbar>
                 <q-toolbar-title>
                     <!-- <q-avatar> <img src=src/assets/Blackrose.png alt="Blackrose"/> </q-avatar> -->
@@ -50,6 +50,8 @@ console.log("App setup");
                     </q-menu>
                 </q-btn>
                 <q-route-tab to="/evaluation" label="Bewertung" />
+                <q-space />
+                <q-route-tab to="/login" label="Login" />
             </q-tabs>
         </q-header>
         <q-page-container class="wrapper">

@@ -46,6 +46,12 @@ const router = createRouter({
             name: "designe",
             meta: { requiresAuth: false },
             component: () => import("../views/DesigneView.vue")
+        },
+        {
+            path: "/login",
+            name: "login",
+            meta: { requiresAuth: false },
+            component: () => import("../views/LoginView.vue")
         }
     ],
 });

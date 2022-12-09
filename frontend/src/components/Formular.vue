@@ -99,10 +99,10 @@ watch(user, changeUser => {
                     v-model="model.surname"
                     rounded
                     outlined
-                    label="Nachname"
+                    label="Nachname *"
                     @change="changevalue(model)"
                     lazy-rules
-                    :rules="[val => !!val || 'Field is required', isValidname]"
+                    :rules="[val => !!val || 'Pflichtfeld *', isValidname]"
                     clearable
                     class="col-4"
                 />
@@ -110,10 +110,10 @@ watch(user, changeUser => {
                     v-model="model.name"
                     rounded
                     outlined
-                    label="Vorname"
+                    label="Vorname *"
                     @change="changevalue(model)"
                     lazy-rules
-                    :rules="[val => !!val || 'Field is required', isValidname]"
+                    :rules="[val => !!val || 'Pflichtfeld *', isValidname]"
                     clearable
                     class="col-4"
                 />
@@ -123,10 +123,10 @@ watch(user, changeUser => {
                     v-model="model.email"
                     rounded
                     outlined
-                    label="E-Mail"
+                    label="E-Mail *"
                     @change="changevalue(model)"
                     lazy-rules
-                    :rules="[val => !!val || 'Field is required', isValidEmail]"
+                    :rules="[val => !!val || 'Pflichtfeld *', isValidEmail]"
                     clearable
                     class="col-5"
                     type="email"

@@ -24,12 +24,17 @@ class CompetitionController extends BaseController
                 // Post Daten holen
                 $data = json_decode(file_get_contents('php://input'), true);
                 // User erstellen
-                $usermodel->createUser($data['user']);
+                $answerUser = $usermodel->createUser($data['user']);
                 $data['project']['userid'] = $usermodel->id;
                 // Projekt erstellen 
-                $newproject->createProject($data['project']);
+                $answerProject = $newproject->createProject($data['project']);
                 // Reaktion zurücksenden
-                $responseData = true;
+                if ($answerProject == 1& $answerUser == 1) {
+                    $responseData = true;
+                } else {
+                    $responseData = false;
+                }
+
 
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';

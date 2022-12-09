@@ -21,14 +21,21 @@ export const useAuthStore = defineStore({
         // isAuthenticated: state => state._isAuthenticated,
     },
     actions: {
-        async login(username: string, password: string) {
+        async login(email: string, password: string) {
             try {
-                const res = await api.post<{ success: boolean; user: { username: string } }>("auth/login", {
-                    username,
+                //test backend-valid
+                // const res = await api.post<{ success: boolean; user: { email: string } }>("src/index.php/auth/login", {
+                //     email: "poppel",
+                //     password,
+                //  });
+
+
+                const res = await api.post<{ success: boolean; user: { email: string } }>("src/index.php/auth/login", {
+                    email,
                     password,
                 });
 
-                this.user = res.user;
+               // this.user = res.user;
                 this.isAuthenticated = true;
             } catch (err) {
                 this.isAuthenticated = false;
@@ -37,7 +44,7 @@ export const useAuthStore = defineStore({
         },
         async logout() {
             try {
-                await api.post("auth/logout", null, false);
+                await api.post("src/index.php/auth/logout", null, false);
                 this.isAuthenticated = false;
             } catch (err) {
                 console.error(err);

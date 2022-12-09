@@ -31,7 +31,28 @@ class BaseController
                 header($httpHeader);
             }
         }
-        echo $data;
+        var_dump($data);
         exit;
+    }
+    protected function fehler($nr)
+    {
+        switch ($nr) {
+            case 420:
+                return "HTTP/1.1 420 Die angeforderte Ressource unterstuetzt einen oder mehrere der angegebenen Parameter nicht.";
+            case 406:
+                return "HTTP/1.1 406 Sie sind bereits angemeldet";
+            case 422:
+                return "HTTP/1.1 422 Unprocessable Entity";
+            case 500:
+                return "HTTP/1.1 500 Internal Server Error";
+
+        }
+    }
+    protected function success($nr)
+    {
+        switch ($nr) {
+            case 200:
+                return "HTTP/1.1 200 Success with Blackrose";
+        }
     }
 }

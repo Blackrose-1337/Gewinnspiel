@@ -29,9 +29,9 @@ class ModelProject extends ModelBase
         $this->db->bind(":userid", $data['userid']);
         $this->db->bind(":title", $data['title']);
         $this->db->bind(":text", $data['text']);
-        $this->db->execute();
+        $answer = $this->db->execute();
 
-        return;
+        return $answer;
     }
 
     public function updateProject($data)

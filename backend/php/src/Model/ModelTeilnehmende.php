@@ -95,7 +95,7 @@ class ModelTeilnehmende extends ModelBase
         $this->db->bind(":saltId", $salt[0]["id"]);
 
         // Ausführung
-        $this->db->execute();
+        $answer = $this->db->execute();
 
         // get Id from DB
         $this->db->query("SELECT id FROM User ORDER BY ID DESC LIMIT 1");
@@ -103,7 +103,7 @@ class ModelTeilnehmende extends ModelBase
 
         // set Id on Model
         $this->id = $id[0]['id'];
-        return;
+        return $answer;
     }
 
     public function fakeChangeUser($data)
