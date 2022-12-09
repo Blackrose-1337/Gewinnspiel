@@ -37,7 +37,7 @@ class ModelBase
 
     protected function getString()
     {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@!?+';
         $randomString = '';
 
         for ($i = 0; $i < 12; $i++) {

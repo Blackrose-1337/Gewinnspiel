@@ -19,15 +19,16 @@ class AuthController extends BaseController
                     // Aufruf benötigter Klassen 
 
 
-
                     $data = json_decode(file_get_contents('php://input'), true);
                     $email = isset($data['email']) ? $data['email'] : "";
-                    $passwort = isset($_POST['passwort']) ? $_POST['passwort'] : "";
-                    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $passwort = isset($data['password']) ? $data['password'] : "";
+
+                    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL) || !preg_match("/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]+$/", $email)) {
                         $strErrorDesc = 'Ungültige E-Mail';
                         $strErrorHeader = $this->fehler(420);
-                    } elseif (strlen($passwort) < 12) {
-                        $strErrorDesc = 'Das Passwort ist kürzer als 12 Zeichen';
+                    } elseif (strlen($passwort) < 12 || !preg_match("/^[a-zA-Z0-9\?\!\+\@]/", $passwort)) {
+
+                        $strErrorDesc = 'Das Passwort ist kürzer als 12 Zeichen oder enthält nicht erlaubte Zeichen';
                         $strErrorHeader = $this->fehler(420);
                     }
 

@@ -12,8 +12,8 @@ function isValidEmail(val: string) {
     return emailPattern.test(val) || "Invalid email";
 }
 function isValidpw(val: string) {
-    const namepattern = /[a-zA-Z]{2,50}$/;
-    return namepattern.test(val) || "Invalid name";
+    const pwpattern = /[a-zA-Z\@\+\?\!]{12}$/;
+    return pwpattern.test(val) || "Invalid name";
 }
 
 const email = ref("admin");
