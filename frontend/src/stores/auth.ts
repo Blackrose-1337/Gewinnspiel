@@ -1,5 +1,8 @@
 import { defineStore } from "pinia";
 import NetworkHelper from "@/utils/networkHelper";
+import { Cookies, SessionStorage } from "quasar";
+
+
 
 const api = new NetworkHelper();
 
@@ -30,11 +33,24 @@ export const useAuthStore = defineStore({
                 //  });
 
 
-                const res = await api.post<{ success: boolean; user: { email: string } }>("src/index.php/auth/login", {
+                const res = await api.post<{ success: boolean; token: string; time: string }>("src/index.php/auth/login", {
                     email,
                     password,
                 });
 
+                if (res?.success) {
+                    SessionStorage.set("www.stickstoff.de-competition", res.token[0]);
+                    Cookies.set("www.stickstoff.de-competition", res.token[1], { expires: res.time} );
+                } else {
+                    console.log("Something went wrong")
+                }
+                console.log(SessionStorage.getItem("www.stickstoff.de-competition"));
+                console.log(Cookies.get("www.stickstoff.de-competition"));
+
+                // if (res?.success === true) {
+                //     SessionStorage.set("test", "test");
+                //     //this.$session.start();
+                // }
                // this.user = res.user;
                 this.isAuthenticated = true;
             } catch (err) {

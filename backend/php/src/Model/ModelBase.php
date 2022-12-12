@@ -47,6 +47,13 @@ class ModelBase
 
         return $randomString;
     }
+    protected function rndtoken()
+    {
+        $bytes = random_bytes(16);
+        $str = bin2hex($bytes);
+
+        return $str;
+    }
 
 
 

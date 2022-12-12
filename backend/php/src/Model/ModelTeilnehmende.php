@@ -106,6 +106,19 @@ class ModelTeilnehmende extends ModelBase
         return $answer;
     }
 
+    public function login()
+    {
+
+    }
+    public function createUserSeassion($id, $email, $name, $role, $token)
+    {
+        $_SESSION['user_id'] = $id;
+        $_SESSION['user_email'] = $email;
+        $_SESSION['user_name'] = $name;
+        $_SESSION['user_roles'] = $role;
+        $_SESSION['token'] = $token;
+
+    }
     public function fakeChangeUser($data)
     {
         // get user by id
@@ -170,6 +183,13 @@ class ModelTeilnehmende extends ModelBase
         $data = $this->db->resultSet();
         return $data;
     }
+    private function getAllUser()
+    {
+        // Get-Data from Mysql
+        $this->db->query("SELECT * FROM User");
+        $data = $this->db->resultSet();
+        return $data;
+    }
 
 
     /**
@@ -196,6 +216,18 @@ class ModelTeilnehmende extends ModelBase
             }
         }
         return $datas;
+    }
+    public function getUserwithMail($userMail)
+    {
+        $datas = $this->getAllUser();
+        foreach ($datas as $data) {
+            if ($data['email'] == $userMail) {
+                return $data;
+            } else {
+
+            }
+        }
+
     }
 
     // Get single User

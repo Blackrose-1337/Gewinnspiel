@@ -31,8 +31,15 @@ class BaseController
                 header($httpHeader);
             }
         }
-        var_dump($data);
+        echo $data;
         exit;
+    }
+    protected function rndtoken()
+    {
+        $bytes = random_bytes(16);
+        $str = bin2hex($bytes);
+
+        return $str;
     }
     protected function fehler($nr)
     {

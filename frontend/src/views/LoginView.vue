@@ -12,8 +12,9 @@ function isValidEmail(val: string) {
     return emailPattern.test(val) || "Invalid email";
 }
 function isValidpw(val: string) {
-    const pwpattern = /[a-zA-Z\@\+\?\!]{12}$/;
-    return pwpattern.test(val) || "Invalid name";
+    const pwpattern = /^[a-zA-Z0-9\@\+\?\!]{12,20}$/;
+    console.log(val);
+    return pwpattern.test(val) || "Invalid password";
 }
 
 const email = ref("admin");
@@ -25,7 +26,7 @@ const $q = useQuasar();
 const props = defineProps({
     redirectTo: {
         type: String,
-        default: "/",
+        default: "/evaluation",
     },
 });
 
@@ -37,9 +38,14 @@ const router = useRouter();
 const route = useRoute();
 
 async function login() {
-    if (isValidEmail(email.value) != true || isValidpw(password.value) != true) {
+    if (isValidEmail(email.value) != true) {
         $q.notify({
-            message: "Passwort oder E-Mail sind inakzeptabel",
+            message: "Email ist inakzeptabel",
+            type: "negative",
+        });
+    } else if (isValidpw(password.value) != true) {
+        $q.notify({
+            message: "Passwort ist inakzeptabel",
             type: "negative",
         });
     } else {
@@ -47,7 +53,7 @@ async function login() {
             await authStore.login(email.value, password.value);
             $q.notify("Login aktzeptiert");
 
-            await router.push(redirectTo.value);
+            //await router.push(redirectTo.value);
         } catch (err) {
             console.error("Login failed: ", err);
             $q.notify({

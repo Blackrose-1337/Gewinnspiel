@@ -21,7 +21,7 @@ export default class NetworkHelper {
             queryParams["ts"] = formatISO(Date.now());
         }
 
-         if (queryParams) {
+        if (queryParams) {
             const withValues = _.pickBy(
                 queryParams,
                 v => (!_.isArray(v) && !_.isNil(v)) || (_.isArray(v) && _.size(v) > 0)
@@ -44,19 +44,35 @@ export default class NetworkHelper {
             method: "post",
             body: JSON.stringify(data)
         } as Options
-    
-        
+
+
         // const csrfToken = NetworkHelper.getCookie("csrftoken");
         // if (csrfToken) {
         //     options.headers = {
         //         "X-CSRFToken": csrfToken,
         //     };
         // }
-        const res = await ky.post(fullUrl,options);
+        const res = await ky.post(fullUrl, options);
         if (res.status !== 204) {
             return res.json();
         } else {
             return null;
         }
     }
+
+    // private static getCookie(name: string) {
+    //     let cookieValue: string | null = null;
+    //     if (document.cookie && document.cookie !== "") {
+    //         const cookies = document.cookie.split(";");
+    //         for (let i = 0; i < cookies.length; i++) {
+    //             const cookie = cookies[i].trim();
+    //             // Does this cookie string begin with the name we want?
+    //             if (cookie.substring(0, name.length + 1) === name + "=") {
+    //                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+    //                 break;
+    //             }
+    //         }
+    //     }
+    //     return cookieValue;
+    // }
 }

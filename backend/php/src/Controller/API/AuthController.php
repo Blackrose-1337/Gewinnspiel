@@ -17,7 +17,9 @@ class AuthController extends BaseController
                     $strErrorHeader = $this->fehler(406);
                 } else {
                     // Aufruf benötigter Klassen 
-
+                    $usermodel = new ModelTeilnehmende;
+                    $saltmodel = new ModelSalt;
+                    $pwmodel = new ModelPw;
 
                     $data = json_decode(file_get_contents('php://input'), true);
                     $email = isset($data['email']) ? $data['email'] : "";
@@ -30,10 +32,37 @@ class AuthController extends BaseController
 
                         $strErrorDesc = 'Das Passwort ist kürzer als 12 Zeichen oder enthält nicht erlaubte Zeichen';
                         $strErrorHeader = $this->fehler(420);
+                    } else {
+                        //search User by email
+                        $user = $usermodel->getUserwithMail($email);
+                        //search Salt by saltId from User
+                        $salt = $saltmodel->getSaltbyID($user['saltId']);
+                        //controll Hash with password and salt
+                        $controll = $pwmodel->controllHash($passwort, $salt, $user['pwId']);
+
+                        if (!$controll) {
+                            print_r("Passwort ist falsch");
+
+                        } else {
+
+                            $str = $this->rndtoken();
+                            $str2 = $this->rndtoken();
+                            $test = [
+                                [
+                                    "success" => 1,
+                                    "token" => [$str, $str2],
+                                    "time" => "12h",
+                                ]
+                            ];
+                            $token = $str2 . $user['email'] . $str;
+                            // var_dump($test[0]);
+                            $usermodel->createUserSeassion($user['id'], $user['email'], $user['name'], $user['role'], $token);
+                            $responseData = json_encode($test[0]);
+                        }
                     }
 
 
-                    $responseData = true;
+                    //$responseData = true;
                 }
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
