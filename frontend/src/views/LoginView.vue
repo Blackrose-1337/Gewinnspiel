@@ -4,7 +4,21 @@ import { useQuasar } from "quasar";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter, useRoute } from "vue-router";
 
+const props = defineProps({
+    redirectTo: {
+        type: String,
+        default: "/",
+    },
+});
+
+const { redirectTo } = toRefs(props);
+const $q = useQuasar();
 const authStore = useAuthStore();
+const router = useRouter();
+const route = useRoute();
+const email = ref("");
+const password = ref("");
+const showPassword = ref(false);
 
 function isValidEmail(val: string) {
     const emailPattern =
@@ -16,26 +30,6 @@ function isValidpw(val: string) {
     console.log(val);
     return pwpattern.test(val) || "Invalid password";
 }
-
-const email = ref("admin");
-const password = ref("");
-const showPassword = ref(false);
-
-const $q = useQuasar();
-
-const props = defineProps({
-    redirectTo: {
-        type: String,
-        default: "/evaluation",
-    },
-});
-
-const { redirectTo } = toRefs(props);
-
-console.log("login view props redirect to: ", redirectTo.value);
-
-const router = useRouter();
-const route = useRoute();
 
 async function login() {
     if (isValidEmail(email.value) != true) {
@@ -52,8 +46,7 @@ async function login() {
         try {
             await authStore.login(email.value, password.value);
             $q.notify("Login aktzeptiert");
-
-            //await router.push(redirectTo.value);
+            await router.push(redirectTo.value);
         } catch (err) {
             console.error("Login failed: ", err);
             $q.notify({

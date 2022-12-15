@@ -7,7 +7,7 @@ class CompetitionController extends BaseController
         $strErrorDesc = '';
         $requestMethod = $_SERVER["REQUEST_METHOD"];
         $arrQueryStringParams = $this->getQueryStringParams();
-
+        print_r($requestMethod);
         if (strtoupper($requestMethod) == 'GET') {
             try {
                 // Aufruf benötigter Klassen 
@@ -42,7 +42,7 @@ class CompetitionController extends BaseController
             }
         } else {
             $strErrorDesc = 'Method not supported';
-            $strErrorHeader = 'HTTP/1.1 422 Unprocessable Entity';
+            $strErrorHeader = 'HTTP/1.1 test Unprocessable Entity';
         }
         if (!$strErrorDesc && ($requestMethod == 'GET' || $requestMethod == 'POST')) {
             $this->sendOutput($responseData, array('Content-Type: application/json', 'HTTP/1.1 200 Blackrose'));
@@ -59,7 +59,7 @@ class CompetitionController extends BaseController
         $requestMethod = $_SERVER["REQUEST_METHOD"];
         $arrQueryStringParams = $this->getQueryStringParams();
 
-        if (strtoupper($requestMethod) == 'GET') {
+        if (strtoupper($requestMethod) == 'GET' || strtoupper($requestMethod) == 'OPTIONS') {
             try {
                 // Aufruf benötigter Klassen 
                 $usermodel = new ModelCompetition();

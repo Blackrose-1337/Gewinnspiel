@@ -47,7 +47,7 @@ class AuthController extends BaseController
 
                             $str = $this->rndtoken();
                             $str2 = $this->rndtoken();
-                            $test = [
+                            $answer = [
                                 [
                                     "success" => 1,
                                     "token" => [$str, $str2],
@@ -56,14 +56,84 @@ class AuthController extends BaseController
                             ];
                             $token = $str2 . $user['email'] . $str;
                             // var_dump($test[0]);
-                            $usermodel->createUserSeassion($user['id'], $user['email'], $user['name'], $user['role'], $token);
-                            $responseData = json_encode($test[0]);
+                            $usermodel->createUserSession($user['id'], $user['email'], $user['name'], $user['role'], $token);
+                            $responseData = json_encode($answer[0]);
                         }
                     }
 
 
                     //$responseData = true;
                 }
+            } catch (Error $e) {
+                $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+                $strErrorHeader = $this->fehler(500);
+            }
+        } else {
+            $strErrorDesc = 'Method not supported';
+            $strErrorHeader = $this->fehler(422);
+        }
+        if (!$strErrorDesc) {
+            $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
+        } else {
+            $this->sendOutput(
+                json_encode(array('error' => $strErrorDesc)),
+                array('Content-Type: application/json', $strErrorHeader)
+            );
+        }
+    }
+    public function SessionAction()
+    {
+        $strErrorDesc = '';
+        $requestMethod = $_SERVER["REQUEST_METHOD"];
+        $arrQueryStringParams = $this->getQueryStringParams();
+
+        // abfrage ob es eine GET_Methode ist
+        if (strtoupper($requestMethod) == 'POST') {
+            try {
+                $usermodel = new ModelTeilnehmende;
+
+                $data = json_decode(file_get_contents('php://input'), true);
+                $tk1 = isset($data['email']) ? $data['tk1'] : "";
+                $tk2 = isset($data['password']) ? $data['tk2'] : "";
+                if (!isset($_SESSION['user_id'])) {
+                    try {
+                        // print_r($_SESSION['user_id']);
+                        if ($tk1 == '' || $tk2 == '') {
+                            $tk1 == $this->rndtoken();
+                            $tk2 == $this->rndtoken();
+                        }
+                        $token = $tk2 . $tk1;
+                        $usermodel->createUserSession(0, '', 'guest', 'guest', $token);
+                        $answer = [
+                            [
+                                "success" => 0,
+                                "role" => $_SESSION['user_role'],
+                                "time" => "12h",
+                            ]
+                        ];
+                        $responseData = json_encode($answer);
+                    } catch (Error $e) {
+                        $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+                        $strErrorHeader = $this->fehler(500);
+                    }
+                } else {
+
+                    $tk = $tk2 . $_SESSION['user_email'] . $tk1;
+                    if ($_SESSION['token'] == $tk) {
+                        $answer = [
+                            [
+                                "success" => 1,
+                                "role" => $_SESSION['user_role'],
+                                "time" => "12h",
+                            ]
+                        ];
+                        $responseData = json_encode($answer);
+                    } else {
+                        $strErrorDesc = 'Session is not valid';
+                        $strErrorHeader = $this->fehler(405);
+                    }
+                }
+
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
                 $strErrorHeader = $this->fehler(500);

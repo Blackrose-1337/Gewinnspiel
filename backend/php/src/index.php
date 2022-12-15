@@ -1,12 +1,13 @@
 <?php
+require_once __DIR__ . '/helpers/session_helper.php';
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Origin: http://localhost:3000");
-header("Access-Control-Allow-Methodes: GET, POST, OPTIONS");
+header("Access-Control-Allow-Methodes: GET, POST");
+header('Access-Control-Allow-Headers: Authorization');
 header('Content-Type: application/json');
 header('Accept: application/json');
 require __DIR__ . "/inc/bootstrap.php";
 require __DIR__ . "/inc/config.php";
-require_once 'helpers/session_helper.php';
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = explode('/', $uri);

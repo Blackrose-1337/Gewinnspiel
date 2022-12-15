@@ -23,6 +23,16 @@ class ModelTeilnehmende extends ModelBase
     private int $pwId;
     private int $saltId;
 
+    /**
+     * Mail: poppel@gmx.ch
+     * pw: exampel1DDH?
+     * Mail: business@gmail.com
+     * pw: exampel2DDH?
+     * Mail: nanomail@gmail.com
+     * pw: exampel3DDH?
+     * 
+     */
+
 
     /**
      * TestMethode die einfach einen var_dump macht. Sie ist dazu da die GUI-Funktionaltiäten zu testen
@@ -110,14 +120,13 @@ class ModelTeilnehmende extends ModelBase
     {
 
     }
-    public function createUserSeassion($id, $email, $name, $role, $token)
+    public function createUserSession($id, $email, $name, $role, $token)
     {
         $_SESSION['user_id'] = $id;
         $_SESSION['user_email'] = $email;
         $_SESSION['user_name'] = $name;
-        $_SESSION['user_roles'] = $role;
+        $_SESSION['user_role'] = $role;
         $_SESSION['token'] = $token;
-
     }
     public function fakeChangeUser($data)
     {

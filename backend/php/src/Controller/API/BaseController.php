@@ -52,6 +52,8 @@ class BaseController
                 return "HTTP/1.1 422 Unprocessable Entity";
             case 500:
                 return "HTTP/1.1 500 Internal Server Error";
+            case 405:
+                return "HTTP/1.1 405 Nicht aktzeptierte Session";
 
         }
     }

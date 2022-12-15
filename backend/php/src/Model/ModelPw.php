@@ -32,7 +32,7 @@ class ModelPw extends ModelBase
     {
         $hash = $this->mySha512($pw, $salt, 10000);
         // print_r("\n");
-        // print_r($hash);
+        //print_r($hash);
         $dbhash = $this->getDBHash($pwid);
         // print_r("\n");
         // print_r($dbhash);

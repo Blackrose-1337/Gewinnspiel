@@ -10,6 +10,7 @@ export type State = {
     isAuthenticated: boolean;
     user: null | { username: string };
     isInitialized: boolean;
+    role: string;
 };
 
 export const useAuthStore = defineStore({
@@ -19,6 +20,7 @@ export const useAuthStore = defineStore({
             isAuthenticated: false,
             user: null,
             isInitialized: false,
+            role: '' as string,
         } as State),
     getters: {
         // isAuthenticated: state => state._isAuthenticated,
@@ -57,6 +59,17 @@ export const useAuthStore = defineStore({
                 this.isAuthenticated = false;
                 throw err;
             }
+        },
+        async checksession() {
+            const tk1 = SessionStorage.getItem("www.stickstoff.de-competition");
+            const tk2 = Cookies.get("www.stickstoff.de-competition");
+            const res = await api.post<{ }>("src/index.php/auth/session", {
+                    tk1,
+                    tk2,
+            });
+            return res[0];
+            
+            
         },
         async logout() {
             try {

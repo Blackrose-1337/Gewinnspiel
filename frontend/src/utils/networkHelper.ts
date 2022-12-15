@@ -1,16 +1,16 @@
 import ky, { type Options } from "ky";
 import { formatISO } from "date-fns";
 import _ from "lodash";
+import { Cookies } from "quasar";
 
-
+const token = Cookies.get("www.stickstoff.de-competition");
 export default class NetworkHelper {
     private API =
         import.meta.env.MODE === "production" ? "/api/" : `http://${window.location.host.split(":")[0]}:8000/`;
 
     private getOptionsAndUrl(url: string, queryParams: any | null) {
         const options = {
-            // timeout: 30000,
-            // credentials: import.meta.env.MODE === "production" ? "same-origin" : "include",
+
         } as Options;
         let fullUrl = this.API + url.replace(/\/\/$/, "/") + "/?format=json&";
         const ignoreCache = false;
@@ -34,16 +34,33 @@ export default class NetworkHelper {
 
     async get<T>(url: string, queryParams: object | null = null): Promise<T> {
         const { options, fullUrl } = this.getOptionsAndUrl(url, queryParams);
+        options.method = "get";
+        options.headers = {
+                Authorization: "Bearer " + token,
+            }
         return (await ky.get(fullUrl, options)).json();
     }
-
+        // const response = await ky('https://example.com', {
+	    //     hooks: {
+		//         beforeRetry: [
+		// 	        async ({request, options, error, retryCount}) => {
+		// 		        const token = await ky('https://example.com/refresh-token');
+		// 		        request.headers.set('Authorization', `token ${token}`);
+		// 	        }
+		//         ]
+	    //     }
+        // });
 
     async post<T>(url: string, data: object | null = null): Promise<T | null> {
         const { fullUrl } = this.getOptionsAndUrl(url, null);
         const options = {
             method: "post",
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
+            // headers: {
+            //     'Authorization': Cookies.get("www.stickstoff.de-competition"),
+            // }
         } as Options
+
 
 
         // const csrfToken = NetworkHelper.getCookie("csrftoken");

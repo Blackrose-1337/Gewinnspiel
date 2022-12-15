@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { RouterView } from "vue-router";
 import { useQuasar } from "quasar";
+import { useAuthStore } from "@/stores/auth";
 
+const authStore = useAuthStore();
 const $q = useQuasar();
+let role = ref("");
+let isAuthenticated = ref(false);
 let change = ref();
 // darmode toggle
 function swap() {
@@ -14,6 +18,14 @@ function swap() {
     }
     $q.dark.set(change.value);
 }
+// async function loadseassion() {
+//     const session = await authStore.checksession();
+//     role.value = session.role;
+//     isAuthenticated.value = session.success;
+//     console.log(role);
+// }
+
+// loadseassion();
 
 console.log("App setup");
 </script>

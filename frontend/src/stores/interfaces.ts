@@ -32,7 +32,7 @@ export interface Competition {
 export interface ProjectBild {
     id: number;
     projectId: number;
-    bildPfad: string;
+    bildbase: string;
 }
 
 

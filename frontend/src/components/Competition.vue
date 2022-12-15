@@ -5,7 +5,7 @@ import { useQuasar } from "quasar";
 import Formular from "@/components/Formular.vue";
 import { useUserStore } from "@/stores/users";
 import { useCompetitionStore } from "@/stores/competition";
-import type { User, Project, Competiion } from "@/stores/interfaces";
+import type { User, Project, Competiion, ProjectBild } from "@/stores/interfaces";
 
 const $q = useQuasar();
 
@@ -22,7 +22,9 @@ const projectmodel: Project = ref({
     title: "",
     text: "",
 }) as Project;
+const projectpics: ProjectBild[] = ref([]) as ProjectBild;
 const dialog = ref(false);
+const filesPng = ref();
 
 function changeUserModel(u: User) {
     usermodel.value = u;
@@ -84,8 +86,22 @@ async function sendcompetition() {
             color: "red",
         });
     } else {
+        //         const reader = new FileReader();
+        //         createBase64Image: function(FileObject) {
+        //   const reader = new FileReader();
+        //   reader.onload = (event) => {
+        //     this.base64 = event.target.result;
+        //   }
+        //   reader.readAsDataURL(FileObject);
+        // }
+        //         let rawImg;
+        //         reader.onloadend = () => {
+        //             rawImg = reader.result;
+        //             console.log(rawImg);
+        //         };
         competition.value.project = projectmodel.value;
         competition.value.user = usermodel.value;
+        console.log(filesPng);
         const bool: boolean = await competitionstore.postCompetition(competition.value);
         console.log(bool);
         if (bool) {
@@ -159,18 +175,19 @@ load();
         </div>
         <div class="col-1"></div>
 
-        <div class="muh row col-7 q-gutter-md">
+        <div class="place row col-7 q-gutter-md">
             <Formular @change:declarations="changeUserModel" />
 
-            <q-uploader
-                class="col-11"
-                max-files="3"
-                url="http://localhost:4444/upload"
-                label="Bilderhochladen"
-                accept=".jpg, image/*"
+            <q-file
+                class="picloader"
+                v-model="filesPng"
+                rounded
+                outlined
+                label="Filtered (png only)"
                 multiple
                 :filter="checkFileType"
                 @rejected="onRejected"
+                counter
             />
             <q-checkbox
                 left-label
@@ -205,8 +222,10 @@ load();
 </template>
 
 <style scoped>
-.muh {
-    /* height: 20vh; */
+.picloader {
+    padding-left: 8px;
+}
+.place {
     position: relative;
 }
 .textarea {
