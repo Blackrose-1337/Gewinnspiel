@@ -7,6 +7,8 @@ class AuthController extends BaseController
         $strErrorDesc = '';
         $requestMethod = $_SERVER["REQUEST_METHOD"];
         $arrQueryStringParams = $this->getQueryStringParams();
+        $requestHeaders = apache_request_headers();
+        $Authorization = trim($requestHeaders['Authorization']);
 
         // abfrage ob es eine GET_Methode ist
         if (strtoupper($requestMethod) == 'POST') {
@@ -86,6 +88,8 @@ class AuthController extends BaseController
         $strErrorDesc = '';
         $requestMethod = $_SERVER["REQUEST_METHOD"];
         $arrQueryStringParams = $this->getQueryStringParams();
+        $requestHeaders = apache_request_headers();
+        $Authorization = trim($requestHeaders['Authorization']);
 
         // abfrage ob es eine GET_Methode ist
         if (strtoupper($requestMethod) == 'POST') {
@@ -138,6 +142,10 @@ class AuthController extends BaseController
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
                 $strErrorHeader = $this->fehler(500);
             }
+        } elseif (strtoupper($requestMethod) == 'GET') {
+
+        } elseif (strtoupper($requestMethod) == 'OPTIONS') {
+            $responseData = true;
         } else {
             $strErrorDesc = 'Method not supported';
             $strErrorHeader = $this->fehler(422);

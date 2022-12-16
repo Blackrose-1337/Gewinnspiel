@@ -58,8 +58,12 @@ class CompetitionController extends BaseController
         $strErrorDesc = '';
         $requestMethod = $_SERVER["REQUEST_METHOD"];
         $arrQueryStringParams = $this->getQueryStringParams();
+        $check = new Authcheck;
+        $answer = $check->authcheck();
 
-        if (strtoupper($requestMethod) == 'GET' || strtoupper($requestMethod) == 'OPTIONS') {
+
+
+        if (strtoupper($requestMethod) == 'GET') {
             try {
                 // Aufruf benötigter Klassen 
                 $usermodel = new ModelCompetition();
@@ -84,6 +88,8 @@ class CompetitionController extends BaseController
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
                 $strErrorHeader = 'HTTP/1.1 500 Internal Server Error';
             }
+        } elseif (strtoupper($requestMethod) == 'OPTIONS') {
+            $responseData = true;
         } else {
             $strErrorDesc = 'Method not supported';
             $strErrorHeader = 'HTTP/1.1 422 Unprocessable Entity';

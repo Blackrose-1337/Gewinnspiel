@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/helpers/session_helper.php';
+require_once __DIR__ . '/helpers/authcheck.php';
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Origin: http://localhost:3000");
 header("Access-Control-Allow-Methodes: GET, POST");
@@ -11,7 +12,6 @@ require __DIR__ . "/inc/config.php";
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = explode('/', $uri);
-
 
 switch ($uri[3]) {
     case 'user':

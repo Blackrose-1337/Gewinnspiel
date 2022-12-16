@@ -122,6 +122,10 @@ class ModelTeilnehmende extends ModelBase
     }
     public function createUserSession($id, $email, $name, $role, $token)
     {
+        if ($token == '') {
+            $token = $this->rndtoken();
+        }
+
         $_SESSION['user_id'] = $id;
         $_SESSION['user_email'] = $email;
         $_SESSION['user_name'] = $name;
