@@ -32,8 +32,39 @@ const filesPng = ref();
 function changeUserModel(u: User) {
     usermodel.value = u;
 }
+function sendcompetition() {
+    //abfrage ob Bilder hochgeladen wurden falls ja werden diese in Base64 konvertiert
+    if (filesPng.value.length > 0) {
+        for (let index = 0; index < filesPng.value.length; index++) {
+            const element = filesPng.value[index];
+            let file = element;
+            let reader = new FileReader();
+            reader.onloadend = function () {
+                const test: ProjectBild = {
+                    id: 0,
+                    projectId: 0,
+                    bildbase: reader.result as string,
+                };
+                console.log(test);
+                competition.value.pics.push(test);
+            };
+            reader.readAsDataURL(file);
+        }
 
-async function sendcompetition() {
+        // Verzögerung das Bilder konvertiert werden können
+        setTimeout(() => {
+            sendcompetitionstep2();
+        }, 500);
+    } else {
+        $q.notify({
+            type: "negative",
+            message: "Es Fehlen Bilder",
+            color: "red",
+        });
+    }
+}
+
+async function sendcompetitionstep2() {
     if (!usermodel.value) {
         $q.notify({
             type: "negative",
@@ -90,21 +121,6 @@ async function sendcompetition() {
         });
     } else {
         // while (projectpics.length != filesPng.value.length) {
-        for (let index = 0; index < filesPng.value.length; index++) {
-            const element = filesPng.value[index];
-            let file = element;
-            let reader = new FileReader();
-            reader.onloadend = function () {
-                const test: ProjectBild = {
-                    id: 0,
-                    projectId: 0,
-                    bildbase: reader.result as string,
-                };
-                console.log(test);
-                competition.value.pics.push(test);
-            };
-            reader.readAsDataURL(file);
-        }
 
         competition.value.project = projectmodel.value;
         competition.value.user = usermodel.value;
