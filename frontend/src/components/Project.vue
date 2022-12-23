@@ -13,9 +13,9 @@ const props = defineProps<{
     view?: string;
 }>();
 
-const $q = useQuasar();
 //---------------Storeload------------------------------
 const projectStore = useProjectStore();
+const $q = useQuasar();
 
 //---------------storeToRefs------------------------------
 const { project } = storeToRefs(projectStore) as Project;

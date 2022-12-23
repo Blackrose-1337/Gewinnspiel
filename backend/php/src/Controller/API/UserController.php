@@ -24,11 +24,8 @@ class UserController extends BaseController
         } elseif (strtoupper($requestMethod) == 'POST') {
             try {
                 $usermodel = new ModelTeilnehmende();
-
-
                 $data = json_decode(file_get_contents('php://input'), true);
                 $responseData = $usermodel->fakewriteData($data);
-
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
                 $strErrorHeader = $this->fehler(500);
@@ -69,7 +66,7 @@ class UserController extends BaseController
             }
         } else {
             $strErrorDesc = 'Method not supported';
-            $strErrorHeader = 'HTTP/1.1 422 Unprocessable Entity';
+            $strErrorHeader = $this->fehler(422);
         }
         if (!$strErrorDesc && ($requestMethod == 'GET')) {
             $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));

@@ -49,7 +49,6 @@ class AdminController extends BaseController
     // Funktion um Änderungen zu speichern die der Admin bei einem User macht
     public function saveAction()
     {
-
         $strErrorDesc = '';
         $requestMethod = $_SERVER["REQUEST_METHOD"];
         $arrQueryStringParams = $this->getQueryStringParams();

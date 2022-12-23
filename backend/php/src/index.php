@@ -1,6 +1,11 @@
 <?php
+
+// Sesssion 
+/*
 require_once __DIR__ . '/helpers/session_helper.php';
 require_once __DIR__ . '/helpers/authcheck.php';
+*/
+
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Origin: http://localhost:3000");
 header("Access-Control-Allow-Methodes: GET, POST");

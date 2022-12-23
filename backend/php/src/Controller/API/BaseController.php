@@ -41,6 +41,8 @@ class BaseController
 
         return $str;
     }
+
+    // Fehler Liste und abruf
     protected function fehler($nr)
     {
         switch ($nr) {
@@ -57,6 +59,8 @@ class BaseController
 
         }
     }
+
+    // Success abruf
     protected function success($nr)
     {
         switch ($nr) {

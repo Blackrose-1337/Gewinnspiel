@@ -11,16 +11,15 @@ class ModelProject extends ModelBase
     private string $title;
     private string $text;
 
-
-
-    public function fakeWriteData($data)
+    // holt alle Projekte von DB
+    public function getAllProject()
     {
-        $data['id'] = $this->getFakeId();
-        //$test = sonderzeichen($data);
-        $test = json_encode($data);
-        //echo $test;
-        return json_decode($test);
+        $this->db->query("SELECT * FROM Project");
+        $data = $this->db->resultSet();
+        return $data;
     }
+
+    // Projekt auf der DB hinterlegen
     public function createProject($data)
     {
         $this->db->query("INSERT INTO Project
@@ -31,9 +30,17 @@ class ModelProject extends ModelBase
         $this->db->bind(":text", $data['text']);
         $answer = $this->db->execute();
 
+        // get Id from DB
+        $this->db->query("SELECT id FROM Project ORDER BY ID DESC LIMIT 1");
+        $id = $this->db->resultSet();
+
+        // set Id on Model
+        $this->id = $id[0]['id'];
+
         return $answer;
     }
 
+    // Änderung vom Projekt auf der DB
     public function updateProject($data)
     {
         //Vorbereitung Mysql Eintrag mit überprüfung von id des Projects und entsprechender userId
@@ -46,15 +53,14 @@ class ModelProject extends ModelBase
         $this->db->bind(":userId", $data["userId"]);
 
         // Ausführung des eintrags
-        // $test = $this->db->execute();
-        // print_r($test);
         return $this->db->execute();
 
     }
 
-    public function getFakeProject($userId)
+    // holt bestimmtes Projekt von der DB
+    public function getProject($userId)
     {
-        $datas = $this->getFakeAllProject();
+        $datas = $this->getAllProject();
         foreach ($datas as $data) {
             if ($data['userId'] == $userId) {
                 return $data;
@@ -62,9 +68,21 @@ class ModelProject extends ModelBase
         }
         return $datas;
     }
-    public function getProject($userId)
+
+
+    // Testfunktionen
+    public function fakeWriteData($data)
     {
-        $datas = $this->getAllProject();
+        $data['id'] = $this->getFakeId();
+        //$test = sonderzeichen($data);
+        $test = json_encode($data);
+        //echo $test;
+        return json_decode($test);
+    }
+
+    public function getFakeProject($userId)
+    {
+        $datas = $this->getFakeAllProject();
         foreach ($datas as $data) {
             if ($data['userId'] == $userId) {
                 return $data;
@@ -91,12 +109,7 @@ class ModelProject extends ModelBase
         return $datas;
 
     }
-    public function getAllProject()
-    {
-        $this->db->query("SELECT * FROM Project");
-        $data = $this->db->resultSet();
-        return $data;
-    }
+
 
     /**
      * Get the value of userId

@@ -14,7 +14,7 @@ class CompetitionController extends BaseController
 
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
-                $strErrorHeader = 'HTTP/1.1 500 Internal Server Error';
+                $strErrorHeader = $this->fehler(500);
             }
         } elseif (strtoupper($requestMethod) == 'POST') {
             try {
@@ -28,24 +28,27 @@ class CompetitionController extends BaseController
                 $data['project']['userid'] = $usermodel->id;
                 // Projekt erstellen 
                 $answerProject = $newproject->createProject($data['project']);
+                if (PHP_OS == "Linux") {
+                    $generalpath = "../../data/project";
+                    $newPath = $generalpath;
+                    mkdir($newPath, 0777, false);
+                }
                 // Reaktion zurücksenden
                 if ($answerProject == 1& $answerUser == 1) {
                     $responseData = true;
                 } else {
                     $responseData = false;
                 }
-
-
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
-                $strErrorHeader = 'HTTP/1.1 500 Internal Server Error';
+                $strErrorHeader = $this->fehler(500);
             }
         } else {
             $strErrorDesc = 'Method not supported';
-            $strErrorHeader = 'HTTP/1.1 test Unprocessable Entity';
+            $strErrorHeader = $this->fehler(422);
         }
         if (!$strErrorDesc && ($requestMethod == 'GET' || $requestMethod == 'POST')) {
-            $this->sendOutput($responseData, array('Content-Type: application/json', 'HTTP/1.1 200 Blackrose'));
+            $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
         } else {
             $this->sendOutput(
                 json_encode(array('error' => $strErrorDesc)),
@@ -58,10 +61,8 @@ class CompetitionController extends BaseController
         $strErrorDesc = '';
         $requestMethod = $_SERVER["REQUEST_METHOD"];
         $arrQueryStringParams = $this->getQueryStringParams();
-        $check = new Authcheck;
-        $answer = $check->authcheck();
-
-
+        // $check = new Authcheck;
+        //$answer = $check->authcheck();
 
         if (strtoupper($requestMethod) == 'GET') {
             try {
@@ -71,7 +72,7 @@ class CompetitionController extends BaseController
                 $responseData = json_encode($arr);
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
-                $strErrorHeader = 'HTTP/1.1 500 Internal Server Error';
+                $strErrorHeader = $this->fehler(500);
             }
         } elseif (strtoupper($requestMethod) == 'POST') {
             try {
@@ -83,19 +84,18 @@ class CompetitionController extends BaseController
                 $competition->updateData($data);
                 // Reaktion zurücksenden
                 $responseData = true;
-
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
-                $strErrorHeader = 'HTTP/1.1 500 Internal Server Error';
+                $strErrorHeader = $this->fehler(500);
             }
         } elseif (strtoupper($requestMethod) == 'OPTIONS') {
             $responseData = true;
         } else {
             $strErrorDesc = 'Method not supported';
-            $strErrorHeader = 'HTTP/1.1 422 Unprocessable Entity';
+            $strErrorHeader = $this->fehler(422);
         }
         if (!$strErrorDesc && ($requestMethod == 'GET' || $requestMethod == 'POST')) {
-            $this->sendOutput($responseData, array('Content-Type: application/json', 'HTTP/1.1 200 Blackrose'));
+            $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
         } else {
             $this->sendOutput(
                 json_encode(array('error' => $strErrorDesc)),

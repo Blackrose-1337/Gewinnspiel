@@ -13,11 +13,14 @@ class ModelSalt extends ModelBase
         $this->db->bind(":id", $id);
         return $this->db->execute();
     }
+
+    // Salt generieren
     protected function randomSalt()
     {
         return rand(1000000000, 9999999999);
     }
 
+    // Hinterlegt generierten Salt in der DB
     public function createSaltDB()
     {
         $salt = $this->randomSalt();
@@ -26,9 +29,7 @@ class ModelSalt extends ModelBase
         return $this->db->execute();
     }
 
-    /**
-     * Get the value of salt
-     */
+    // Holt Salt von der DB mit ID
     public function getSaltbyID($id)
     {
         $this->db->query("SELECT salt FROM Salt WHERE id= $id");

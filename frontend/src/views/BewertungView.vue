@@ -3,7 +3,6 @@ import { useRouter, useRoute } from "vue-router";
 import type { Ref } from "vue";
 import { ref } from "vue";
 import Sidebar from "@/components/Sidebar.vue";
-import Formular from "@/components/Formular.vue";
 import Evaluation from "@/components/Evaluation.vue";
 import type { Project } from "@/stores/interfaces";
 

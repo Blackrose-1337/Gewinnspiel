@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import NetworkHelper from "@/utils/networkHelper";
 import { HTTPError } from "ky";
 import { Notify } from "quasar";
-import type { Competition, CompetitionDetails } from "@/stores/interfaces";
+import type { Competition, CompetitionDetails, Project, User, ProjectBild } from "@/stores/interfaces";
 import { isNull } from "lodash";
 
 const api = new NetworkHelper();
@@ -17,7 +17,11 @@ export const useCompetitionStore = defineStore({
     state: () =>
         ({
         competitionDetails: {},
-        competition: {},
+        competition: {
+            project: {} as Project,
+            user: {} as User,
+            pics: [] as ProjectBild[],
+        },
         } as State),
     getters: {
         // isAuthenticated: state => state._isAuthenticated,

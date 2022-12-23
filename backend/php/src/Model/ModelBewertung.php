@@ -6,18 +6,7 @@ class ModelBewertung extends ModelBase
     private int $administrativeId;
     private int $userId;
 
-
-    public function getFakeKriterien()
-    {
-        $data = [
-            ['id' => 2, 'frage' => 'Was geht?'],
-            ['id' => 4, 'frage' => 'Wie geht es?'],
-            ['id' => 3, 'frage' => 'Was auch immmer geht?'],
-            ['id' => 5, 'frage' => 'Wohin geht es?'],
-        ];
-        return $data;
-    }
-
+    // Holt Kriterien von DB
     public function getKriterien()
     {
         $this->db->query("SELECT * FROM Kriterien");
@@ -25,6 +14,7 @@ class ModelBewertung extends ModelBase
         return $data;
     }
 
+    // Speichert Bewertung auf der DB
     public function createBewertung($data)
     {
         $beispiel = 8;
@@ -44,6 +34,18 @@ class ModelBewertung extends ModelBase
         // set Id on Model
         $this->id = $id[0]['id'];
         return $answer;
+    }
+
+    // Testfunktionen
+    public function getFakeKriterien()
+    {
+        $data = [
+            ['id' => 2, 'frage' => 'Was geht?'],
+            ['id' => 4, 'frage' => 'Wie geht es?'],
+            ['id' => 3, 'frage' => 'Was auch immmer geht?'],
+            ['id' => 5, 'frage' => 'Wohin geht es?'],
+        ];
+        return $data;
     }
 
     /**

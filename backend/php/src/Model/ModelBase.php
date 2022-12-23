@@ -10,31 +10,6 @@ class ModelBase
         $this->db = new Database;
     }
 
-    /**
-     * Get the value of id
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set the value of id
-     *
-     * @return  self
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    protected function getFakeId()
-    {
-        return rand(0, 200);
-    }
-
     protected function getString()
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@!?+';
@@ -55,8 +30,6 @@ class ModelBase
         return $str;
     }
 
-
-
     protected function sonderzeichen($string)
     {
         $string = str_replace("ä", "ae", $string);
@@ -76,6 +49,35 @@ class ModelBase
         }
         return null;
     }
+
+    // Testfunktion
+
+    protected function getFakeId()
+    {
+        return rand(0, 200);
+    }
+
+    /**
+     * Get the value of id
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set the value of id
+     *
+     * @return  self
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+
 }
 
 ?>

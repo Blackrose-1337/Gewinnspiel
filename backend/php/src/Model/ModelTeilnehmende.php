@@ -23,7 +23,7 @@ class ModelTeilnehmende extends ModelBase
     private int $pwId;
     private int $saltId;
 
-    /**
+    /** Beispieluser zum Testen vom Login
      * Mail: poppel@gmx.ch
      * pw: exampel1DDH?
      * Mail: business@gmail.com
@@ -32,32 +32,6 @@ class ModelTeilnehmende extends ModelBase
      * pw: exampel3DDH?
      * 
      */
-
-
-    /**
-     * TestMethode die einfach einen var_dump macht. Sie ist dazu da die GUI-Funktionaltiäten zu testen
-     *
-     * 
-     *
-     * @return $data
-     */
-    public function fakewriteData($data)
-    {
-        // preg_match($muster, $testtext)   Muster erkennung möglichkeit   $muster= "/1[0123456789]/"       $testtext= "Wir haben 13 Katzen"  !!!REGEX!!!   regexlip.com/DisplayPatterns.aspx
-
-        // input validation  www.owasp.org/index.php/Input_Validation_Cheat_Sheet#Input_validation-strategies
-
-        $data['id'] = $this->getFakeId();
-        $test = $this->sonderzeichen($data);
-
-        $test = json_encode($test);
-        //echo $test;
-        return json_decode($test);
-    }
-    public function fakeCreateUser($data)
-    {
-        echo json_encode($data);
-    }
 
     //Create User
     public function createUser($data)
@@ -116,10 +90,7 @@ class ModelTeilnehmende extends ModelBase
         return $answer;
     }
 
-    public function login()
-    {
-
-    }
+    // Session erstellen und Token für Frontend
     public function createUserSession($id, $email, $name, $role, $token)
     {
         if ($token == '') {
@@ -132,20 +103,45 @@ class ModelTeilnehmende extends ModelBase
         $_SESSION['user_role'] = $role;
         $_SESSION['token'] = $token;
     }
-    public function fakeChangeUser($data)
-    {
-        // get user by id
-        echo $this->name = $data['name'];
-        echo $this->surname = $data['surname'];
-        echo $this->email = $data['email'];
-        echo $this->role = $data['role'];
-        echo $this->land = $data['land'];
-        echo $this->plz = $data['plz'];
-        echo $this->ortschaft = $data['ortschaft'];
-        echo $this->strasse = $data['strasse'];
-        echo $this->strNr = $data['strNr'];
-        echo $this->tel = $data['tel'];
 
+    // get all User expect admin
+    public function getDataUser()
+    {
+        // Get-Data from Mysql
+        $this->db->query("SELECT * FROM User WHERE role !='admin'");
+        $data = $this->db->resultSet();
+        return $data;
+    }
+    private function getAllUser()
+    {
+        // Get-Data from Mysql
+        $this->db->query("SELECT * FROM User");
+        $data = $this->db->resultSet();
+        return $data;
+    }
+    public function getUserwithMail($userMail)
+    {
+        $datas = $this->getAllUser();
+        foreach ($datas as $data) {
+            if ($data['email'] == $userMail) {
+                return $data;
+            } else {
+
+            }
+        }
+
+    }
+
+    // Get single User
+    public function getUser($userId)
+    {
+        $datas = $this->getDataUser();
+        foreach ($datas as $data) {
+            if ($data['id'] == $userId) {
+                return $data;
+            }
+        }
+        return $datas;
     }
 
     // change User values
@@ -171,11 +167,21 @@ class ModelTeilnehmende extends ModelBase
         return $this->db->execute();
     }
 
-    /**
-     * TestMethode die einfach nur Fake-Daten liefert, solange man noch keine DB hat
-     * private int $textId;
-     * @return $data : Liste aus Orders
-     */
+    // Testfunktionen
+    public function fakeChangeUser($data)
+    {
+        // get user by id
+        echo $this->name = $data['name'];
+        echo $this->surname = $data['surname'];
+        echo $this->email = $data['email'];
+        echo $this->role = $data['role'];
+        echo $this->land = $data['land'];
+        echo $this->plz = $data['plz'];
+        echo $this->ortschaft = $data['ortschaft'];
+        echo $this->strasse = $data['strasse'];
+        echo $this->strNr = $data['strNr'];
+        echo $this->tel = $data['tel'];
+    }
     public function getFakeDataUser()
     {
         $data = [
@@ -188,20 +194,18 @@ class ModelTeilnehmende extends ModelBase
         return $data;
     }
 
-    // get all User expect admin
-    public function getDataUser()
+    public function fakewriteData($data)
     {
-        // Get-Data from Mysql
-        $this->db->query("SELECT * FROM User WHERE role !='admin'");
-        $data = $this->db->resultSet();
-        return $data;
+        $data['id'] = $this->getFakeId();
+        $newdata = $this->sonderzeichen($data);
+        $newdata = json_encode($newdata);
+
+        return json_decode($newdata);
     }
-    private function getAllUser()
+
+    public function fakeCreateUser($data)
     {
-        // Get-Data from Mysql
-        $this->db->query("SELECT * FROM User");
-        $data = $this->db->resultSet();
-        return $data;
+        echo json_encode($data);
     }
 
 
@@ -230,30 +234,7 @@ class ModelTeilnehmende extends ModelBase
         }
         return $datas;
     }
-    public function getUserwithMail($userMail)
-    {
-        $datas = $this->getAllUser();
-        foreach ($datas as $data) {
-            if ($data['email'] == $userMail) {
-                return $data;
-            } else {
 
-            }
-        }
-
-    }
-
-    // Get single User
-    public function getUser($userId)
-    {
-        $datas = $this->getDataUser();
-        foreach ($datas as $data) {
-            if ($data['id'] == $userId) {
-                return $data;
-            }
-        }
-        return $datas;
-    }
 
     /**
      * Get the value of name

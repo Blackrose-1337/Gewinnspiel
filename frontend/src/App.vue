@@ -9,7 +9,7 @@ const $q = useQuasar();
 let role = ref("");
 let isAuthenticated = ref(false);
 let change = ref();
-// darmode toggle
+// darkmode toggle
 function swap() {
     if (!change.value) {
         change.value = true;
@@ -41,6 +41,7 @@ console.log("App setup");
                 </q-toolbar-title>
             </q-toolbar>
 
+            <!-- Bei funktionierenden Sessions war auch schon mal enthalten, dass die Taps nur enthalten sind mit richtiger Rolle  -->
             <q-tabs align="left">
                 <q-route-tab to="/customer" label="Wettbewerb" />
                 <q-route-tab to="/user" label="User" />

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { storeToRefs } from "pinia";
-import { useQuasar } from "quasar";
+import { BottomSheet, useQuasar } from "quasar";
 import Formular from "@/components/Formular.vue";
 import { useUserStore } from "@/stores/users";
 import { useCompetitionStore } from "@/stores/competition";
@@ -11,6 +11,9 @@ const $q = useQuasar();
 
 const userstore = useUserStore();
 const competitionstore = useCompetitionStore();
+
+const bsp: string[] = [];
+var bild = new Image();
 
 const { competition, competitionDetails } = storeToRefs(competitionstore);
 const { user } = storeToRefs(userstore);
@@ -22,7 +25,7 @@ const projectmodel: Project = ref({
     title: "",
     text: "",
 }) as Project;
-const projectpics: ProjectBild[] = ref([]) as ProjectBild;
+const projectpics: ProjectBild = [] as ProjectBild[];
 const dialog = ref(false);
 const filesPng = ref();
 
@@ -86,22 +89,27 @@ async function sendcompetition() {
             color: "red",
         });
     } else {
-        //         const reader = new FileReader();
-        //         createBase64Image: function(FileObject) {
-        //   const reader = new FileReader();
-        //   reader.onload = (event) => {
-        //     this.base64 = event.target.result;
-        //   }
-        //   reader.readAsDataURL(FileObject);
-        // }
-        //         let rawImg;
-        //         reader.onloadend = () => {
-        //             rawImg = reader.result;
-        //             console.log(rawImg);
-        //         };
+        // while (projectpics.length != filesPng.value.length) {
+        for (let index = 0; index < filesPng.value.length; index++) {
+            const element = filesPng.value[index];
+            let file = element;
+            let reader = new FileReader();
+            reader.onloadend = function () {
+                const test: ProjectBild = {
+                    id: 0,
+                    projectId: 0,
+                    bildbase: reader.result as string,
+                };
+                console.log(test);
+                competition.value.pics.push(test);
+            };
+            reader.readAsDataURL(file);
+        }
+
         competition.value.project = projectmodel.value;
         competition.value.user = usermodel.value;
-        console.log(filesPng);
+        console.log(competition.value.pics);
+
         const bool: boolean = await competitionstore.postCompetition(competition.value);
         console.log(bool);
         if (bool) {
@@ -120,6 +128,7 @@ async function sendcompetition() {
         }
     }
 }
+
 function isValidEmail(val: string) {
     const emailPattern =
         /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,7}$/;

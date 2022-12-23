@@ -3,6 +3,7 @@ import { formatISO } from "date-fns";
 import _ from "lodash";
 import { Cookies } from "quasar";
 
+Cookies.set("www.stickstoff.de-competition","asdEBKA23+test",{ expires: '12min'})
 const token = Cookies.get("www.stickstoff.de-competition");
 export default class NetworkHelper {
     private API =
@@ -37,19 +38,22 @@ export default class NetworkHelper {
         options.method = "get";
         options.headers = {
                 Authorization: "Bearer " + token,
-            }
-        return (await ky.get(fullUrl, options)).json();
+        }
+        const response = await ky.get(fullUrl, options);
+
+        /*const newtoken = await answer.headers.get('Authorization');
+        await answer.headers.forEach(e => {
+            console.log(e);
+        });*/
+        response.headers.forEach(e => {
+            console.log(e);
+        })
+        // let newtoken = response.headers.get('Sec-Authorization');
+    
+        // console.log(newtoken);
+        return response.json();
     }
-        // const response = await ky('https://example.com', {
-	    //     hooks: {
-		//         beforeRetry: [
-		// 	        async ({request, options, error, retryCount}) => {
-		// 		        const token = await ky('https://example.com/refresh-token');
-		// 		        request.headers.set('Authorization', `token ${token}`);
-		// 	        }
-		//         ]
-	    //     }
-        // });
+    
 
     async post<T>(url: string, data: object | null = null): Promise<T | null> {
         const { fullUrl } = this.getOptionsAndUrl(url, null);
@@ -57,18 +61,11 @@ export default class NetworkHelper {
             method: "post",
             body: JSON.stringify(data),
             // headers: {
-            //     'Authorization': Cookies.get("www.stickstoff.de-competition"),
+            //     Authorization: "Bearer " + token,
             // }
         } as Options
 
 
-
-        // const csrfToken = NetworkHelper.getCookie("csrftoken");
-        // if (csrfToken) {
-        //     options.headers = {
-        //         "X-CSRFToken": csrfToken,
-        //     };
-        // }
         const res = await ky.post(fullUrl, options);
         if (res.status !== 204) {
             return res.json();

@@ -2,23 +2,23 @@ FROM php:8.1-apache
 
 # Install PHP extensions and PECL modules.
 RUN buildDeps=" \
-        default-libmysqlclient-dev \
-        libbz2-dev \
-        libmemcached-dev \
-        libsasl2-dev \
+    default-libmysqlclient-dev \
+    libbz2-dev \
+    libmemcached-dev \
+    libsasl2-dev \
     " \
     runtimeDeps=" \
-        curl \
-        git \
-        libfreetype6-dev \
-        libicu-dev \
-        libjpeg-dev \
-        libldap2-dev \
-        libmemcachedutil2 \
-        libpng-dev \
-        libpq-dev \
-        libxml2-dev \
-        libzip-dev \
+    curl \
+    git \
+    libfreetype6-dev \
+    libicu-dev \
+    libjpeg-dev \
+    libldap2-dev \
+    libmemcachedutil2 \
+    libpng-dev \
+    libpq-dev \
+    libxml2-dev \
+    libzip-dev \
     " \
     && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y $buildDeps $runtimeDeps \
     && docker-php-ext-install bcmath bz2 calendar iconv  intl mysqli opcache pdo_mysql soap zip \
@@ -40,6 +40,8 @@ ENV PATH=$PATH:/root/composer/vendor/bin COMPOSER_ALLOW_SUPERUSER=1
 RUN mkdir /var/composer
 COPY composer.json /var/composer/
 RUN cd /var/composer/ && composer install
+RUN mkdir /var/www/data
+RUN chown -R www-data:www-data /var/www/data
 
 # Apache Rewrite Module
 RUN a2enmod rewrite
@@ -48,5 +50,6 @@ RUN a2enmod rewrite
 # RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 # RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+USER www-data
 
 

@@ -13,6 +13,7 @@ services:
       - 8000:80
     volumes:
       - ./backend/php:/var/www/html
+      - ./data:/var/www/data
 
   vueweb:
     build: ./frontend

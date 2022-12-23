@@ -51,7 +51,7 @@ export const useProjectStore = defineStore({
         },
         async postProject() {
             
-            // gezielter Fehler eingebaut
+            // gezielter Fehler eingebaut für Test
             //this.project.userId = 2342;
             
             //Daten werden an Backendgesendet

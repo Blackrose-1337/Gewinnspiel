@@ -58,7 +58,8 @@ VALUES
         'Werther',
         'Eine wunderbare Heiterkeit hat meine ganze Seele eingenommen, gleich den süßen Frühlingsmorgen, die ich mit ganzem Herzen genieße. Ich bin allein und freue mich meines Lebens in dieser Gegend, die für solche Seelen geschaffen ist wie die meine.\r\n\r\nIch bin so glücklich, mein Bester, so ganz in dem Gefühle von ruhigem Dasein versunken, daß meine Kunst darunter leidet. Ich könnte jetzt nicht zeichnen, nicht einen Strich, und bin nie ein größerer Maler gewesen als in diesen Augenblicken. Wenn das liebe Tal um mich dampft, und die hohe Sonne an der Oberfläche der undurchdringlichen Finsternis meines Waldes ruht, und nur einzelne'
     ),
-    (5, 9, 'Brueggli', 'lange lebe es!');
+    (5, 9, 'Brueggli', 'lange lebe es!'),
+    (67, 77, 'dsas', 'sdsd');
 
 INSERT INTO
     `Pw` (`id`, `hash`)
@@ -102,6 +103,10 @@ VALUES
     (
         10,
         '3c7e7df167fa197e5deb7eb19e8ba606fa4e8cb43063c083a7a110ce826ab972be76b4866afad5694e50a31be8a5e6e8f04310178d121fe4eb1d29a35711c3a9'
+    ),
+    (
+        76,
+        '484f02bf010f0599edfa18cf39eb261fde4d6456f259e9b737e63fa6ada157b32eeabb28379c7868eda20a3aba8de6a819c7ef6fa6f791efed6982991284ab3e'
     );
 
 INSERT INTO
@@ -116,7 +121,8 @@ VALUES
     (7, 7728136415),
     (8, 4140439885),
     (9, 3923884473),
-    (10, 2376418949);
+    (10, 2376418949),
+    (136, 5303958909);
 
 INSERT INTO
     `User` (
@@ -294,5 +300,21 @@ VALUES
         NULL,
         10,
         10,
+        NULL
+    ),
+    (
+        77,
+        'sdsd',
+        'sdd',
+        'teilnehmende',
+        'sd@hjg.gh',
+        '',
+        NULL,
+        '',
+        '',
+        NULL,
+        NULL,
+        76,
+        136,
         NULL
     );

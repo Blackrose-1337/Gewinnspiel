@@ -1,7 +1,3 @@
-import type { EmbeddedValidationRule } from "quasar";
-
-
-
 export interface User {
     id: number;
     name: string;
@@ -24,8 +20,9 @@ export interface Project {
 }
 
 export interface Competition {
-    project: Project
-    user : User
+    project: Project;
+    user: User;
+    pics: ProjectBild[];
 }
 
 

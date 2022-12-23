@@ -13,7 +13,6 @@ class AuthController extends BaseController
         // abfrage ob es eine GET_Methode ist
         if (strtoupper($requestMethod) == 'POST') {
             try {
-
                 if (isset($_SESSION['user_id'])) {
                     $strErrorDesc = 'Sie sind bereits angemeldet';
                     $strErrorHeader = $this->fehler(406);
@@ -26,12 +25,10 @@ class AuthController extends BaseController
                     $data = json_decode(file_get_contents('php://input'), true);
                     $email = isset($data['email']) ? $data['email'] : "";
                     $passwort = isset($data['password']) ? $data['password'] : "";
-
                     if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL) || !preg_match("/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]+$/", $email)) {
                         $strErrorDesc = 'Ungültige E-Mail';
                         $strErrorHeader = $this->fehler(420);
                     } elseif (strlen($passwort) < 12 || !preg_match("/^[a-zA-Z0-9\?\!\+\@]/", $passwort)) {
-
                         $strErrorDesc = 'Das Passwort ist kürzer als 12 Zeichen oder enthält nicht erlaubte Zeichen';
                         $strErrorHeader = $this->fehler(420);
                     } else {
@@ -41,12 +38,9 @@ class AuthController extends BaseController
                         $salt = $saltmodel->getSaltbyID($user['saltId']);
                         //controll Hash with password and salt
                         $controll = $pwmodel->controllHash($passwort, $salt, $user['pwId']);
-
                         if (!$controll) {
                             print_r("Passwort ist falsch");
-
                         } else {
-
                             $str = $this->rndtoken();
                             $str2 = $this->rndtoken();
                             $answer = [
@@ -57,14 +51,10 @@ class AuthController extends BaseController
                                 ]
                             ];
                             $token = $str2 . $user['email'] . $str;
-                            // var_dump($test[0]);
                             $usermodel->createUserSession($user['id'], $user['email'], $user['name'], $user['role'], $token);
                             $responseData = json_encode($answer[0]);
                         }
                     }
-
-
-                    //$responseData = true;
                 }
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
@@ -101,7 +91,6 @@ class AuthController extends BaseController
                 $tk2 = isset($data['password']) ? $data['tk2'] : "";
                 if (!isset($_SESSION['user_id'])) {
                     try {
-                        // print_r($_SESSION['user_id']);
                         if ($tk1 == '' || $tk2 == '') {
                             $tk1 == $this->rndtoken();
                             $tk2 == $this->rndtoken();

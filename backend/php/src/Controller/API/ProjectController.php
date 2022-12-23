@@ -17,14 +17,14 @@ class ProjectController extends BaseController
                 $responseData = json_encode($projectmodel->getProject($arrQueryStringParams['userId']));
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
-                $strErrorHeader = 'HTTP/1.1 500 Internal Server Error';
+                $strErrorHeader = $this->fehler(500);
             }
         } else {
             $strErrorDesc = 'Method not supported';
-            $strErrorHeader = 'HTTP/1.1 422 Unprocessable Entity';
+            $strErrorHeader = $this->fehler(422);
         }
         if (!$strErrorDesc) {
-            $this->sendOutput($responseData, array('Content-Type: application/json', 'HTTP/1.1 200 Blackrose'));
+            $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
         } else {
             $this->sendOutput(
                 json_encode(array('error' => $strErrorDesc)),
@@ -46,14 +46,14 @@ class ProjectController extends BaseController
                 $responseData = json_encode($projectmodel->getAllProject());
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
-                $strErrorHeader = 'HTTP/1.1 500 Internal Server Error';
+                $strErrorHeader = $this->fehler(500);
             }
         } else {
             $strErrorDesc = 'Method not supported';
-            $strErrorHeader = 'HTTP/1.1 422 Unprocessable Entity';
+            $strErrorHeader = $this->fehler(422);
         }
         if (!$strErrorDesc) {
-            $this->sendOutput($responseData, array('Content-Type: application/json', 'HTTP/1.1 200 Blackrose'));
+            $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
         } else {
             $this->sendOutput(
                 json_encode(array('error' => $strErrorDesc)),
@@ -81,14 +81,14 @@ class ProjectController extends BaseController
                 }
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
-                $strErrorHeader = 'HTTP/1.1 500 Internal Server Error';
+                $strErrorHeader = $this->fehler(500);
             }
         } else {
             $strErrorDesc = 'Method not supported';
-            $strErrorHeader = 'HTTP/1.1 422 Unprocessable Entity';
+            $strErrorHeader = $this->fehler(422);
         }
         if (!$strErrorDesc) {
-            $this->sendOutput($responseData, array('Content-Type: application/json', 'HTTP/1.1 200 Blackrose'));
+            $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
         } else {
             $this->sendOutput(
                 json_encode(array('error' => $strErrorDesc)),

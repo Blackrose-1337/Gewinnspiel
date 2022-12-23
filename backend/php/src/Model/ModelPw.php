@@ -5,10 +5,10 @@ class ModelPw extends ModelBase
     //Attribute
     private string $hash;
 
+
+    // Hash reset
     public function resetHashbyId(int $salt, int $id)
     {
-        //pw search with id would be here
-
         $pw = $this->getString();
         $hash = $this->mySha512($pw, $salt, 10000);
 
@@ -20,6 +20,7 @@ class ModelPw extends ModelBase
         return $pw;
     }
 
+    // Hash generierung
     private function mySha512($str, $salt, $iterations)
     {
         for ($x = 0; $x < $iterations; $x++) {
@@ -28,14 +29,12 @@ class ModelPw extends ModelBase
         return $str;
     }
 
+    // Hash vergleich
     public function controllHash($pw, float $salt, $pwid)
     {
         $hash = $this->mySha512($pw, $salt, 10000);
-        // print_r("\n");
-        //print_r($hash);
         $dbhash = $this->getDBHash($pwid);
-        // print_r("\n");
-        // print_r($dbhash);
+
         if ($dbhash === $hash) {
             return 1;
         } else {
@@ -44,6 +43,7 @@ class ModelPw extends ModelBase
 
     }
 
+    // Hash auf DB hinterlegen
     public function generateHashDB(string $pw, $salt)
     {
         // generieren des hashes mit string, salt und 10000 durchläufen
@@ -57,6 +57,8 @@ class ModelPw extends ModelBase
         return $this->db->execute();
     }
 
+
+    // Hash von DB holen
     private function getDBHash($pwid)
     {
         $this->db->query("SELECT hash FROM Pw WHERE id = $pwid");
