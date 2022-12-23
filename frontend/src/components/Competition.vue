@@ -210,7 +210,8 @@ load();
                 v-model="filesPng"
                 rounded
                 outlined
-                label="Filtered (png only)"
+                :rules="[val => !!val || 'Pflichtfeld *']"
+                label="Filtered (png only) *"
                 multiple
                 :filter="checkFileType"
                 @rejected="onRejected"
