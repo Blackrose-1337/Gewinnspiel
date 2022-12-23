@@ -33,6 +33,8 @@ function changeUserModel(u: User) {
     usermodel.value = u;
 }
 function sendcompetition() {
+    //clear von übertragungs Bilder falls noch von versuch zuvor befüllt
+    competition.value.pics.splice(0);
     //abfrage ob Bilder hochgeladen wurden falls ja werden diese in Base64 konvertiert
     if (filesPng.value.length > 0) {
         for (let index = 0; index < filesPng.value.length; index++) {
