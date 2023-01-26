@@ -5,3 +5,4 @@ mysql init scripts
 mysql change default root passswort 
 mysql create user
 mysql create database
+test
