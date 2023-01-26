@@ -35,7 +35,7 @@ const { user } = toRefs(props) as User;
 
 const userStore = useUserStore();
 
-const selectOptionsTyp = ["DEU", "AUT", "CHE"];
+const selectOptionsTyp = ["DE", "AU", "CH"];
 
 function isValidEmail(val: string) {
     const emailPattern =
@@ -72,7 +72,18 @@ async function savechange() {
             color: "red",
         });
     } else {
-        userStore.saveUserChange(model.value);
+        const answer = await userStore.saveUserChange(model.value);
+        if (answer === true) {
+            $q.notify({
+                type: "positive",
+                message: "Änderungen wurden gespeichert",
+            });
+        } else {
+            $q.notify({
+                type: answer.success,
+                message: answer.error,
+            });
+        }
     }
 }
 async function resestpw() {
@@ -82,6 +93,11 @@ async function resestpw() {
             type: "positive",
             message: "Passwort wurde zurückgesetzt",
             color: "green",
+        });
+    } else {
+        $q.notify({
+            type: answer.success,
+            message: answer.error,
         });
     }
 }

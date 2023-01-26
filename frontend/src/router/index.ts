@@ -55,18 +55,18 @@ const router = createRouter({
         }
     ],
 });
-router.beforeEach(async to => {
-    const authStore = useAuthStore();
-    if (!authStore.isInitialized) {
-        await authStore.initialize();
-    }
-    if (to.meta.requiresAuth && !authStore.isAuthenticated)
-        return {
-            name: "login",
-            query: {
-                redirectTo: to.fullPath,
-            },
-        };
-});
+// router.beforeEach(async to => {
+//     const authStore = useAuthStore();
+//     if (!authStore.isInitialized) {
+//         await authStore.initialize();
+//     }
+//     if (to.meta.requiresAuth && !authStore.isAuthenticated)
+//         return {
+//             name: "login",
+//             query: {
+//                 redirectTo: to.fullPath,
+//             },
+//         };
+// });
 
 export default router;

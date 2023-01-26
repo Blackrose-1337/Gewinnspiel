@@ -6,21 +6,13 @@ class CompetitionController extends BaseController
     {
         $strErrorDesc = '';
         $requestMethod = $_SERVER["REQUEST_METHOD"];
-        $arrQueryStringParams = $this->getQueryStringParams();
-        print_r($requestMethod);
-        if (strtoupper($requestMethod) == 'GET') {
-            try {
-                // Aufruf benötigter Klassen 
 
-            } catch (Error $e) {
-                $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
-                $strErrorHeader = $this->fehler(500);
-            }
-        } elseif (strtoupper($requestMethod) == 'POST') {
+        if (strtoupper($requestMethod) == 'POST') {
             try {
                 // Aufruf benötigter Klassen 
                 $newproject = new ModelProject();
                 $usermodel = new ModelTeilnehmende();
+
                 // Post Daten holen
                 $data = json_decode(file_get_contents('php://input'), true);
                 // User erstellen
@@ -28,11 +20,25 @@ class CompetitionController extends BaseController
                 $data['project']['userid'] = $usermodel->id;
                 // Projekt erstellen 
                 $answerProject = $newproject->createProject($data['project']);
+                $picturebase64 = $data['pics'];
+                error_log(json_encode($picturebase64));
+
                 if (PHP_OS == "Linux") {
-                    $generalpath = "../../data/project";
-                    $newPath = $generalpath;
+                    $generalpath = "../data/project";
+                    $number = $this->countfolder("../../data");
+                    $newPath = $generalpath . strval($number);
                     mkdir($newPath, 0777, false);
+                    $this->saveImage($picturebase64, $newPath, $newproject->getId());
+                } elseif (PHP_OS == "Windows") {
+                    mkdir("C:\Wettbewerb");
+                    $generalpath = "C:\Wettbewerb\project";
+                    $number = $this->countfolder("C:\Wettbewerb");
+                    $newPath = $generalpath . strval($number);
+                    mkdir($newPath, 0777, false);
+                    $this->saveImage($picturebase64, $newPath, $newproject->getId());
                 }
+
+                $this->sendmail($data['user']['email'], 'test', $usermodel->getPw());
                 // Reaktion zurücksenden
                 if ($answerProject == 1& $answerUser == 1) {
                     $responseData = true;
@@ -47,7 +53,7 @@ class CompetitionController extends BaseController
             $strErrorDesc = 'Method not supported';
             $strErrorHeader = $this->fehler(422);
         }
-        if (!$strErrorDesc && ($requestMethod == 'GET' || $requestMethod == 'POST')) {
+        if (!$strErrorDesc && ($requestMethod == 'POST')) {
             $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
         } else {
             $this->sendOutput(
@@ -61,6 +67,7 @@ class CompetitionController extends BaseController
         $strErrorDesc = '';
         $requestMethod = $_SERVER["REQUEST_METHOD"];
         $arrQueryStringParams = $this->getQueryStringParams();
+        error_log('-----------hier------');
         // $check = new Authcheck;
         //$answer = $check->authcheck();
 
@@ -75,21 +82,31 @@ class CompetitionController extends BaseController
                 $strErrorHeader = $this->fehler(500);
             }
         } elseif (strtoupper($requestMethod) == 'POST') {
+            error_log('-----------hier2------');
             try {
-                // Aufruf benötigter Klassen 
-                $competition = new ModelCompetition();
-                // Post Daten holen
-                $data = json_decode(file_get_contents('php://input'), true);
-                // update Competition
-                $competition->updateData($data);
-                // Reaktion zurücksenden
-                $responseData = true;
+                error_log('-----------hier3------');
+
+                if (!$this->sessionCheck()) {
+                    $strErrorDesc = "Nicht akzeptierte Session";
+                    $strErrorHeader = $this->fehler(405);
+                } else if (!$this->userCheck('admin')) {
+                    $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
+                    $strErrorHeader = $this->fehler(401);
+                } else {
+                    error_log('------------hier4------------');
+                    // Aufruf benötigter Klassen 
+                    $competition = new ModelCompetition();
+                    // Post Daten holen
+                    $data = json_decode(file_get_contents('php://input'), true);
+                    // update Competition
+                    $competition->updateData($data);
+                    // Reaktion zurücksenden
+                    $responseData = true;
+                }
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
                 $strErrorHeader = $this->fehler(500);
             }
-        } elseif (strtoupper($requestMethod) == 'OPTIONS') {
-            $responseData = true;
         } else {
             $strErrorDesc = 'Method not supported';
             $strErrorHeader = $this->fehler(422);

@@ -5,7 +5,7 @@ import { useQuasar } from "quasar";
 import type { User, Project } from "@/stores/interfaces";
 import { useProjectStore } from "@/stores/projects";
 import { storeToRefs } from "pinia";
-import { toRefs, ref, watch } from "vue";
+import { toRefs, watch, onMounted } from "vue";
 
 const props = defineProps<{
     user?: User;
@@ -46,7 +46,7 @@ async function save() {
 
 function load() {
     if (user.value == null) {
-        project;
+        console.log("ficken");
     } else {
         projectStore.getProject(user.value.id);
     }
@@ -73,12 +73,18 @@ function expand($event: any) {
 watch(user, changeuser => {
     load();
 });
-
+onMounted(() => {
+    if (view?.value !== "Project" && view?.value !== "evaluation") {
+        if (typeof user.value.id == "undefined") {
+        } else {
+            load();
+        }
+    }
+});
 watch(selectedproject, changeselectedproject => {
     loadProject();
 });
 
-load();
 loadimage();
 </script>
 <template>

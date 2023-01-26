@@ -4,41 +4,56 @@ class AdminController extends BaseController
     // Funktion um das alte Passwort zu reseten und ein neues Passwort für den User zu generieren 
     public function pwresetAction()
     {
+        error_log("---------------TEST--------------------");
         $strErrorDesc = '';
         $requestMethod = $_SERVER["REQUEST_METHOD"];
         // QueryParams entgegennehmen
         $arrQueryStringParams = $this->getQueryStringParams();
-
-        if (strtoupper($requestMethod) == 'GET') {
-            try {
-                // Aufruf benötigter Klassen 
-                $usermodel = new ModelTeilnehmende();
-                $pwmodel = new ModelPw();
-                $saltmodel = new ModelSalt();
-
-                // benötigte id's zu salt und PW abrufen 
-                $ids = $usermodel->getUser($arrQueryStringParams['userId']);
-
-                // neuen salt generieren 
-                $saltmodel->resetSaltbyID($ids['saltId']);
-                $salt = $saltmodel->getSaltbyID($ids['saltId']);
-
-                // passwort erstellen hash genieren mit salt und passwort zurückgeben
-                $pw = $pwmodel->resetHashbyId($salt, $ids['pwId']);
-
-                $responseData = true;
-
-            } catch (Error $e) {
-                $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
-                $strErrorHeader = $this->fehler(500);
+        try {
+            if (!$this->sessionCheck()) {
+                $strErrorDesc = "Nicht akzeptierte Session";
+                $strErrorHeader = $this->fehler(405);
             }
-        } else {
-            $strErrorDesc = 'Method not supported';
-            $strErrorHeader = $this->fehler(422);
+            if (!$this->userCheck('admin')) {
+                $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
+                $strErrorHeader = $this->fehler(401);
+            } else {
+                if (strtoupper($requestMethod) == 'GET') {
+
+                    // Aufruf benötigter Klassen 
+                    $usermodel = new ModelTeilnehmende();
+                    $pwmodel = new ModelPw();
+                    $saltmodel = new ModelSalt();
+
+                    // benötigte id's zu salt und PW abrufen 
+                    $ids = $usermodel->getUser($arrQueryStringParams['userId']);
+
+                    // neuen salt generieren 
+                    $saltmodel->resetSaltbyID($ids['saltId']);
+                    $salt = $saltmodel->getSaltbyID($ids['saltId']);
+
+                    // passwort erstellen hash genieren mit salt und passwort zurückgeben
+                    $pw = $pwmodel->resetHashbyId($salt, $ids['pwId']);
+
+                    $responseData = true;
+
+
+                } else {
+                    $strErrorDesc = 'Method not supported';
+                    $strErrorHeader = $this->fehler(422);
+                }
+
+
+            }
+        } catch (Error $e) {
+            $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+            $strErrorHeader = $this->fehler(500);
         }
         if (!$strErrorDesc && ($requestMethod == 'GET')) {
+            error_log("---------------TEST4--------------------");
             $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
         } else {
+            error_log("---------------TEST5--------------------");
             $this->sendOutput(
                 json_encode(array('error' => $strErrorDesc)),
                 array('Content-Type: application/json', $strErrorHeader)
@@ -52,30 +67,68 @@ class AdminController extends BaseController
         $strErrorDesc = '';
         $requestMethod = $_SERVER["REQUEST_METHOD"];
         $arrQueryStringParams = $this->getQueryStringParams();
-
-        // abfrage ob es eine POST_Methode ist
-        if (strtoupper($requestMethod) == 'POST') {
-            try {
-                // Aufruf benötigter Klassen 
-                $usermodel = new ModelTeilnehmende();
-                // Post Daten holen
-                $data = json_decode(file_get_contents('php://input'), true);
-                // Falls id 0 hinterlegt ist wird ein neuer User erstellt
-                if ($data['id'] == 0) {
-                    $usermodel->createUser($data);
-
-                    // Andernfalls wird mit der Id der User gesucht und die Daten überschrieben
-                } else {
-                    $usermodel->changeUser($data);
-                    $responseData = true;
-                }
-
-            } catch (Error $e) {
-                echo "Error";
-                $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
-                $strErrorHeader = $this->fehler(500);
+        try {
+            if (!$this->sessionCheck()) {
+                $strErrorDesc = "Nicht akzeptierte Session";
+                $strErrorHeader = $this->fehler(405);
             }
+            if (!$this->userCheck('admin')) {
+                $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
+                $strErrorHeader = $this->fehler(401);
+            } else {
+                // abfrage ob es eine POST_Methode ist
+                if (strtoupper($requestMethod) == 'POST') {
+
+                    // Aufruf benötigter Klassen 
+                    $usermodel = new ModelTeilnehmende();
+                    if (($data = $this->parseData(file_get_contents('php://input'))) !== false) {
+
+                    } else {
+
+                    }
+
+                    // Post Daten holen
+                    $data = json_decode(file_get_contents('php://input'), true);
+                    // Falls id 0 hinterlegt ist wird ein neuer User erstellt
+                    if ($data['id'] == 0) {
+                        $usermodel->createUser($data);
+
+                        // Andernfalls wird mit der Id der User gesucht und die Daten überschrieben
+                    } else {
+                        $usermodel->changeUser($data);
+                        $responseData = true;
+                    }
+                } else {
+                    $strErrorDesc = 'Method not supported';
+                    $strErrorHeader = $this->fehler(422);
+                }
+            }
+        } catch (Error $e) {
+            echo "Error";
+            $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+            $strErrorHeader = $this->fehler(500);
         }
+
+        if (!$strErrorDesc) {
+            $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
+        } else {
+            $this->sendOutput(
+                json_encode(array('error' => $strErrorDesc)),
+                array('Content-Type: application/json', $strErrorHeader)
+            );
+        }
+    }
+
+    private function parseData($string)
+    {
+        $data = null;
+        try {
+            $data = json_decode($string);
+        } catch (Exception $e) {
+            $data = false;
+        }
+
+        return $data;
     }
 
 }

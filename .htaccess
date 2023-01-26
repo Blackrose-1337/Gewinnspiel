@@ -1,0 +1,5 @@
+# Header add Access-Control-Allow-Origin "http://localhost:3000"
+# Header add Access-Control-Allow-Origin "http://localhost:8000"
+
+SetEnvIf Origin "^http(s)?://(.+\.)?(localhost:8000|localhost:3000)$" origin_is=$0 
+Header always set Access-Control-Allow-Origin %{origin_is}e env=origin_is

@@ -1,27 +1,55 @@
 <?php
+//error_reporting(1);
+
 class AuthController extends BaseController
 {
-    // Funktion um ein Projekt abzurufen
+    // LoginFunktion Session setzen
     public function LoginAction()
     {
+
         $strErrorDesc = '';
         $requestMethod = $_SERVER["REQUEST_METHOD"];
-        $arrQueryStringParams = $this->getQueryStringParams();
-        $requestHeaders = apache_request_headers();
-        $Authorization = trim($requestHeaders['Authorization']);
 
         // abfrage ob es eine GET_Methode ist
         if (strtoupper($requestMethod) == 'POST') {
-            try {
-                if (isset($_SESSION['user_id'])) {
-                    $strErrorDesc = 'Sie sind bereits angemeldet';
-                    $strErrorHeader = $this->fehler(406);
-                } else {
-                    // Aufruf benötigter Klassen 
-                    $usermodel = new ModelTeilnehmende;
-                    $saltmodel = new ModelSalt;
-                    $pwmodel = new ModelPw;
 
+            // Aufruf benötigter Klassen 
+            $usermodel = new ModelTeilnehmende;
+            $saltmodel = new ModelSalt;
+            $pwmodel = new ModelPw;
+
+            try {
+                error_log(session_status());
+
+                error_log("");
+                error_log("----------------Session Cookie---------------- ");
+                if (isset($_COOKIE['PHPSESSID'])) {
+                    error_log("Sent Coookie : " . $_COOKIE['PHPSESSID']);
+                    error_log("Session ID :   " . session_id());
+                } else {
+                    error_log("There is no PHPSESSID-Coookie exists");
+                }
+                error_log("");
+                error_log("----------------Session Information-----------------");
+                if ($_SESSION) {
+                    foreach ($_SESSION as $key => $val) {
+                        error_log($key . " : " . $val);
+                    }
+                } else {
+                    error_log("There is no SESSION exists");
+                    if (!$_SESSION) {
+                        session_regenerate_id();
+                        error_log("------------------------------");
+                        error_log("Reset Session ID");
+                    }
+                }
+                error_log("");
+
+                if (isset($_COOKIE['PHPSESSID']) && isset($_SESSION['id']) && $_COOKIE['PHPSESSID'] == $_SESSION['id']) {
+                    $strErrorDesc = $_SESSION['role'];
+                    $strErrorHeader = $this->fehler(406);
+                } elseif (!isset($_COOKIE['PHPSESSID']) || !isset($_SESSION['id'])) {
+                    error_log("TESTTETSTETSTETST---------------------------------");
                     $data = json_decode(file_get_contents('php://input'), true);
                     $email = isset($data['email']) ? $data['email'] : "";
                     $passwort = isset($data['password']) ? $data['password'] : "";
@@ -39,23 +67,63 @@ class AuthController extends BaseController
                         //controll Hash with password and salt
                         $controll = $pwmodel->controllHash($passwort, $salt, $user['pwId']);
                         if (!$controll) {
-                            print_r("Passwort ist falsch");
+                            $strErrorDesc = "Passwort ist falsch";
+                            $strErrorHeader = $this->fehler(401);
                         } else {
-                            $str = $this->rndtoken();
-                            $str2 = $this->rndtoken();
+                            $this->createUserSession($user['id'], $user['email'], $user['name'], $user['role']);
+
                             $answer = [
-                                [
-                                    "success" => 1,
-                                    "token" => [$str, $str2],
-                                    "time" => "12h",
-                                ]
+                                "success" => 1,
+                                "role" => $user['role'],
                             ];
-                            $token = $str2 . $user['email'] . $str;
-                            $usermodel->createUserSession($user['id'], $user['email'], $user['name'], $user['role'], $token);
-                            $responseData = json_encode($answer[0]);
+                            $responseData = json_encode($answer);
                         }
                     }
                 }
+            } catch (Error $e) {
+                $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+                $strErrorHeader = $this->fehler(500);
+            }
+            // } else if (strtoupper($requestMethod) == 'OPTIONS') {
+            //     $responseData = true;
+        } else {
+            $strErrorDesc = 'Method not supported';
+            $strErrorHeader = $this->fehler(422);
+        }
+        if (!$strErrorDesc) {
+            $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
+        } else {
+            $this->sendOutput(
+                json_encode(array('error' => $strErrorDesc)),
+                array('Content-Type: application/json', $strErrorHeader)
+            );
+        }
+    }
+    public function checkAction()
+    {
+        $strErrorDesc = '';
+        $requestMethod = $_SERVER["REQUEST_METHOD"];
+
+        // abfrage ob es eine GET_Methode ist
+        if (strtoupper($requestMethod) == 'GET') {
+            try {
+
+                if (isset($_COOKIE['PHPSESSID']) && isset($_SESSION['id']) && $_COOKIE['PHPSESSID'] == $_SESSION['id']) {
+                    $answer = [
+                        "success" => 1,
+                        "role" => $_SESSION['user_role'],
+                    ];
+
+                    $responseData = json_encode($answer);
+
+                } else {
+                    $answer = [
+                        "success" => 0,
+                        "role" => '',
+                    ];
+                    $responseData = json_encode($answer);
+                }
+
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
                 $strErrorHeader = $this->fehler(500);
@@ -73,68 +141,38 @@ class AuthController extends BaseController
             );
         }
     }
-    public function SessionAction()
+    public function logoutAction()
     {
         $strErrorDesc = '';
         $requestMethod = $_SERVER["REQUEST_METHOD"];
-        $arrQueryStringParams = $this->getQueryStringParams();
-        $requestHeaders = apache_request_headers();
-        $Authorization = trim($requestHeaders['Authorization']);
 
-        // abfrage ob es eine GET_Methode ist
         if (strtoupper($requestMethod) == 'POST') {
-            try {
-                $usermodel = new ModelTeilnehmende;
-
-                $data = json_decode(file_get_contents('php://input'), true);
-                $tk1 = isset($data['email']) ? $data['tk1'] : "";
-                $tk2 = isset($data['password']) ? $data['tk2'] : "";
-                if (!isset($_SESSION['user_id'])) {
-                    try {
-                        if ($tk1 == '' || $tk2 == '') {
-                            $tk1 == $this->rndtoken();
-                            $tk2 == $this->rndtoken();
-                        }
-                        $token = $tk2 . $tk1;
-                        $usermodel->createUserSession(0, '', 'guest', 'guest', $token);
-                        $answer = [
-                            [
-                                "success" => 0,
-                                "role" => $_SESSION['user_role'],
-                                "time" => "12h",
-                            ]
-                        ];
-                        $responseData = json_encode($answer);
-                    } catch (Error $e) {
-                        $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
-                        $strErrorHeader = $this->fehler(500);
-                    }
+            error_log(session_status());
+            error_log("----------------");
+            if (session_status() == 2) {
+                error_log('');
+                error_log($_COOKIE['PHPSESSID']);
+                error_log($_SESSION['id']);
+                error_log('');
+                if (isset($_COOKIE['PHPSESSID']) && isset($_SESSION['id']) && $_COOKIE['PHPSESSID'] == $_SESSION['id']) {
+                    session_unset();
+                    session_destroy();
+                    error_log(session_status());
+                    $answer = [
+                        "success" => 0,
+                        "role" => '',
+                    ];
+                    $responseData = json_encode($answer);
                 } else {
-
-                    $tk = $tk2 . $_SESSION['user_email'] . $tk1;
-                    if ($_SESSION['token'] == $tk) {
-                        $answer = [
-                            [
-                                "success" => 1,
-                                "role" => $_SESSION['user_role'],
-                                "time" => "12h",
-                            ]
-                        ];
-                        $responseData = json_encode($answer);
-                    } else {
-                        $strErrorDesc = 'Session is not valid';
-                        $strErrorHeader = $this->fehler(405);
-                    }
+                    $strErrorDesc = 'Something went wrong! Please contact support.';
+                    $strErrorHeader = $this->fehler(500);
+                    $answer = [
+                        "success" => 1,
+                    ];
+                    $responseData = json_encode($answer);
                 }
-
-            } catch (Error $e) {
-                $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
-                $strErrorHeader = $this->fehler(500);
             }
-        } elseif (strtoupper($requestMethod) == 'GET') {
 
-        } elseif (strtoupper($requestMethod) == 'OPTIONS') {
-            $responseData = true;
         } else {
             $strErrorDesc = 'Method not supported';
             $strErrorHeader = $this->fehler(422);

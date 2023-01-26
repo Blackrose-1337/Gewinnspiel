@@ -43,6 +43,17 @@ CREATE TABLE `Competition` (
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
+DROP TABLE IF EXISTS `Image`;
+
+CREATE TABLE `Image` (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `projectid` int NOT NULL,
+    `path` varchar(70) NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `projectid` (`projectid`),
+    CONSTRAINT `Image_ibfk_1` FOREIGN KEY (`projectid`) REFERENCES `Project` (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
 DROP TABLE IF EXISTS `Kriterien`;
 
 CREATE TABLE `Kriterien` (

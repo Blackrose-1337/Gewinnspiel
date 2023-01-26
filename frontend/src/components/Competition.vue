@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { storeToRefs } from "pinia";
-import { BottomSheet, useQuasar } from "quasar";
+import { useQuasar } from "quasar";
 import Formular from "@/components/Formular.vue";
 import { useUserStore } from "@/stores/users";
 import { useCompetitionStore } from "@/stores/competition";
@@ -229,7 +229,9 @@ load();
     </div>
     <div class="textarea">
         <h5>Teilnahmebedingungen</h5>
-        <p>{{ competitionDetails.teilnehmerbedingung }}</p>
+        <q-card flat>
+            <q-card-section v-html="competitionDetails.teilnehmerbedingung" />
+        </q-card>
     </div>
     <div>
         <q-dialog v-model="dialog" persistent>
@@ -265,8 +267,11 @@ load();
 }
 h3 {
     text-shadow: 1px 1px 1px black, 1px -1px 1px black, -1px 1px 1px black, -1px -1px 1px black;
-    color: #00baff;
+    color: #4967de46;
     font-weight: bold;
     text-align: center;
+}
+.wettbewerbtitle {
+    color: aqua;
 }
 </style>

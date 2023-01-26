@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import NetworkHelper from "@/utils/networkHelper";
-import { Notify, TouchSwipe } from "quasar";
+import { Notify } from "quasar";
 import { HTTPError } from "ky";
 import type { Project } from "@/stores/interfaces";
 
@@ -9,7 +9,6 @@ const api = new NetworkHelper();
 export type State = {
     projects: Project[];
     project: Project;
-   // selectedProjectId: number | null;
 };
 
 export const useProjectStore = defineStore({
@@ -26,7 +25,7 @@ export const useProjectStore = defineStore({
                 const param = {
                     "userId": userId,
                 }
-                this.project = await api.get<Project>("src/index.php/project/take", param);
+                this.project = await api.get<Project>("project/take", param);
             }catch (err) {
                 console.error(err);
                 if (err instanceof HTTPError) {
@@ -37,7 +36,7 @@ export const useProjectStore = defineStore({
         async getProjects() {
             try {
                 this.projects.splice(0);
-                const projects = await api.get<Project[]>("src/index.php/project/takeAll");
+                const projects = await api.get<Project[]>("project/takeAll");
                 projects.forEach(p => this.projects.push(p));
             }catch (err) {
                 console.error(err);
@@ -55,7 +54,7 @@ export const useProjectStore = defineStore({
             //this.project.userId = 2342;
             
             //Daten werden an Backendgesendet
-            const bool= api.post<boolean>("src/index.php/project/update", this.project);
+            const bool= api.post<boolean>("project/update", this.project);
             return bool;
         },
     },

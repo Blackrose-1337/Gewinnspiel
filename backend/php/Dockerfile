@@ -45,6 +45,7 @@ RUN chown -R www-data:www-data /var/www/data
 
 # Apache Rewrite Module
 RUN a2enmod rewrite
+RUN a2enmod headers
 
 # PHP-Configuration stellen wir auf Development
 # RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"

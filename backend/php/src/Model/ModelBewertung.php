@@ -14,17 +14,41 @@ class ModelBewertung extends ModelBase
         return $data;
     }
 
-    // Speichert Bewertung auf der DB
-    public function createBewertung($data)
+    public function getBewertung($data)
     {
-        $beispiel = 8;
-        $this->db->query("INSERT INTO Bewertung ('administrativeId','projectId','kriterienId','bewertung')
-        VALUES (:administrativeId, :projectId, :kriterienId, :bewertung");
-        $this->db->bind(":administrativeId", $beispiel);
-        $this->db->bind(":administrativeId", $data['projectId']);
-        $this->db->bind(":kriterienId", $data['kriterienId']);
-        $this->db->bind(":bewertung", $data['bewertung']);
+        error_log('------------There-----------------');
+        error_log(json_encode($data));
+        $this->db->query("SELECT * FROM Bewertung
+        WHERE administrativeId= :administrativeId AND projectId= :projectId");
+        $this->db->bind(":projectId", $data['projectId']);
+        $this->db->bind(":administrativeId", $_SESSION["user_id"]);
+        $data = $this->db->resultSet();
+        return $data;
+    }
 
+    // Speichert Bewertung auf der DB
+    public function createOrUpdateBewertung($data)
+    {
+
+        if ($data["id"] == 0) {
+
+            $this->db->query("INSERT INTO Bewertung
+            (`administrativeId`,`projectId`,`kriterienId`,`bewertung`,`finish`)
+            VALUES (:administrativeId, :projectId, :kriterienId, :bewertung, :finish)");
+            $this->db->bind(":administrativeId", $_SESSION["user_id"]);
+            $this->db->bind(":projectId", $data["projectId"]);
+            $this->db->bind(":kriterienId", $data["kriterienId"]);
+            $this->db->bind(":bewertung", $data["bewertung"]);
+            $this->db->bind(":finish", $data["finish"]);
+
+        } else if ($data["id"] != 0) {
+            $this->db->query("UPDATE Bewertung SET
+            bewertung = :bewertung, finish = :finish 
+            WHERE id= :id");
+            $this->db->bind(":bewertung", $data["bewertung"]);
+            $this->db->bind(":finish", $data['finish']);
+            $this->db->bind(":id", $data["id"]);
+        }
         $answer = $this->db->execute();
 
         // get Id from DB

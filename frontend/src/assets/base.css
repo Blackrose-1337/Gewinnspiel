@@ -56,7 +56,7 @@
   box-sizing: border-box;
   margin: 0;
   /*position: relative;*/  /* if enabled, the drawer won't work */
-  font-weight: normal;
+  /* font-weight: normal; */
 }
 
 body {

@@ -2,7 +2,7 @@
 import { ref, toRefs } from "vue";
 import { useQuasar } from "quasar";
 import { useAuthStore } from "@/stores/auth";
-import { useRouter, useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 
 const props = defineProps({
     redirectTo: {
@@ -15,7 +15,6 @@ const { redirectTo } = toRefs(props);
 const $q = useQuasar();
 const authStore = useAuthStore();
 const router = useRouter();
-const route = useRoute();
 const email = ref("");
 const password = ref("");
 const showPassword = ref(false);
@@ -27,11 +26,15 @@ function isValidEmail(val: string) {
 }
 function isValidpw(val: string) {
     const pwpattern = /^[a-zA-Z0-9\@\+\?\!]{12,20}$/;
-    console.log(val);
     return pwpattern.test(val) || "Invalid password";
 }
 
 async function login() {
+    // email.value = "nanomail@gmail.com";
+    email.value = "poppel@gmx.ch";
+    // email.value = "business@gmail.com";
+
+    password.value = "exampel1DDH?";
     if (isValidEmail(email.value) != true) {
         $q.notify({
             message: "Email ist inakzeptabel",
@@ -44,13 +47,25 @@ async function login() {
         });
     } else {
         try {
-            await authStore.login(email.value, password.value);
-            $q.notify("Login aktzeptiert");
-            await router.push(redirectTo.value);
+            const answer = await authStore.login(email.value, password.value);
+            if (answer === true) {
+                $q.notify({
+                    message: "Login aktzeptiert",
+                    type: "positive",
+                });
+                await router.push(redirectTo.value);
+            } else {
+                $q.notify({
+                    message: answer.error,
+                    type: answer.success,
+                });
+                authStore.role = answer.role;
+                await router.push(redirectTo.value);
+            }
         } catch (err) {
             console.error("Login failed: ", err);
             $q.notify({
-                message: "Login fehlgeschlagen",
+                message: "Login fehlgeschlagen\n",
                 type: "negative",
             });
         }
@@ -67,6 +82,7 @@ async function login() {
                 label="E-Mail"
                 v-model="email"
                 type="email"
+                autofocus
                 lazy-rules
                 :rules="[val => (val && val.length > 0) || 'E-Mail is required']"
             />

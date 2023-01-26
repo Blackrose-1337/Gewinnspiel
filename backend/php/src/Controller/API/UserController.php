@@ -15,8 +15,15 @@ class UserController extends BaseController
                 $usermodel = new ModelTeilnehmende();
                 // Userdaten holen
                 $arr = $usermodel->getDataUser();
+                $newarr = [];
+                // entfernen von Daten die nicht gebraucht werden
+                foreach ($arr as $val) {
+                    unset($val['saltId']);
+                    unset($val['pwId']);
+                    array_push($newarr, $val);
+                }
                 // Daten in json unformen
-                $responseData = json_encode($arr);
+                $responseData = json_encode($newarr);
             } catch (Error $e) {
                 $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
                 $strErrorHeader = $this->fehler(500);
@@ -49,32 +56,49 @@ class UserController extends BaseController
         // Methode entnehmen
         $requestMethod = $_SERVER["REQUEST_METHOD"];
         $arrQueryStringParams = $this->getQueryStringParams();
+        try {
+            if (!$this->sessionCheck()) {
+                $strErrorDesc = "Nicht akzeptierte Session";
+                $strErrorHeader = $this->fehler(405);
+            } else if (!$this->userCheck('jury', 'admin', 'teilnehmende')) {
+                $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
+                $strErrorHeader = $this->fehler(401);
+            } else {
+                // abfrage ob es eine GET_Methode ist
+                if (strtoupper($requestMethod) == 'GET') {
 
-        // abfrage ob es eine GET_Methode ist
-        if (strtoupper($requestMethod) == 'GET') {
-            try {
-                // Aufruf benötigter Klassen 
-                $usermodel = new ModelTeilnehmende();
-                // Userdaten nehmen Mocking
-                $user = $usermodel->getUser($arrQueryStringParams['userId']);
-                // Daten in json unformen
-                $responseData = json_encode($user);
+                    // Aufruf benötigter Klassen 
+                    $usermodel = new ModelTeilnehmende();
+                    // Userdaten nehmen Mocking
+                    if (isset($arrQueryStringParams['userId'])) {
+                        $user = $usermodel->getUser($arrQueryStringParams['userId']);
+                    } else {
+                        $user = $usermodel->getUser($_SESSION['user_id']);
+                    }
+                    // Daten in json unformen
+                    unset($user['saltId']);
+                    unset($user['pwId']);
+                    error_log(json_encode($user));
+                    $responseData = json_encode($user);
 
-            } catch (Error $e) {
-                $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
-                $strErrorHeader = $this->fehler(500);
+
+                } else {
+                    $strErrorDesc = 'Method not supported';
+                    $strErrorHeader = $this->fehler(422);
+                }
+
             }
-        } else {
-            $strErrorDesc = 'Method not supported';
-            $strErrorHeader = $this->fehler(422);
-        }
-        if (!$strErrorDesc && ($requestMethod == 'GET')) {
-            $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
-        } else {
-            $this->sendOutput(
-                json_encode(array('error' => $strErrorDesc)),
-                array('Content-Type: application/json', $strErrorHeader)
-            );
+            if (!$strErrorDesc && ($requestMethod == 'GET')) {
+                $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
+            } else {
+                $this->sendOutput(
+                    json_encode(array('error' => $strErrorDesc)),
+                    array('Content-Type: application/json', $strErrorHeader)
+                );
+            }
+        } catch (Error $e) {
+            $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+            $strErrorHeader = $this->fehler(500);
         }
     }
 }

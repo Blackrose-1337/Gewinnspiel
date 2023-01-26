@@ -25,12 +25,16 @@ class BaseController
 
     protected function sendOutput($data, $httpHeaders = array())
     {
-        header_remove('Set-Cookie');
         if (is_array($httpHeaders) && count($httpHeaders)) {
             foreach ($httpHeaders as $httpHeader) {
                 header($httpHeader);
             }
         }
+        error_log("-------------------------sendet DATA----------------------------");
+        error_log("----------------------------------------------------------------");
+        error_log($data);
+        error_log("----------------------------------------------------------------");
+
         echo $data;
         exit;
     }
@@ -56,6 +60,8 @@ class BaseController
                 return "HTTP/1.1 500 Internal Server Error";
             case 405:
                 return "HTTP/1.1 405 Nicht aktzeptierte Session";
+            case 401:
+                return "HTTP/1.1 401 Unautorisiert";
 
         }
     }
@@ -65,7 +71,113 @@ class BaseController
     {
         switch ($nr) {
             case 200:
-                return "HTTP/1.1 200 Success with Blackrose";
+                return "200";
         }
     }
+
+    protected function countfolder($dir)
+    {
+        if (is_dir($dir)) {
+            $counter = 0;
+            chdir($dir);
+            $handle = opendir(".");
+            while ($file = readdir(($handle))) {
+                if (is_dir($file) && $file != "." && $file != "..") {
+                    $counter++;
+                }
+            }
+            return $counter;
+        }
+    }
+
+    protected function saveImage($picturebase64, $path, $projectid)
+    {
+        $modelimage = new ModelBilder;
+        $count = 0;
+        foreach ($picturebase64 as $base64) {
+
+            $picture = explode(',', $base64['bildbase']);
+            error_log('---------------------------------------------------------------');
+            error_log(json_encode($picture));
+            error_log('---------------------------------------------------------------');
+            $newpath = $path . "/Image" . $count . ".png";
+            $img = imagecreatefromstring(base64_decode($picture[1]));
+            imagepng($img, $newpath, 0);
+            $count++;
+            $modelimage->createImagePath($projectid, $newpath);
+        }
+    }
+
+    protected function sendmail($empfaenger, $link, $pw)
+    {
+        // Betreff
+        $empfaenger = 'yannick-basler@gmx.ch';
+        $betreff = 'Bestätigungsmail Stickstoff Wettbewerb';
+        $link = "http://localhost:8000/src/index.php/competition/confirm/token";
+        // Nachricht
+        $nachricht = '
+        <html>
+            <head>
+                <title>Bestätigung Stickstoff Wettbewerb</title>
+            </head>
+            <body>
+                <p>Mit dem folgenden Link bestätigen Sie, dass Sie sich an dem Wettbewerb angemeldet haben.</p></br>
+                <h4>' . '<a href=' . $link . '>Bestätigungslink</a>' . '</h4></br></br>
+                <p>Hier folgt noch ihr Passwort mit dem Sie sich Anmelden können auf der Seite, um ihr Projekt nochmals einzusehen und gegebenenfalls Änderungen machen können.</p></br>
+                <h4>' . $pw . '</h4>
+            </body>
+        </html>
+        ';
+
+        // für HTML-E-Mails muss der 'Content-type'-Header gesetzt werden
+        $header[] = 'MIME-Version: 1.0';
+        $header[] = 'Content-type: text/html; charset=iso-8859-1';
+
+        // zusätzliche Header
+        $header[] = 'To:' . $empfaenger;
+        $header[] = 'From: Stickstoff Wettbewerb <Stickstoff@Wettbewerb.com>';
+
+        // verschicke die E-Mail
+        mail($empfaenger, $betreff, $nachricht, implode("\r\n", $header));
+    }
+
+    protected function createUserSession($id, $email, $name, $role)
+    {
+        $_SESSION['id'] = session_id();
+        $_SESSION['user_id'] = $id;
+        $_SESSION['user_email'] = $email;
+        $_SESSION['user_name'] = $name;
+        $_SESSION['user_role'] = $role;
+
+        return 1;
+    }
+
+    protected function sessionCheck()
+    {
+        if (isset($_COOKIE['PHPSESSID']) && isset($_SESSION['id']) && $_COOKIE['PHPSESSID'] == $_SESSION['id']) {
+            error_log('True Sesssion');
+            return 1;
+        } else {
+            error_log('False Session');
+            return 0;
+        }
+    }
+
+    protected function userCheck($val1, $val2 = "1", $val3 = "2")
+    {
+        switch ($_SESSION['user_role']) {
+            case $val1:
+                error_log('True role');
+                return 1;
+            case $val2:
+                error_log('True role');
+                return 1;
+            case $val3:
+                error_log('True role');
+                return 1;
+            default:
+                return 0;
+        }
+    }
+
 }

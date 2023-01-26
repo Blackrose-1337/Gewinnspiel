@@ -35,7 +35,7 @@ class ModelProject extends ModelBase
         $id = $this->db->resultSet();
 
         // set Id on Model
-        $this->id = $id[0]['id'];
+        $this->setId($id[0]['id']);
 
         return $answer;
     }

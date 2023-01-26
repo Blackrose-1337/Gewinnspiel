@@ -1,29 +1,33 @@
 <script setup lang="ts">
-import { useRouter, useRoute } from "vue-router";
-import type { Ref } from "vue";
-import { ref } from "vue";
-import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
+import { computed, onBeforeMount } from "vue";
+import { useQuasar } from "quasar";
 import Project from "@/components/Project.vue";
 import Formular from "@/components/Formular.vue";
-import type { User } from "@/stores/interfaces";
 import { useUserStore } from "@/stores/users";
+import { useAuthStore } from "@/stores/auth";
 
 const router = useRouter();
-const route = useRoute();
-
+const authStore = useAuthStore();
+const $q = useQuasar();
 const userStore = useUserStore();
-const { user } = storeToRefs(userStore);
 
-const selectedUser = ref(null as unknown) as Ref<User>;
-selectedUser.value = {
-    id: "5",
-};
+userStore.getUser();
 
-async function loaduser() {
-    await userStore.getUser(selectedUser.value.id);
-    console.log(user);
+const selectedUser = computed(() => userStore.user);
+
+async function check() {
+    const answer: boolean = await authStore.check();
+    if (answer == false) {
+        router.push("/login");
+    } else if (authStore.role == "jury") {
+        router.push("/evaluation");
+    }
 }
-loaduser();
+
+onBeforeMount(() => {
+    check();
+});
 </script>
 <template>
     <main class="row q-gutter-lg">
@@ -31,7 +35,7 @@ loaduser();
             <Project :user="selectedUser" />
         </div>
         <div class="q-gutter-lg col-5">
-            <Formular :user="user" />
+            <Formular :user="selectedUser" />
         </div>
     </main>
 </template>

@@ -10,7 +10,6 @@ export interface User {
     strasse: string;
     strNr: number;
     tel: number;
-    pwSaltId: number;
 }
 export interface Project {
     id: number;
@@ -47,11 +46,12 @@ export interface Bewertung{
     id: number;
     projectId: number;
     kriterienId: number;
-    bewertung: number;
+    bewertung: number | null;
+    finish: number;
 }
 
 export interface Kriterien{
     id: number;
     frage: string;
-    value: number;
+    value: number | null;
 } 

@@ -1,10 +1,22 @@
 <script setup lang="ts">
-import { useRouter, useRoute } from "vue-router";
-import Designe from "@/components/Designe.vue"
+import { onBeforeMount } from "vue";
+import { useRouter } from "vue-router";
+import Designe from "@/components/Designe.vue";
+import { useAuthStore } from "@/stores/auth";
 
 const router = useRouter();
-const route = useRoute();
-const view ="Project"
+const authStore = useAuthStore();
+
+async function check() {
+    const answer: boolean = await authStore.check();
+    if (answer == false) {
+        router.push("/login");
+    }
+}
+
+onBeforeMount(() => {
+    check();
+});
 </script>
 <template>
     <main class="q-pa-md">

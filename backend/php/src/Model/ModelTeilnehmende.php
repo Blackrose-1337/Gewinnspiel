@@ -22,6 +22,7 @@ class ModelTeilnehmende extends ModelBase
     private int $tel;
     private int $pwId;
     private int $saltId;
+    private string $pw;
 
     /** Beispieluser zum Testen vom Login
      * Mail: poppel@gmx.ch
@@ -51,6 +52,9 @@ class ModelTeilnehmende extends ModelBase
 
         // random genierten String auf Variable setzen
         $pw = $this->getString();
+
+        // Im Model Pw hinterlegen für Mailversand
+        $this->setPw($pw);
 
         // mit generiertem String und Salt ein Hash generieren, welcher direkt auf der Datenbank gespeichert wird.
         $modelpw->generateHashDB($pw, $salt[0]["salt"]);
@@ -91,25 +95,19 @@ class ModelTeilnehmende extends ModelBase
     }
 
     // Session erstellen und Token für Frontend
-    public function createUserSession($id, $email, $name, $role, $token)
-    {
-        if ($token == '') {
-            $token = $this->rndtoken();
-        }
 
-        $_SESSION['user_id'] = $id;
-        $_SESSION['user_email'] = $email;
-        $_SESSION['user_name'] = $name;
-        $_SESSION['user_role'] = $role;
-        $_SESSION['token'] = $token;
-    }
 
     // get all User expect admin
     public function getDataUser()
     {
-        // Get-Data from Mysql
+        // Get-Data from Mysql   id,name,surname,role,email,land,plz,ortschaft,strasse,strNr,tel
         $this->db->query("SELECT * FROM User WHERE role !='admin'");
         $data = $this->db->resultSet();
+        // foreach ($data as $key => $val) {
+        //     error_log($key . "  " . $val);
+        //     error_log(" ------- ");
+        // }
+
         return $data;
     }
     private function getAllUser()
@@ -413,6 +411,26 @@ class ModelTeilnehmende extends ModelBase
     public function setTel($tel)
     {
         $this->tel = $tel;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of pw
+     */
+    public function getPw()
+    {
+        return $this->pw;
+    }
+
+    /**
+     * Set the value of pw
+     *
+     * @return  self
+     */
+    public function setPw($pw)
+    {
+        $this->pw = $pw;
 
         return $this;
     }

@@ -1,5 +1,5 @@
 <?php
-define('PROJECT_ROOT_PATH', __DIR__ . '/../');
+define('PROJECT_ROOT_PATH', __DIR__ . "/../");
 require_once PROJECT_ROOT_PATH . "Controller/API/BaseController.php";
 require_once PROJECT_ROOT_PATH . "Model/Database.php";
 
@@ -15,6 +15,7 @@ switch ($uri[3]) {
         require_once PROJECT_ROOT_PATH . "Model/ModelCompetition.php";
         require_once PROJECT_ROOT_PATH . "Model/ModelProject.php";
         require_once PROJECT_ROOT_PATH . "Model/ModelTeilnehmende.php";
+        require_once PROJECT_ROOT_PATH . "Model/ModelBilder.php";
         break;
     case 'project':
         require_once PROJECT_ROOT_PATH . "Model/ModelProject.php";

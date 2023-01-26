@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { RouterView } from "vue-router";
 import { useQuasar } from "quasar";
 import { useAuthStore } from "@/stores/auth";
+import { useRouter } from "vue-router";
 
 const authStore = useAuthStore();
+const router = useRouter();
+const role = computed(() => authStore.role);
 const $q = useQuasar();
-let role = ref("");
-let isAuthenticated = ref(false);
+const title = ref("Admin");
 let change = ref();
 // darkmode toggle
 function swap() {
@@ -18,16 +20,22 @@ function swap() {
     }
     $q.dark.set(change.value);
 }
-// async function loadseassion() {
-//     const session = await authStore.checksession();
-//     role.value = session.role;
-//     isAuthenticated.value = session.success;
-//     console.log(role);
-// }
-
-// loadseassion();
-
-console.log("App setup");
+async function logout() {
+    const answer = await authStore.logout();
+    if (answer === true) {
+        settitle("Admin");
+        await router.push("/login");
+    }
+}
+function settitle(val: string) {
+    title.value = val;
+}
+onMounted(() => {
+    const answer = authStore.check();
+    if (answer === false) {
+        router.push("/login");
+    }
+});
 </script>
 
 <template>
@@ -40,31 +48,38 @@ console.log("App setup");
                     <q-btn class="text-right" round @click="swap" push outline icon="light_mode" />
                 </q-toolbar-title>
             </q-toolbar>
-
-            <!-- Bei funktionierenden Sessions war auch schon mal enthalten, dass die Taps nur enthalten sind mit richtiger Rolle  -->
             <q-tabs align="left">
-                <q-route-tab to="/customer" label="Wettbewerb" />
-                <q-route-tab to="/user" label="User" />
-                <q-btn flat label="Admin" class="fullheight">
+                <q-route-tab to="/customer" @click="settitle('Admin')" label="Wettbewerb" />
+                <q-route-tab to="/user" label="User" v-if="role === 'teilnehmende'" />
+                <q-btn flat v-bind:label="title" class="fullheight" v-if="role === 'admin'">
                     <q-menu>
                         <q-list style="min-width: 100px">
                             <q-route-tab
-                                @click="switcher('setup')"
+                                @click="settitle('Userverwaltung')"
                                 to="/verwaltung"
                                 label="Userverwaltung"
                                 icon="dynamic_form"
-                                on-click="{{}}"
                             />
-                            <q-route-tab @click="switcher('setup')" to="/project" label="Projekte" icon="settings" />
+                            <q-route-tab @click="settitle('Projekte')" to="/project" label="Projekte" icon="settings" />
 
                             <!-- läuft noch nicht -->
-                            <q-route-tab @click="switcher('setup')" to="/designe" label="Desgine" icon="settings" />
+                            <q-route-tab @click="settitle('Desgine')" to="/designe" label="Desgine" icon="settings" />
                         </q-list>
                     </q-menu>
                 </q-btn>
-                <q-route-tab to="/evaluation" label="Bewertung" />
+                <q-route-tab
+                    @click="settitle('Admin')"
+                    to="/evaluation"
+                    label="Bewertung"
+                    v-if="role === 'jury' || role === 'admin'"
+                />
                 <q-space />
-                <q-route-tab to="/login" label="Login" />
+                <div v-if="role !== 'admin' && role !== 'jury' && role !== 'teilnehmende'">
+                    <q-route-tab to="/login" label="Login" />
+                </div>
+                <div v-else>
+                    <q-route-tab @click="logout()" label="Logout" />
+                </div>
             </q-tabs>
         </q-header>
         <q-page-container class="wrapper">

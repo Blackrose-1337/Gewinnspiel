@@ -1,15 +1,13 @@
 <?php
 
 // Sesssion 
-/*
 require_once __DIR__ . '/helpers/session_helper.php';
-require_once __DIR__ . '/helpers/authcheck.php';
-*/
+
+// set used max. available memorysize
+ini_set('memory_limit', '1024M');
 
 header("Access-Control-Allow-Credentials: true");
-header("Access-Control-Allow-Origin: http://localhost:3000");
-header("Access-Control-Allow-Methodes: GET, POST");
-header('Access-Control-Allow-Headers: Authorization');
+header("Access-Control-Allow-Methodes: GET, POST, OPTIONS");
 header('Content-Type: application/json');
 header('Accept: application/json');
 require __DIR__ . "/inc/bootstrap.php";
@@ -20,27 +18,27 @@ $uri = explode('/', $uri);
 
 switch ($uri[3]) {
     case 'user':
-        require PROJECT_ROOT_PATH . "Controller/API/UserController.php";
+        require __DIR__ . "/Controller/API/UserController.php";
         $objFeedController = new UserController();
         break;
     case 'competition':
-        require PROJECT_ROOT_PATH . "Controller/API/CompetitionController.php";
+        require __DIR__ . "/Controller/API/CompetitionController.php";
         $objFeedController = new CompetitionController();
         break;
     case 'project':
-        require PROJECT_ROOT_PATH . "Controller/API/ProjectController.php";
+        require __DIR__ . "/Controller/API/ProjectController.php";
         $objFeedController = new ProjectController();
         break;
     case 'evaluation':
-        require PROJECT_ROOT_PATH . "Controller/API/EvaluationController.php";
+        require __DIR__ . "/Controller/API/EvaluationController.php";
         $objFeedController = new EvaluationController();
         break;
     case 'admin':
-        require PROJECT_ROOT_PATH . "Controller/API/AdminController.php";
+        require __DIR__ . "/Controller/API/AdminController.php";
         $objFeedController = new AdminController();
         break;
     case 'auth':
-        require PROJECT_ROOT_PATH . "Controller/API/AuthController.php";
+        require __DIR__ . "/Controller/API/AuthController.php";
         $objFeedController = new AuthController();
         break;
     default:

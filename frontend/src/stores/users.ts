@@ -19,29 +19,40 @@ export const useUserStore = defineStore({
         users: [],
         user: {} as User,
         } as State),
-    getters: {
-        // isAuthenticated: state => state._isAuthenticated,
-
-    },
     actions: {
         async getUser(u: number) {
-            const param = {
+            try {
+                const param = {
                 'userId': u
             }
-            this.user =await api.get<User>("src/index.php/user/getUser",param);  
+            this.user = await api.get<User>("user/getUser", param);  
+            } catch (err) {
+                console.error(err);
+            }
+            
         },
         async getUsers(){
-            this.users.splice;
-          const users = await api.get<User[]>("src/index.php/user/list");
+        this.users.splice(0);
+          const users = await api.get<User[]>("user/list");
           users.forEach(u => this.users.push(u));
-        },
-        async posttest(u :User)
-        {
-            api.post<User>("src/index.php/user/list", u);   
         },
         async saveUserChange(u: User)
         {
-            api.post<User>("src/index.php/admin/save", u);
+            try {
+                const res = await api.post<{ success: boolean; error: string; u: User }>("admin/save", u);
+                
+                if (res?.success) {
+                    return res.success;
+                } else {
+                    const answer = {
+                        'success': "negative",
+                        'error': res?.error,
+                    }
+                    return answer;
+                }
+            } catch (err) {
+                throw err;
+            }
         },
 
         async resetPW(userId:number) {
@@ -50,8 +61,17 @@ export const useUserStore = defineStore({
                 {
                     "userId": userId,
                 }
-                const info = await api.get<boolean>("src/index.php/admin/pwreset", param);
-                return info;
+                const res = await api.get<{ success: boolean; error: string; }>("admin/pwreset", param);
+                console.log(res)
+                if (res?.success) {
+                    return res.success;
+                } else {
+                    const answer = {
+                        'success': "negative",
+                        'error': res?.error,
+                    }
+                    return answer;
+                }
             }catch (err) {
                 console.error(err);
                 if (err instanceof HTTPError) {
