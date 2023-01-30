@@ -32,7 +32,7 @@ class BaseController
         }
         error_log("-------------------------sendet DATA----------------------------");
         error_log("----------------------------------------------------------------");
-        error_log($data);
+        // error_log($data);
         error_log("----------------------------------------------------------------");
 
         echo $data;
@@ -106,6 +106,18 @@ class BaseController
             $count++;
             $modelimage->createImagePath($projectid, $newpath);
         }
+    }
+
+    protected function getImage($path)
+    {
+        $handle = file_get_contents(('../' . $path));
+        $img = (base64_encode($handle));
+        $test = [
+            'img' => $img,
+        ];
+        //error_log(json_encode($test));
+        error_log('------ give Picture');
+        return $test;
     }
 
     protected function sendmail($empfaenger, $link, $pw)

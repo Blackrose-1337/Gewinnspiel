@@ -26,6 +26,14 @@ export const useProjectStore = defineStore({
                     "userId": userId,
                 }
                 this.project = await api.get<Project>("project/take", param);
+                console.log('test');
+                this.project.pics.forEach(element => {
+                    console.log(element);
+                                    console.log('test');
+
+                });
+                                console.log('test');
+
             }catch (err) {
                 console.error(err);
                 if (err instanceof HTTPError) {

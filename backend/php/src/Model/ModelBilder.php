@@ -17,6 +17,22 @@ class ModelBilder extends ModelBase
         $answer = $this->db->execute();
         return $answer;
     }
+    public function getPictureByProId($proid)
+    {
+        error_log($proid);
+        $this->db->query("SELECT * FROM Image
+        WHERE projectid = :projectid");
+        $this->db->bind(":projectid", $proid);
+        $data = $this->db->resultSet();
+        return $data;
+    }
+
+    public function getAllPaths()
+    {
+        $this->db->query("SELECT * FROM Image");
+        $data = $this->db->resultSet();
+        return $data;
+    }
     /**
      * Get the value of bilderpfad
      */

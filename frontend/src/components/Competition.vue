@@ -178,12 +178,17 @@ load();
 </script>
 
 <template>
-    <h3>{{ competitionDetails.title }}</h3>
-    <div class="q-pa-md">
-        <p>
-            {{ competitionDetails.text }}
-        </p>
-    </div>
+    <!-- <div class="row q-pa-md"> -->
+    <q-card flat>
+        <q-card-section align="center" v-html="competitionDetails.title" />
+    </q-card>
+    <!-- </div>
+
+    <div class="row q-pa-md"> -->
+    <q-card flat>
+        <q-card-section align="left" v-html="competitionDetails.text" />
+    </q-card>
+    <!-- </div> -->
     <div class="row q-pa-md">
         <div class="col-4 textarea" style="max-width: 30%">
             <q-input

@@ -22,7 +22,6 @@ class CompetitionController extends BaseController
                 $answerProject = $newproject->createProject($data['project']);
                 $picturebase64 = $data['pics'];
                 error_log(json_encode($picturebase64));
-
                 if (PHP_OS == "Linux") {
                     $generalpath = "../data/project";
                     $number = $this->countfolder("../../data");
@@ -37,7 +36,6 @@ class CompetitionController extends BaseController
                     mkdir($newPath, 0777, false);
                     $this->saveImage($picturebase64, $newPath, $newproject->getId());
                 }
-
                 $this->sendmail($data['user']['email'], 'test', $usermodel->getPw());
                 // Reaktion zurücksenden
                 if ($answerProject == 1& $answerUser == 1) {
@@ -82,10 +80,7 @@ class CompetitionController extends BaseController
                 $strErrorHeader = $this->fehler(500);
             }
         } elseif (strtoupper($requestMethod) == 'POST') {
-            error_log('-----------hier2------');
             try {
-                error_log('-----------hier3------');
-
                 if (!$this->sessionCheck()) {
                     $strErrorDesc = "Nicht akzeptierte Session";
                     $strErrorHeader = $this->fehler(405);
@@ -93,7 +88,6 @@ class CompetitionController extends BaseController
                     $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
                     $strErrorHeader = $this->fehler(401);
                 } else {
-                    error_log('------------hier4------------');
                     // Aufruf benötigter Klassen 
                     $competition = new ModelCompetition();
                     // Post Daten holen

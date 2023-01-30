@@ -16,6 +16,7 @@ export interface Project {
     userId: number;
     text: string;
     title: string;
+    pics: string[];
 }
 
 export interface Competition {

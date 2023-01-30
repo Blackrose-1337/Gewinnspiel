@@ -5,7 +5,7 @@ import { useQuasar } from "quasar";
 import type { User, Project } from "@/stores/interfaces";
 import { useProjectStore } from "@/stores/projects";
 import { storeToRefs } from "pinia";
-import { toRefs, watch, onMounted } from "vue";
+import { toRefs, watch, onMounted, computed, ref } from "vue";
 
 const props = defineProps<{
     user?: User;
@@ -18,12 +18,13 @@ const projectStore = useProjectStore();
 const $q = useQuasar();
 
 //---------------storeToRefs------------------------------
-const { project } = storeToRefs(projectStore) as Project;
+// const { project } = storeToRefs(projectStore) as Project;
+const project = computed(() => projectStore.project);
 const { user } = toRefs(props) as User;
 const { selectedproject } = toRefs(props) as Project;
 const { view } = toRefs(props);
 
-const bsp: string[] = [];
+const bsp: string[] = ref([]);
 var bild = new Image();
 
 async function save() {
@@ -44,19 +45,31 @@ async function save() {
     }
 }
 
-function load() {
+async function load() {
     if (user.value == null) {
         console.log("ficken");
     } else {
-        projectStore.getProject(user.value.id);
+        await projectStore.getProject(user.value.id);
+        loadimage();
     }
 }
 function loadimage() {
-    image.src.forEach(element => {
-        bild.src = element;
-        bsp.push(bild.src);
-    });
+    console.log(project.value.pics);
+    debugger;
+    if (project.value.pics !== null && project.value.pics !== "undefined") {
+        project.value.pics.forEach((e: { img: string }) => {
+            bild.src = "data:image/png;base64," + e.img;
+            console.log(bild.src);
+            bsp.push(bild.src);
+        });
+    }
+    // console.log(image.src);
+    // image.src.forEach((element: string) => {
+    //     bild.src = element;
+    //     bsp.push(bild.src);
+    // });
 }
+
 function loadProject() {
     projectStore.setProject(selectedproject.value);
 }
@@ -84,8 +97,7 @@ onMounted(() => {
 watch(selectedproject, changeselectedproject => {
     loadProject();
 });
-
-loadimage();
+// loadimage();
 </script>
 <template>
     <div v-if="view === 'Project'">
