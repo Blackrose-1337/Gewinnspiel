@@ -24,9 +24,8 @@ const { user } = toRefs(props) as User;
 const { selectedproject } = toRefs(props) as Project;
 const { view } = toRefs(props);
 
-const bsp: string[] = ref([]);
+const bsp: string[] = ref([]) as string[];
 var bild = new Image();
-
 async function save() {
     const bool: boolean = await projectStore.postProject();
     console.log(bool);
@@ -55,19 +54,13 @@ async function load() {
 }
 function loadimage() {
     console.log(project.value.pics);
-    debugger;
     if (project.value.pics !== null && project.value.pics !== "undefined") {
         project.value.pics.forEach((e: { img: string }) => {
             bild.src = "data:image/png;base64," + e.img;
             console.log(bild.src);
-            bsp.push(bild.src);
+            bsp.value.push(bild.src);
         });
     }
-    // console.log(image.src);
-    // image.src.forEach((element: string) => {
-    //     bild.src = element;
-    //     bsp.push(bild.src);
-    // });
 }
 
 function loadProject() {

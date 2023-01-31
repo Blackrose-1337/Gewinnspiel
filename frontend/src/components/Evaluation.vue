@@ -36,6 +36,7 @@ watch(project, changeProject => {
     console.log(changeProject.id);
     evaluationstore.getall(changeProject.id);
 });
+console.log("Project");
 load();
 </script>
 

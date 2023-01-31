@@ -3,33 +3,10 @@ import { ref, getCurrentInstance } from "vue";
 import { storeToRefs } from "pinia";
 import { useQuasar, QEditor } from "quasar";
 import { useCompetitionStore } from "@/stores/competition";
-import EditorJS, { LogLevels } from "@editorjs/editorjs";
-import Header from "@editorjs/header";
-import AlignmentTuneTool from "editorjs-text-alignment-blocktune";
-import TextColor from "editorjs-text-color-plugin";
-import List from "@editorjs/list";
-import Paragraph from "@editorjs/paragraph";
-import Underline from "@editorjs/underline";
-import Strikethrough from "@sotaproject/strikethrough";
-import FontFamaly from "editorjs-inline-font-family-tool";
-import FontSize from "editorjs-inline-font-size-tool";
 
 const $q = useQuasar();
 const competitionstore = useCompetitionStore();
 const { competition, competitionDetails } = storeToRefs(competitionstore);
-
-function poppel() {
-    editor
-        .save()
-        .then(outputData => {
-            console.log("Article data: ", outputData);
-            console.log(outputData.blocks);
-            competitionDetails.value.title = outputData.blocks[0].data.text;
-        })
-        .catch(error => {
-            console.log("Saving failed: ", error);
-        });
-}
 
 const toolbar = [
     [
@@ -66,16 +43,6 @@ const toolbar = [
     ["undo", "redo"],
     ["viewsource"],
 ];
-const fonts = {
-    arial: "Arial",
-    arial_black: "Arial Black",
-    comic_sans: "Comic Sans MS",
-    courier_new: "Courier New",
-    impact: "Impact",
-    lucida_grande: "Lucida Grande",
-    times_new_roman: "Times New Roman",
-    verdana: "Verdana",
-};
 
 async function save() {
     const bool: boolean = await competitionstore.postCompetitiondeclatations();
@@ -105,20 +72,15 @@ load();
     <div>
         <div class="q-pa-md">
             <h5>Titel vom Projekt</h5>
-            <q-editor v-model="competitionDetails.title" ref="editorRef" :toolbar="toolbar" :fonts="fonts" />
+            <q-editor v-model="competitionDetails.title" ref="editorRef" :toolbar="toolbar" />
         </div>
         <div class="q-pa-md">
             <h5>Beschreibung Wettbewerb</h5>
-            <q-editor v-model="competitionDetails.text" ref="editorRef" :toolbar="toolbar" :fonts="fonts" />
+            <q-editor v-model="competitionDetails.text" ref="editorRef" :toolbar="toolbar" />
         </div>
         <div bordered elevated class="bg-grey-8k q-pa-md">
             <h5>Teilnahmebedingungen</h5>
-            <q-editor
-                v-model="competitionDetails.teilnehmerbedingung"
-                ref="editorRef"
-                :toolbar="toolbar"
-                :fonts="fonts"
-            />
+            <q-editor v-model="competitionDetails.teilnehmerbedingung" ref="editorRef" :toolbar="toolbar" />
         </div>
         <div bordered elevated class="bg-grey-8k q-pa-md row">
             <div class="q-pa-md col-3">
@@ -131,12 +93,7 @@ load();
             </div>
             <div bordered elevated class="bg-grey-8k q-pa-md col-5">
                 <h5>Text wenn Wettbewerb geschlossen ist</h5>
-                <q-editor
-                    v-model="competitionDetails.wettbewerbCloseText"
-                    ref="editorRef"
-                    :toolbar="toolbar"
-                    :fonts="fonts"
-                />
+                <q-editor v-model="competitionDetails.wettbewerbCloseText" ref="editorRef" :toolbar="toolbar" />
             </div>
         </div>
 

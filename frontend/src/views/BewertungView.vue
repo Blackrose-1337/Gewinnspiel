@@ -14,6 +14,7 @@ const selectedProject = ref(null as unknown) as Ref<Project>;
 const view = "Project";
 async function projectChange(p: Project) {
     selectedProject.value = p;
+    console.log(p);
 }
 
 async function check() {

@@ -2,13 +2,15 @@ import { defineStore } from "pinia";
 import NetworkHelper from "@/utils/networkHelper";
 import { Notify } from "quasar";
 import { HTTPError } from "ky";
-import type { Project } from "@/stores/interfaces";
+import type { Project, User } from "@/stores/interfaces";
+
 
 const api = new NetworkHelper();
 
 export type State = {
     projects: Project[];
     project: Project;
+    user: User;
 };
 
 export const useProjectStore = defineStore({
@@ -17,7 +19,7 @@ export const useProjectStore = defineStore({
     ({
             projects: [],
             project: {} as Project,
-            //selectedProjectId: null,
+            user: {} as User,
         } as State),
     actions: {
         async getProject(userId: number) {
@@ -26,14 +28,7 @@ export const useProjectStore = defineStore({
                     "userId": userId,
                 }
                 this.project = await api.get<Project>("project/take", param);
-                console.log('test');
-                this.project.pics.forEach(element => {
-                    console.log(element);
-                                    console.log('test');
-
-                });
-                                console.log('test');
-
+                console.log('test')
             }catch (err) {
                 console.error(err);
                 if (err instanceof HTTPError) {

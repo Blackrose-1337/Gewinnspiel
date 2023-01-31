@@ -27,7 +27,6 @@ class ProjectController extends BaseController
                     $answer = $projectmodel->getProject($_SESSION['user_id']);
                     $imgs = $bildermodel->getPictureByProId($answer['id']);
                     $base64 = [];
-                    // $answer['pics' => 'value']
                     foreach ($imgs as $img) {
                         $pic = $this->getImage($img['path']);
                         array_push($base64, $pic);
