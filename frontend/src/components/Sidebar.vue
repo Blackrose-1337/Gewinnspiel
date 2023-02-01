@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { useAuthStore } from "@/stores/auth";
 import { useUserStore } from "@/stores/users";
 import { useProjectStore } from "@/stores/projects";
 import { storeToRefs } from "pinia";
-import { toRefs, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { toRefs } from "vue";
 import type { User, Project } from "@/stores/interfaces";
 
 const props = defineProps<{
@@ -12,15 +10,10 @@ const props = defineProps<{
 }>();
 const { view } = toRefs(props);
 //---------------Storeload------------------------------
-const authStore = useAuthStore();
 const userStore = useUserStore();
 const projectStore = useProjectStore();
 
-//---------------Routload------------------------------
-const router = useRouter();
-const route = useRoute();
 //---------------storeToRefs------------------------------
-const { isAuthenticated } = storeToRefs(authStore);
 const { users } = storeToRefs(userStore);
 const { projects } = storeToRefs(projectStore);
 

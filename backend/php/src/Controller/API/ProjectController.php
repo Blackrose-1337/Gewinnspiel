@@ -22,9 +22,17 @@ class ProjectController extends BaseController
                     $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
                     $strErrorHeader = $this->fehler(401);
                 } else if ($_SESSION['user_role'] == 'teilnehmende') {
-                    error_log('---------------hier--------------------');
-
                     $answer = $projectmodel->getProject($_SESSION['user_id']);
+                    $imgs = $bildermodel->getPictureByProId($answer['id']);
+                    $base64 = [];
+                    foreach ($imgs as $img) {
+                        $pic = $this->getImage($img['path']);
+                        array_push($base64, $pic);
+                    }
+                    $answer['pics'] = $base64;
+                    $responseData = json_encode($answer);
+                } else if ($_SESSION['user_role'] == 'admin') {
+                    $answer = $projectmodel->getProject($arrQueryStringParams['userId']);
                     $imgs = $bildermodel->getPictureByProId($answer['id']);
                     $base64 = [];
                     foreach ($imgs as $img) {
@@ -35,8 +43,6 @@ class ProjectController extends BaseController
                     $responseData = json_encode($answer);
                 } else if ($_SESSION['user_role'] != 'teilnehmende') {
                     if (isset($arrQueryStringParams['userId'])) {
-                        // $responseData = json_encode($projectmodel->getProject($arrQueryStringParams['userId']));
-                        error_log('-----------------------------------');
                         $answer = json_encode($projectmodel->getProject($_SESSION['user_id']));
                         error_log($answer);
                         $responseData = 0;

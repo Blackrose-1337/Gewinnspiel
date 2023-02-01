@@ -4,8 +4,8 @@ import { propsToAttrMap } from "@vue/shared";
 import { useQuasar } from "quasar";
 import type { User, Project } from "@/stores/interfaces";
 import { useProjectStore } from "@/stores/projects";
-import { storeToRefs } from "pinia";
 import { toRefs, watch, onMounted, computed, ref } from "vue";
+import { useEvaluationStore } from "@/stores/evaluation.ts";
 
 const props = defineProps<{
     user?: User;
@@ -15,20 +15,21 @@ const props = defineProps<{
 
 //---------------Storeload------------------------------
 const projectStore = useProjectStore();
+const evaluationstore = useEvaluationStore();
 const $q = useQuasar();
 
 //---------------storeToRefs------------------------------
 // const { project } = storeToRefs(projectStore) as Project;
 const project = computed(() => projectStore.project);
+const img = computed(() => evaluationstore.img);
 const { user } = toRefs(props) as User;
 const { selectedproject } = toRefs(props) as Project;
 const { view } = toRefs(props);
 
-const bsp: string[] = ref([]) as string[];
+const bsp: string[] = ref([]) as unknown as string[];
 var bild = new Image();
 async function save() {
     const bool: boolean = await projectStore.postProject();
-    console.log(bool);
     if (bool == true) {
         $q.notify({
             type: "positive",
@@ -46,25 +47,29 @@ async function save() {
 
 async function load() {
     if (user.value == null) {
-        console.log("ficken");
     } else {
+        projectStore.clear();
         await projectStore.getProject(user.value.id);
         loadimage();
     }
 }
 function loadimage() {
-    console.log(project.value.pics);
+    bsp.value = [];
     if (project.value.pics !== null && project.value.pics !== "undefined") {
         project.value.pics.forEach((e: { img: string }) => {
             bild.src = "data:image/png;base64," + e.img;
-            console.log(bild.src);
             bsp.value.push(bild.src);
         });
     }
 }
 
-function loadProject() {
+async function loadProject() {
+    bsp.value = [];
     projectStore.setProject(selectedproject.value);
+    await evaluationstore.getImages(selectedproject.value.id);
+    projectStore.clear();
+    project.value.pics = evaluationstore.img;
+    loadimage();
 }
 
 function expand($event: any) {
@@ -85,6 +90,7 @@ onMounted(() => {
         } else {
             load();
         }
+    } else {
     }
 });
 watch(selectedproject, changeselectedproject => {
