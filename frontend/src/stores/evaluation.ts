@@ -1,7 +1,8 @@
 import { defineStore } from "pinia";
 import NetworkHelper from "@/utils/networkHelper";
 import { Notify } from "quasar";
-import type { Bewertung, Kriterien } from "@/stores/interfaces";
+import type { Bewertung, Kriterien, Auswertung } from "@/stores/interfaces";
+
 
 
 const api = new NetworkHelper();
@@ -9,6 +10,8 @@ const api = new NetworkHelper();
 export type State = {
     bewertung: Bewertung[];
     kriterien: Kriterien[];
+    img: string[];
+    auswertung: Auswertung[];
 };
 
 export const useEvaluationStore = defineStore({
@@ -17,6 +20,8 @@ export const useEvaluationStore = defineStore({
         ({
             bewertung: [] as Bewertung[],
             kriterien: [] as Kriterien[],
+            img: [] as string[],
+            auswertung: [] as Auswertung[],
         } as State),
     getters: {
         // isAuthenticated: state => state._isAuthenticated,
@@ -27,8 +32,6 @@ export const useEvaluationStore = defineStore({
             this.kriterien.forEach((k) => {
                 k.value = null;
             })
-            console.log('kriterien:')
-            console.log(this.kriterien)
         },
         async getKriterien() {
             this.kriterien.splice(0);
@@ -43,13 +46,11 @@ export const useEvaluationStore = defineStore({
         },
         async getall(projectId: number) {
             this.clear();
-            console.log(projectId);
             const param = {
                 'projectId': projectId,
             }
             const ans = await api.get<Bewertung[]>("evaluation/Bewertung", param);
             if (ans.length == 0) {
-                console.log('empty');
             } else {
                 this.bewertung.splice(0);
                 ans.forEach(a => {
@@ -68,6 +69,27 @@ export const useEvaluationStore = defineStore({
                 })             
             }
         },
+        async getImages(id: number) {
+            const param = {
+                'id': id,
+            };
+            this.img= [];
+            const ans = await api.get<string[]>("evaluation/images", param);
+            
+            ans.pics.forEach(e => {
+                this.img.push(e);
+            });
+            return this.img;
+        },
+        async getAnalysis() {
+            const ans = await api.get<Auswertung[]>("evaluation/analysis", null);
+            console.log(ans)
+            this.auswertung = ans;
+            this.auswertung.forEach(e => {
+                e.value = +e.value
+            });
+            console.log(this.auswertung)
+        },
         async update(idProject: number) {
             if (this.bewertung.length === 0) {
                 this.kriterien.forEach(k => {
@@ -83,17 +105,12 @@ export const useEvaluationStore = defineStore({
                 this.kriterien.forEach(k => {
                    
                     this.bewertung.forEach(b => {
-                         console.log('k');
-                        console.log(k.id);
-                        console.log('b');
-                        console.log(b.kriterienId)
                         if (b.kriterienId == k.id) {
                             b.bewertung = k.value;
                         }
                     });
                 });
             };
-            console.log(this.bewertung);
             const ans = await api.post<boolean>("evaluation/createBewertung", this.bewertung);
             this.getall(idProject);
             

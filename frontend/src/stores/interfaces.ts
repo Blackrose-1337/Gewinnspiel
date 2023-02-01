@@ -38,8 +38,8 @@ export interface CompetitionDetails {
     title: string;
     text: string;
     teilnehmerbedingung: string;
-    wettbewerbbeginn: string;
-    wettbewerbende: string;
+    wettbewerbbeginn: Date;
+    wettbewerbende: Date;
     wettbewerbCloseText: string;
 }
 
@@ -56,3 +56,12 @@ export interface Kriterien{
     frage: string;
     value: number | null;
 } 
+export interface Auswertung{
+    id: number;
+    userId: number;
+    name: string;
+    surname: string;
+    mail: string;
+    value: number;
+    finish: boolean;
+}

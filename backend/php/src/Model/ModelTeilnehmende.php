@@ -233,6 +233,17 @@ class ModelTeilnehmende extends ModelBase
         return $datas;
     }
 
+    public function getUserinfo($a)
+    {
+        $this->db->query("SELECT name, surname, email FROM User WHERE id= :id");
+        $this->db->bind(":id", $a['userId']);
+        $data = $this->db->resultSet();
+        $a['name'] = $data[0]['name'];
+        $a['surname'] = $data[0]['surname'];
+        $a['mail'] = $data[0]['email'];
+        return $a;
+    }
+
 
     /**
      * Get the value of name

@@ -2,6 +2,7 @@
 import { onBeforeMount } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
+import Auswertung from "@/components/Analysis.vue";
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -18,6 +19,8 @@ onBeforeMount(() => {
 });
 </script>
 <template>
-    <main class="q-pa-md">< /></main>
+    <main class="q-pa-md">
+        <Auswertung />
+    </main>
 </template>
 <style></style>

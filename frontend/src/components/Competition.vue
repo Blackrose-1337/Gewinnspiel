@@ -42,13 +42,12 @@ function sendcompetition() {
             let file = element;
             let reader = new FileReader();
             reader.onloadend = function () {
-                const test: ProjectBild = {
+                const bild: ProjectBild = {
                     id: 0,
                     projectId: 0,
                     bildbase: reader.result as string,
                 };
-                console.log(test);
-                competition.value.pics.push(test);
+                competition.value.pics.push(bild);
             };
             reader.readAsDataURL(file);
         }
@@ -126,10 +125,8 @@ async function sendcompetitionstep2() {
 
         competition.value.project = projectmodel.value;
         competition.value.user = usermodel.value;
-        console.log(competition.value.pics);
 
         const bool: boolean = await competitionstore.postCompetition(competition.value);
-        console.log(bool);
         if (bool) {
             dialog.value = true;
             $q.notify({
@@ -144,6 +141,21 @@ async function sendcompetitionstep2() {
                 color: "red",
             });
         }
+    }
+}
+function datecheck() {
+    const currentDateWithFormat = new Date().toJSON().slice(0, 10).replace(/-/g, "/");
+    if (
+        currentDateWithFormat > competitionDetails.value.wettbewerbbeginn &&
+        currentDateWithFormat < competitionDetails.value.wettbewerbende
+    ) {
+        console.log(currentDateWithFormat + " > " + competitionDetails.value.wettbewerbbeginn);
+        console.log(currentDateWithFormat + " < " + competitionDetails.value.wettbewerbende);
+        return true;
+    } else {
+        console.log(currentDateWithFormat + " > " + competitionDetails.value.wettbewerbbeginn);
+        console.log(currentDateWithFormat + " < " + competitionDetails.value.wettbewerbende);
+        return false;
     }
 }
 
@@ -172,87 +184,86 @@ const teilnahmebedingungenbestätigung = ref(false);
 
 async function load() {
     await competitionstore.getCompetitiondeclarations();
-    console.log(competitionDetails);
 }
 load();
 </script>
 
 <template>
-    <!-- <div class="row q-pa-md"> -->
-    <q-card flat>
-        <q-card-section align="center" v-html="competitionDetails.title" />
-    </q-card>
-    <!-- </div>
-
-    <div class="row q-pa-md"> -->
-    <q-card flat>
-        <q-card-section align="left" v-html="competitionDetails.text" />
-    </q-card>
-    <!-- </div> -->
-    <div class="row q-pa-md">
-        <div class="col-4 textarea" style="max-width: 30%">
-            <q-input
-                v-model="projectmodel.title"
-                lazy-rules
-                :rules="[val => !!val || 'Pflichtfeld *']"
-                label="Titel zum Projekt *"
-            />
-            <q-input
-                v-model="projectmodel.text"
-                lazy-rules
-                :rules="[val => !!val || 'Pflichtfeld *']"
-                label="Beschreibung zum Projekt *"
-                autogrow
-            />
-        </div>
-        <div class="col-1"></div>
-
-        <div class="place row col-7 q-gutter-md">
-            <Formular @change:declarations="changeUserModel" />
-
-            <q-file
-                class="picloader"
-                v-model="filesPng"
-                rounded
-                outlined
-                :rules="[val => !!val || 'Pflichtfeld *']"
-                label="Filtered (png only) *"
-                multiple
-                :filter="checkFileType"
-                @rejected="onRejected"
-                counter
-            />
-            <q-checkbox
-                left-label
-                v-model="teilnahmebedingungenbestätigung"
-                label="Teilnahmebedingungen"
-                class="col-4"
-            />
-            <q-space />
-            <q-btn label="Senden" color="green" @click="sendcompetition" class="col-3" />
-        </div>
-    </div>
-    <div class="textarea">
-        <h5>Teilnahmebedingungen</h5>
+    <div v-if="datecheck()">
         <q-card flat>
-            <q-card-section v-html="competitionDetails.teilnehmerbedingung" />
+            <q-card-section align="center" v-html="competitionDetails.title" />
         </q-card>
-    </div>
-    <div>
-        <q-dialog v-model="dialog" persistent>
-            <q-card>
-                <q-card-section class="row items-center">
-                    <span class="q-ml-sm">
-                        Es wurde eine Bestätigungsmail an die Mailadresse {{ usermodel.email }} gesendet. Diese enthält
-                        das Passwort mit dem Sie sich einloggen können nachdem Sie ihre Bestätigung getätigt haben.
-                    </span>
-                </q-card-section>
-                <!-- Notice v-close-popup -->
-                <q-card-actions align="right">
-                    <q-btn flat label="Cancel" color="primary" v-close-popup />
-                </q-card-actions>
+        <q-card flat>
+            <q-card-section align="left" v-html="competitionDetails.text" />
+        </q-card>
+        <div class="row q-pa-md">
+            <div class="col-4 textarea" style="max-width: 30%">
+                <q-input
+                    v-model="projectmodel.title"
+                    lazy-rules
+                    :rules="[val => !!val || 'Pflichtfeld *']"
+                    label="Titel zum Projekt *"
+                />
+                <q-input
+                    v-model="projectmodel.text"
+                    lazy-rules
+                    :rules="[val => !!val || 'Pflichtfeld *']"
+                    label="Beschreibung zum Projekt *"
+                    autogrow
+                />
+            </div>
+            <div class="col-1"></div>
+            <div class="place row col-7 q-gutter-md">
+                <Formular @change:declarations="changeUserModel" />
+                <q-file
+                    class="picloader"
+                    v-model="filesPng"
+                    rounded
+                    outlined
+                    :rules="[val => !!val || 'Pflichtfeld *']"
+                    label="Filtered (png only) *"
+                    multiple
+                    :filter="checkFileType"
+                    @rejected="onRejected"
+                    counter
+                />
+                <q-checkbox
+                    left-label
+                    v-model="teilnahmebedingungenbestätigung"
+                    label="Teilnahmebedingungen"
+                    class="col-4"
+                />
+                <q-space />
+                <q-btn label="Senden" color="green" @click="sendcompetition" class="col-3" />
+            </div>
+        </div>
+        <div class="textarea">
+            <h5>Teilnahmebedingungen</h5>
+            <q-card flat>
+                <q-card-section v-html="competitionDetails.teilnehmerbedingung" />
             </q-card>
-        </q-dialog>
+        </div>
+        <div>
+            <q-dialog v-model="dialog" persistent>
+                <q-card>
+                    <q-card-section class="row items-center">
+                        <span class="q-ml-sm">
+                            Es wurde eine Bestätigungsmail an die Mailadresse {{ usermodel.email }} gesendet. Diese
+                            enthält das Passwort mit dem Sie sich einloggen können nachdem Sie ihre Bestätigung getätigt
+                            haben.
+                        </span>
+                    </q-card-section>
+                    <q-card-actions align="right">
+                        <q-btn flat label="Cancel" color="primary" v-close-popup />
+                    </q-card-actions>
+                </q-card>
+            </q-dialog>
+        </div>
+    </div>
+    <div v-else>
+        <q-card flat align="center">
+            <q-card-section v-html="competitionDetails.wettbewerbCloseText" />
+        </q-card>
     </div>
 </template>
 

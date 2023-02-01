@@ -26,6 +26,15 @@ class ModelBewertung extends ModelBase
         return $data;
     }
 
+    public function getAuswertung()
+    {
+        $this->db->query("SELECT projectId, SUM(bewertung) AS 'value'  
+        FROM Bewertung  
+        GROUP BY projectId");
+        $data = $this->db->resultSet();
+        return $data;
+    }
+
     // Speichert Bewertung auf der DB
     public function createOrUpdateBewertung($data)
     {

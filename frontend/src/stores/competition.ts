@@ -30,7 +30,6 @@ export const useCompetitionStore = defineStore({
         async getCompetitiondeclarations() {
             try {
                 let competitionDetails = await api.get<CompetitionDetails>("competition/competitionDetails");
-                console.log(this.competitionDetails);
                 competitionDetails.wettbewerbbeginn = competitionDetails.wettbewerbbeginn.replaceAll("-", "/");
                 competitionDetails.wettbewerbende = competitionDetails.wettbewerbende.replaceAll("-", "/");
                 this.competitionDetails = competitionDetails;
@@ -49,7 +48,6 @@ export const useCompetitionStore = defineStore({
             c.user.role = "teilnehmende";
             
             const bool = api.post<boolean>("competition/competition", c);   
-            console.log(bool);
             return bool;
         
         }

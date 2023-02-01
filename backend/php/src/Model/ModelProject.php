@@ -69,6 +69,15 @@ class ModelProject extends ModelBase
         return $datas;
     }
 
+    public function getUserIdWithId($projectId)
+    {
+        error_log($projectId);
+        $this->db->query("SELECT userId FROM Project WHERE id= :id");
+        $this->db->bind(":id", $projectId);
+        $data = $this->db->resultSet();
+        return $data;
+    }
+
 
     // Testfunktionen
     public function fakeWriteData($data)

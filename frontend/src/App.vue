@@ -73,6 +73,7 @@ onMounted(() => {
                     label="Bewertung"
                     v-if="role === 'jury' || role === 'admin'"
                 />
+                <q-route-tab to="/analysis" label="Auswertung" v-if="role === 'admin'" />
                 <q-space />
                 <div v-if="role !== 'admin' && role !== 'jury' && role !== 'teilnehmende'">
                     <q-route-tab to="/login" label="Login" />

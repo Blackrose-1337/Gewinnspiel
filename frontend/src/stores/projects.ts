@@ -28,13 +28,18 @@ export const useProjectStore = defineStore({
                     "userId": userId,
                 }
                 this.project = await api.get<Project>("project/take", param);
-                console.log('test')
             }catch (err) {
                 console.error(err);
                 if (err instanceof HTTPError) {
                     Notify.create({ message: `HTTP Error: ${err.message}`, type: "negative" });
                 }
             }
+        },
+        async clear() {
+            if (this.project.pics) {
+                this.project.pics.splice(0, 0);
+            }
+            
         },
         async getProjects() {
             try {

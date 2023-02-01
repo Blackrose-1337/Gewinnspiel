@@ -48,11 +48,32 @@ const router = createRouter({
             component: () => import("../views/DesigneView.vue")
         },
         {
+            path: "/analysis",
+            name: "auswertung",
+            meta: { requiresAuth: false },
+            component: () => import("../views/AuswertungView.vue")
+        },
+        {
+            path: "/confirm/:poppel",
+            name: "confirm",
+            meta: { requiresAuth: false },
+            component: () => import("../views/BestaetigungView.vue")
+        },
+        {
             path: "/login",
             name: "login",
             meta: { requiresAuth: false },
             component: () => import("../views/LoginView.vue")
-        }
+        },
+        //  {
+        //     path: "/:pathMatch(.*)*",
+        //     name: "NotFound",
+        //     meta: { requiresAuth: false },
+        //     component: () => import("../components/NotFound.vue"),
+        // },
+        
+        
+
     ],
 });
 // router.beforeEach(async to => {
