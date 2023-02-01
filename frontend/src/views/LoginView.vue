@@ -30,11 +30,11 @@ function isValidpw(val: string) {
 }
 
 async function login() {
-    email.value = "nanomail@gmail.com";
-    // email.value = "poppel@gmx.ch";
+    // email.value = "nanomail@gmail.com";
+    email.value = "poppel@gmx.ch";
     // email.value = "business@gmail.com";
 
-    password.value = "exampel3DDH?";
+    password.value = "exampel1DDH?";
     if (isValidEmail(email.value) != true) {
         $q.notify({
             message: "Email ist inakzeptabel",

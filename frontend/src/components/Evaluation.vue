@@ -5,8 +5,6 @@ import type { Project } from "@/stores/interfaces";
 import { useEvaluationStore } from "@/stores/evaluation.ts";
 import { storeToRefs } from "pinia";
 
-const poppel: number = 1;
-
 const props = defineProps<{
     project?: Project;
 }>();
@@ -18,8 +16,6 @@ const kriterien = computed(() => evaluationstore.kriterien);
 
 let { project } = toRefs(props) as Project;
 const view = "evaluation";
-console.log("bewertung");
-console.log(bewertung);
 function update() {
     evaluationstore.update(project.value.id);
 }
@@ -33,10 +29,8 @@ function load() {
 watch(project, changeProject => {
     evaluationstore.bewertung = evaluationstore.bewertung.splice(0, 0);
     evaluationstore.clear();
-    console.log(changeProject.id);
     evaluationstore.getall(changeProject.id);
 });
-console.log("Project");
 load();
 </script>
 

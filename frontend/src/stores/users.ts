@@ -62,7 +62,6 @@ export const useUserStore = defineStore({
                     "userId": userId,
                 }
                 const res = await api.get<{ success: boolean; error: string; }>("admin/pwreset", param);
-                console.log(res)
                 if (res?.success) {
                     return res.success;
                 } else {

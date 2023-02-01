@@ -13,7 +13,6 @@ const authStore = useAuthStore();
 const selectedProject = ref(null as unknown) as Ref<Project>;
 const view = "Project";
 async function onProjectChanged(p: Project) {
-    console.log("Project: ", p);
     selectedProject.value = p;
 }
 

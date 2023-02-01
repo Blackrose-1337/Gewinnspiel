@@ -46,7 +46,6 @@ const toolbar = [
 
 async function save() {
     const bool: boolean = await competitionstore.postCompetitiondeclatations();
-    console.log(bool);
     if (bool == true) {
         $q.notify({
             type: "positive",

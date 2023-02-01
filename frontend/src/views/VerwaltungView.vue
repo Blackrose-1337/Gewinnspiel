@@ -18,7 +18,6 @@ selectedUser.value = {
 const view = "User";
 
 async function onUserChanged(u: User) {
-    console.log("User: ", u);
     selectedUser.value = u;
 }
 async function check() {
