@@ -1,10 +1,9 @@
 <?php
-
 // Sesssion 
 require_once __DIR__ . '/helpers/session_helper.php';
 
 // set used max. available memorysize
-ini_set('memory_limit', '1024M');
+//ini_set('memory_limit', '1024M');
 
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methodes: GET, POST, OPTIONS");
@@ -41,15 +40,14 @@ switch ($uri[3]) {
         require __DIR__ . "/Controller/API/AuthController.php";
         $objFeedController = new AuthController();
         break;
+    case 'confirm':
+        require __DIR__ . "/Controller/API/ConfirmController.php";
+        $objFeedController = new ConfirmController();
+        break;
     default:
         header("Page can’t be found", true, 404);
 
 }
-
-// require PROJECT_ROOT_PATH . "Controller/API/AuthController.php";
-// require PROJECT_ROOT_PATH . "Controller/API/AnalysisController.php";
-// require PROJECT_ROOT_PATH . "Controller/API/UserVerwaltungController.php";
-
 
 $strMethodName = $uri[4] . 'Action';
 $objFeedController->{$strMethodName}();

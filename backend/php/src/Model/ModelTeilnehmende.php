@@ -23,6 +23,7 @@ class ModelTeilnehmende extends ModelBase
     private int $pwId;
     private int $saltId;
     private string $pw;
+    private string $token;
 
     /** Beispieluser zum Testen vom Login
      * Mail: poppel@gmx.ch
@@ -31,7 +32,6 @@ class ModelTeilnehmende extends ModelBase
      * pw: exampel2DDH?
      * Mail: nanomail@gmail.com
      * pw: exampel3DDH?
-     * 
      */
 
     //Create User
@@ -41,57 +41,71 @@ class ModelTeilnehmende extends ModelBase
         $salt = new ModelSalt;
         $modelpw = new ModelPw;
 
-        // salt erstellen und direkt auf der Datenbank speichern
-        $salt->createSaltDB();
-
-        // den frisch generierten Salteintrag holen
-        $this->db->query("SELECT * FROM Salt ORDER BY ID DESC LIMIT 1");
-
-        // Salteintrag auf Variable festhalten
-        $salt = $this->db->resultSet();
-
-        // random genierten String auf Variable setzen
-        $pw = $this->getString();
-
-        // Im Model Pw hinterlegen für Mailversand
-        $this->setPw($pw);
-
-        // mit generiertem String und Salt ein Hash generieren, welcher direkt auf der Datenbank gespeichert wird.
-        $modelpw->generateHashDB($pw, $salt[0]["salt"]);
-
-        // frisch generierten Pweintrag (Hash) nur die Id holen
-        $this->db->query("SELECT id FROM Pw ORDER BY ID DESC LIMIT 1");
-
-        // Id eintrag auf Variable festhalten
-        $modelpw = $this->db->resultSet();
-
-        // Eintragsvorbereitung User in die Datenbank
-        $this->db->query("INSERT INTO User
-        (`name`, `surname`, `role`, `email`, `land`, `plz`, `ortschaft`, `strasse`, `strNr`, `tel`, `pwId`, `saltId`)
-        VALUES (:name, :surname, :role, :email, :land, :plz, :ortschaft, :strasse, :strNr, :tel, :pwId, :saltId)");
-        $this->db->bind(":name", $data["name"]);
-        $this->db->bind(":surname", $data["surname"]);
-        $this->db->bind(":role", $data["role"]);
+        $this->db->query("SELECT id FROM User WHERE email = :email");
         $this->db->bind(":email", $data["email"]);
-        $this->db->bind(":land", $data["land"]);
-        $this->db->bind(":plz", $data["plz"]);
-        $this->db->bind(":ortschaft", $data["ortschaft"]);
-        $this->db->bind(":strasse", $data["str"]);
-        $this->db->bind(":strNr", $data["strNr"]);
-        $this->db->bind(":tel", $data["tel"]);
-        $this->db->bind(":pwId", $modelpw[0]["id"]);
-        $this->db->bind(":saltId", $salt[0]["id"]);
+        $check = $this->db->resultSet();
+        error_log(json_encode($check));
+        if (isset($check[0])) {
+            return 0;
+        } else {
 
-        // Ausführung
-        $answer = $this->db->execute();
 
-        // get Id from DB
-        $this->db->query("SELECT id FROM User ORDER BY ID DESC LIMIT 1");
-        $id = $this->db->resultSet();
+            // salt erstellen und direkt auf der Datenbank speichern
+            $salt->createSaltDB();
 
-        // set Id on Model
-        $this->id = $id[0]['id'];
-        return $answer;
+            // den frisch generierten Salteintrag holen
+            $this->db->query("SELECT * FROM Salt ORDER BY ID DESC LIMIT 1");
+
+            // Salteintrag auf Variable festhalten
+            $salt = $this->db->resultSet();
+
+            // random genierten String auf Variable setzen
+            $pw = $this->getString();
+
+            // Im Model Pw hinterlegen für Mailversand
+            $this->setPw($pw);
+
+            // mit generiertem String und Salt ein Hash generieren, welcher direkt auf der Datenbank gespeichert wird.
+            $modelpw->generateHashDB($pw, $salt[0]["salt"]);
+
+            // frisch generierten Pweintrag (Hash) nur die Id holen
+            $this->db->query("SELECT id FROM Pw ORDER BY ID DESC LIMIT 1");
+
+            // Id eintrag auf Variable festhalten
+            $modelpw = $this->db->resultSet();
+
+            $this->setToken($this->rndtoken());
+
+            // Eintragsvorbereitung User in die Datenbank
+            $this->db->query("INSERT INTO User
+            (`name`, `surname`, `role`, `email`, `land`, `plz`, `ortschaft`, `strasse`, `strNr`, `tel`,`vorwahl`, `pwId`, `saltId`, `token`)
+            VALUES (:name, :surname, :role, :email, :land, :plz, :ortschaft, :strasse, :strNr, :tel,:vorwahl, :pwId, :saltId, :token)");
+            $this->db->bind(":name", $data["name"]);
+            $this->db->bind(":surname", $data["surname"]);
+            $this->db->bind(":role", $data["role"]);
+            $this->db->bind(":email", $data["email"]);
+            $this->db->bind(":land", $data["land"]);
+            $this->db->bind(":plz", $data["plz"]);
+            $this->db->bind(":ortschaft", $data["ortschaft"]);
+            $this->db->bind(":strasse", $data["str"]);
+            $this->db->bind(":strNr", $data["strNr"]);
+            $this->db->bind(":tel", $data["tel"]);
+            $this->db->bind(":vorwahl", $data["vorwahl"]);
+            $this->db->bind(":pwId", $modelpw[0]["id"]);
+            $this->db->bind(":saltId", $salt[0]["id"]);
+            $this->db->bind(":token", $this->getToken());
+
+            // Ausführung
+            $answer = $this->db->execute();
+
+            // get Id from DB
+            $this->db->query("SELECT id FROM User ORDER BY ID DESC LIMIT 1");
+            $id = $this->db->resultSet();
+
+            // set Id on Model
+            $this->id = $id[0]['id'];
+            return $answer;
+        }
     }
 
     // Session erstellen und Token für Frontend
@@ -103,10 +117,6 @@ class ModelTeilnehmende extends ModelBase
         // Get-Data from Mysql   id,name,surname,role,email,land,plz,ortschaft,strasse,strNr,tel
         $this->db->query("SELECT * FROM User WHERE role !='admin'");
         $data = $this->db->resultSet();
-        // foreach ($data as $key => $val) {
-        //     error_log($key . "  " . $val);
-        //     error_log(" ------- ");
-        // }
 
         return $data;
     }
@@ -147,7 +157,7 @@ class ModelTeilnehmende extends ModelBase
     {
         // Eintragsvorbereitung der Datenanpassung über Id
         $this->db->query("UPDATE User SET
-        name = :name, surname = :surname, role = :role, email = :email, land = :land, plz = :plz, ortschaft = :ortschaft, strasse = :strasse, strNr = :strNr, tel = :tel
+        name = :name, surname = :surname, role = :role, email = :email, land = :land, plz = :plz, ortschaft = :ortschaft, strasse = :strasse, strNr = :strNr, tel = :tel, vorwahl = :vorwahl
         WHERE id = :id");
         $this->db->bind(":name", $data["name"]);
         $this->db->bind(":surname", $data["surname"]);
@@ -160,6 +170,7 @@ class ModelTeilnehmende extends ModelBase
         $this->db->bind(":strNr", $data["strNr"]);
         $this->db->bind(":tel", $data["tel"]);
         $this->db->bind(":id", $data["id"]);
+        $this->db->bind(":vorwahl", $data["vorwahl"]);
 
         // Ausführung
         return $this->db->execute();
@@ -233,15 +244,44 @@ class ModelTeilnehmende extends ModelBase
         return $datas;
     }
 
-    public function getUserinfo($a)
+    public function getUserinfo($data)
     {
         $this->db->query("SELECT name, surname, email FROM User WHERE id= :id");
-        $this->db->bind(":id", $a['userId']);
-        $data = $this->db->resultSet();
-        $a['name'] = $data[0]['name'];
-        $a['surname'] = $data[0]['surname'];
-        $a['mail'] = $data[0]['email'];
-        return $a;
+        $this->db->bind(":id", $data['userId']);
+        $newdata = $this->db->resultSet();
+        $data['name'] = $newdata[0]['name'];
+        $data['surname'] = $newdata[0]['surname'];
+        $data['mail'] = $newdata[0]['email'];
+        return $data;
+    }
+
+    public function tokencheck($token)
+    {
+        error_log($token);
+        $this->db->query("UPDATE User SET optIn = 1 WHERE token = :token");
+        $this->db->bind(":token", $token);
+        $answer = $this->db->execute();
+        if ($answer == 0) {
+            $this->db->query("SELECT COUNT(optIn) FROM User WHERE token = :token");
+            $this->db->bind(":token", $token);
+            $answer = $this->db->resultSet();
+            error_log(json_encode($answer[0]['COUNT(optIn)']));
+            error_log('check');
+            $newdata[0]['id'] = 0;
+            if ($answer[0]['COUNT(optIn)'] == 1) {
+                $answer = 2;
+                $this->db->query("SELECT name,surname,email FROM User WHERE token = :token");
+                $this->db->bind(":token", $token);
+                $newdata = $this->db->resultSet();
+                $newdata[0]['id'] = 2;
+            }
+        } elseif ($answer == 1) {
+            $this->db->query("SELECT name,surname,email FROM User WHERE token = :token");
+            $this->db->bind(":token", $token);
+            $newdata = $this->db->resultSet();
+            $newdata[0]['id'] = 1;
+        }
+        return $newdata[0];
     }
 
 
@@ -446,4 +486,24 @@ class ModelTeilnehmende extends ModelBase
         return $this;
     }
 
+
+    /**
+     * Get the value of token
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Set the value of token
+     *
+     * @return  self
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
 }

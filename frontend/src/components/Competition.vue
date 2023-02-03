@@ -36,7 +36,7 @@ function sendcompetition() {
     //clear von übertragungs Bilder falls noch von versuch zuvor befüllt
     competition.value.pics.splice(0);
     //abfrage ob Bilder hochgeladen wurden falls ja werden diese in Base64 konvertiert
-    if (filesPng.value.length > 0) {
+    if (filesPng.value) {
         for (let index = 0; index < filesPng.value.length; index++) {
             const element = filesPng.value[index];
             let file = element;
@@ -126,13 +126,19 @@ async function sendcompetitionstep2() {
         competition.value.project = projectmodel.value;
         competition.value.user = usermodel.value;
 
-        const bool: boolean = await competitionstore.postCompetition(competition.value);
-        if (bool) {
+        const ans: number = await competitionstore.postCompetition(competition.value);
+        if (ans == 1) {
             dialog.value = true;
             $q.notify({
                 type: "positiv",
                 message: "Ihr Wettbewerbsteilnahme wurde versendet",
                 color: "green",
+            });
+        } else if (ans == 2) {
+            $q.notify({
+                type: "negative",
+                message: "Sie haben bereits am Wettbewerb teilgenommen",
+                color: "red",
             });
         } else {
             $q.notify({

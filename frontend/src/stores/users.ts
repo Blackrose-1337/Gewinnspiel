@@ -25,7 +25,8 @@ export const useUserStore = defineStore({
                 const param = {
                 'userId': u
             }
-            this.user = await api.get<User>("user/getUser", param);  
+                this.user = await api.get<User>("user/getUser", param);  
+                console.log(this.user);
             } catch (err) {
                 console.error(err);
             }
@@ -39,16 +40,11 @@ export const useUserStore = defineStore({
         async saveUserChange(u: User)
         {
             try {
-                const res = await api.post<{ success: boolean; error: string; u: User }>("admin/save", u);
-                
-                if (res?.success) {
-                    return res.success;
+                const res = await api.post<boolean>("admin/save", u);
+                if (res == true) {
+                    return res;
                 } else {
-                    const answer = {
-                        'success': "negative",
-                        'error': res?.error,
-                    }
-                    return answer;
+                    return res;
                 }
             } catch (err) {
                 throw err;

@@ -2,7 +2,7 @@
 import { useUserStore } from "@/stores/users";
 import { useProjectStore } from "@/stores/projects";
 import { storeToRefs } from "pinia";
-import { toRefs } from "vue";
+import { toRefs, computed, ref } from "vue";
 import type { User, Project } from "@/stores/interfaces";
 
 const props = defineProps<{
@@ -16,6 +16,8 @@ const projectStore = useProjectStore();
 //---------------storeToRefs------------------------------
 const { users } = storeToRefs(userStore);
 const { projects } = storeToRefs(projectStore);
+let test = ref(1);
+const selected = computed(() => test.value);
 
 const emit = defineEmits<{
     (event: "change:selection", value: User): void;
@@ -26,9 +28,14 @@ const emit = defineEmits<{
 
 function changeSelection(p: User) {
     emit("change:selection", p);
+    console.log(p.id);
+    test.value = p.id;
+    console.log(test);
+    console.log(selected.value);
 }
 function changeSelectProject(pro: Project) {
     emit("change:selectproject", pro);
+    test.value = pro.id;
 }
 
 function addJury() {
@@ -80,9 +87,14 @@ load();
                 <div v-for="p in users" :key="p.id">
                     <!-- Hier wird überprüft ob das ob das Element bei der Rolle 'jury' hinterlegt ist'-->
                     <div v-if="p.role === 'jury'" class="fullwidth">
-                        <q-btn class="fullwitdh" bordered color="secondary" @click="changeSelection(p)">{{
-                            p.surname + " " + p.name
-                        }}</q-btn>
+                        <q-btn
+                            :id="p.id"
+                            class="fullwitdh"
+                            :style="[selected === p.id ? { background: '#09deed' } : { background: '#37ed09' }]"
+                            bordered
+                            @click="changeSelection(p)"
+                            >{{ p.surname + " " + p.name }}</q-btn
+                        >
                     </div>
                 </div>
                 <!-- Button um ein Jurymitglied hinzufügen (noch nicht gespeichert)-->
@@ -92,9 +104,12 @@ load();
                 <div v-for="p in users" :key="p.id" class="fullwidth">
                     <!-- Hier wird überprüft ob das ob das Element bei der Rolle 'teilnehmende' hinterlegt ist'-->
                     <div v-if="p.role === 'teilnehmende'">
-                        <q-btn class="fullwitdh" color="secondary" @click="changeSelection(p)">{{
-                            p.surname + " " + p.name
-                        }}</q-btn>
+                        <q-btn
+                            class="fullwitdh"
+                            :style="[selected === p.id ? { background: '#09deed' } : { background: '#37ed09' }]"
+                            @click="changeSelection(p)"
+                            >{{ p.surname + " " + p.name }}</q-btn
+                        >
                     </div>
                 </div>
             </q-card>
@@ -107,9 +122,13 @@ load();
                 <!-- Ein For-loop um jedes Projekt im Array durchzugehen-->
                 <div v-for="pro in projects" :key="pro.id">
                     <div class="fullwidth">
-                        <q-btn class="fullwitdh" bordered color="secondary" @click="changeSelectProject(pro)">{{
-                            pro.id
-                        }}</q-btn>
+                        <q-btn
+                            class="fullwitdh"
+                            bordered
+                            :style="[selected === pro.id ? { background: '#09deed' } : { background: '#37ed09' }]"
+                            @click="changeSelectProject(pro)"
+                            >{{ pro.id }}</q-btn
+                        >
                     </div>
                 </div>
             </q-card>

@@ -41,8 +41,8 @@ export const useCompetitionStore = defineStore({
             }
         },
         async postCompetitiondeclatations() {
-            const bool = api.post<boolean>("competition/competitionDetails", this.competitionDetails);
-            return bool;
+            const ans = api.post<number>("competition/competitionDetails", this.competitionDetails);
+            return ans;
         },
         async postCompetition(c: Competition) {
             c.user.role = "teilnehmende";

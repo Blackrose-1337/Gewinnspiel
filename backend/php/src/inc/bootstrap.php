@@ -36,6 +36,9 @@ switch ($uri[3]) {
     case 'auth':
         require_once PROJECT_ROOT_PATH . "Model/ModelTeilnehmende.php";
         break;
+    case 'confirm':
+        require_once PROJECT_ROOT_PATH . "Model/ModelTeilnehmende.php";
+        break;
     default:
         header("Page can’t be found", true, 404);
 

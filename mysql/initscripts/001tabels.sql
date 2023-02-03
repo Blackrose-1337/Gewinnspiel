@@ -21,6 +21,7 @@ CREATE TABLE `Bewertung` (
     `projectId` int NOT NULL,
     `kriterienId` int NOT NULL,
     `bewertung` int NOT NULL,
+    `finish` int NOT NULL,
     PRIMARY KEY (`id`),
     KEY `administrativeId` (`administrativeId`),
     KEY `userId` (`projectId`),
@@ -34,12 +35,12 @@ DROP TABLE IF EXISTS `Competition`;
 
 CREATE TABLE `Competition` (
     `id` int NOT NULL AUTO_INCREMENT,
-    `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-    `text` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-    `teilnehmerbedingung` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+    `title` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+    `text` varchar(3000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+    `teilnehmerbedingung` varchar(3000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
     `wettbewerbbeginn` date NOT NULL,
     `wettbewerbende` date NOT NULL,
-    `wettbewerbCloseText` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+    `wettbewerbCloseText` varchar(3000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -104,9 +105,11 @@ CREATE TABLE `User` (
     `strasse` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
     `strNr` int DEFAULT NULL,
     `tel` double DEFAULT NULL,
+    `vorwahl` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
     `pwId` int NOT NULL,
     `saltId` int NOT NULL,
     `optIn` int DEFAULT NULL,
+    `token` varchar(70) DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY `pwId` (`pwId`),
     KEY `saltId` (`saltId`),

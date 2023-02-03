@@ -4,6 +4,7 @@ import { toRefs } from "vue";
 import { storeToRefs } from "pinia";
 import { useQuasar } from "quasar";
 import type { User } from "@/stores/interfaces";
+import { useProjectStore } from "@/stores/projects";
 import { useUserStore } from "@/stores/users";
 
 const model: User = ref({
@@ -32,7 +33,9 @@ const emit = defineEmits<{
 
 const $q = useQuasar();
 const { user } = toRefs(props) as User;
+const { view } = toRefs(props);
 
+const projectStore = useProjectStore();
 const userStore = useUserStore();
 
 const selectOptionsTyp = ["DE", "AU", "CH"];
@@ -72,16 +75,27 @@ async function savechange() {
             color: "red",
         });
     } else {
-        const answer = await userStore.saveUserChange(model.value);
-        if (answer === true) {
-            $q.notify({
-                type: "positive",
-                message: "Änderungen wurden gespeichert",
-            });
+        let answer1 = true;
+        if (view?.value == "User") {
+            answer1 = await projectStore.postProject();
+        }
+        if (answer1 == true) {
+            const answer = await userStore.saveUserChange(model.value);
+            if (answer == true) {
+                $q.notify({
+                    type: "positive",
+                    message: "Änderungen wurden gespeichert",
+                });
+            } else {
+                $q.notify({
+                    type: "negative",
+                    message: "Daten konnten nicht gespeichert werden.",
+                });
+            }
         } else {
             $q.notify({
-                type: answer.success,
-                message: answer.error,
+                type: "negative",
+                message: "Daten konnten nicht gespeichert werden.",
             });
         }
     }
@@ -134,11 +148,26 @@ watch(user, changeUser => {
                     class="col-4"
                 />
             </div>
-            <div class="row q-gutter-sm col-12">
+            <div v-if="view != 'User'" class="row q-gutter-sm col-12">
                 <q-input
                     v-model="model.email"
                     rounded
                     outlined
+                    label="E-Mail *"
+                    @change="changevalue(model)"
+                    lazy-rules
+                    :rules="[val => !!val || 'Pflichtfeld *', isValidEmail]"
+                    clearable
+                    class="col-5"
+                    type="email"
+                />
+            </div>
+            <div v-else class="row q-gutter-sm col-12">
+                <q-input
+                    v-model="model.email"
+                    rounded
+                    outlined
+                    disable
                     label="E-Mail *"
                     @change="changevalue(model)"
                     lazy-rules
@@ -166,6 +195,7 @@ watch(user, changeUser => {
                     @change="changevalue(model)"
                     clearable
                     class="col-2"
+                    type="number"
                 />
                 <q-input
                     v-model="model.ortschaft"
@@ -180,7 +210,7 @@ watch(user, changeUser => {
 
             <div class="row q-gutter-sm col-12">
                 <q-input
-                    v-model="model.strasse"
+                    v-model="model.str"
                     rounded
                     outlined
                     label="Strasse"
@@ -220,10 +250,8 @@ watch(user, changeUser => {
                 />
             </div>
         </div>
-        <div v-if="view == 'User'">
-            <q-btn label="Passwort zurücksetzen" color="red" @click="resestpw" class="rebtn" />
-            <q-btn label="Änderungen Speichern" color="blue" @click="savechange" class="rebtn" />
-        </div>
+        <q-btn label="Passwort zurücksetzen" color="red" @click="resestpw" class="rebtn" />
+        <q-btn label="Änderungen Speichern" color="blue" @click="savechange" class="rebtn" />
     </div>
 </template>
 

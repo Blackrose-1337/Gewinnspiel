@@ -96,10 +96,9 @@ onMounted(() => {
 watch(selectedproject, changeselectedproject => {
     loadProject();
 });
-// loadimage();
 </script>
 <template>
-    <div v-if="view === 'Project'">
+    <div v-if="view === 'Project' || view === 'User'">
         <div>
             <h4 class="q-ma-md">Projekttitle</h4>
             <q-input v-model="project.title" outlined class="q-ma-md" />
@@ -109,7 +108,9 @@ watch(selectedproject, changeselectedproject => {
         <div class="row q-gutter-lg pic">
             <img v-for="pic in bsp" class="minipic q-pa-md" :src="pic" :ratio="1" @click="expand($event)" />
         </div>
-        <q-btn label="Änderungen Speichern" color="blue" @click="save" class="rebtn" />
+        <div v-if="view == 'Project'">
+            <q-btn label="Änderungen Speichern" color="blue" @click="save" class="rebtn" />
+        </div>
     </div>
     <div v-else>
         <div class="texts q-pa-lg">

@@ -31,10 +31,6 @@ class BaseController
             }
         }
         error_log("-------------------------sendet DATA----------------------------");
-        error_log("----------------------------------------------------------------");
-        // error_log($data);
-        error_log("----------------------------------------------------------------");
-
         echo $data;
         exit;
     }
@@ -42,7 +38,6 @@ class BaseController
     {
         $bytes = random_bytes(16);
         $str = bin2hex($bytes);
-
         return $str;
     }
 
@@ -97,9 +92,6 @@ class BaseController
         foreach ($picturebase64 as $base64) {
 
             $picture = explode(',', $base64['bildbase']);
-            error_log('---------------------------------------------------------------');
-            error_log(json_encode($picture));
-            error_log('---------------------------------------------------------------');
             $newpath = $path . "/Image" . $count . ".png";
             $img = imagecreatefromstring(base64_decode($picture[1]));
             imagepng($img, $newpath, 0);
@@ -115,17 +107,15 @@ class BaseController
         $test = [
             'img' => $img,
         ];
-        //error_log(json_encode($test));
-        error_log('------ give Picture');
         return $test;
     }
 
     protected function sendmail($empfaenger, $link, $pw)
     {
         // Betreff
-        $empfaenger = 'yannick-basler@gmx.ch';
+
         $betreff = 'Bestätigungsmail Stickstoff Wettbewerb';
-        $link = "http://localhost:8000/src/index.php/competition/confirm/token";
+        $link = "http://localhost:3000/confirm/" . $link;
         // Nachricht
         $nachricht = '
         <html>
@@ -160,7 +150,6 @@ class BaseController
         $_SESSION['user_email'] = $email;
         $_SESSION['user_name'] = $name;
         $_SESSION['user_role'] = $role;
-
         return 1;
     }
 
@@ -191,5 +180,4 @@ class BaseController
                 return 0;
         }
     }
-
 }

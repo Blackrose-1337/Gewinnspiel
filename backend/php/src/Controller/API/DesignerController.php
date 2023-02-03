@@ -1,3 +1,0 @@
-<?php
-//noch in arbeit
-?>

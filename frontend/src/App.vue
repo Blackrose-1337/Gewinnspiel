@@ -61,8 +61,6 @@ onMounted(() => {
                                 icon="dynamic_form"
                             />
                             <q-route-tab @click="settitle('Projekte')" to="/project" label="Projekte" icon="settings" />
-
-                            <!-- läuft noch nicht -->
                             <q-route-tab @click="settitle('Desgine')" to="/designe" label="Desgine" icon="settings" />
                         </q-list>
                     </q-menu>

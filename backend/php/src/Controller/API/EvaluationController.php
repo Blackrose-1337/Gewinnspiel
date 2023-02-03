@@ -52,9 +52,9 @@ class EvaluationController extends BaseController
         $strErrorDesc = '';
         // Methode entnehmen
         $requestMethod = $_SERVER["REQUEST_METHOD"];
-        if (strtoupper($requestMethod) == 'POST') {
+        try {
+            if (strtoupper($requestMethod) == 'POST') {
 
-            try {
                 if (!$this->sessionCheck()) {
                     $strErrorDesc = "Nicht akzeptierte Session";
                     $strErrorHeader = $this->fehler(405);
@@ -69,13 +69,13 @@ class EvaluationController extends BaseController
                     }
                     $responseData = 1;
                 }
-            } catch (Error $e) {
-                $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
-                $strErrorHeader = $this->fehler(500);
+            } else {
+                $strErrorDesc = 'Method not supported';
+                $strErrorHeader = $this->fehler(422);
             }
-        } else {
-            $strErrorDesc = 'Method not supported';
-            $strErrorHeader = $this->fehler(422);
+        } catch (Error $e) {
+            $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+            $strErrorHeader = $this->fehler(500);
         }
         if (!$strErrorDesc) {
             $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
@@ -93,9 +93,8 @@ class EvaluationController extends BaseController
         // Methode entnehmen
         $requestMethod = $_SERVER["REQUEST_METHOD"];
         $arrQueryStringParams = $this->getQueryStringParams();
-
-        if (strtoupper($requestMethod) == 'GET') {
-            try {
+        try {
+            if (strtoupper($requestMethod) == 'GET') {
                 if (!$this->sessionCheck()) {
                     $strErrorDesc = "Nicht akzeptierte Session";
                     $strErrorHeader = $this->fehler(405);
@@ -108,13 +107,13 @@ class EvaluationController extends BaseController
                     $answer = $bewertungmodel->getBewertung($arrQueryStringParams);
                     $responseData = json_encode($answer);
                 }
-            } catch (Error $e) {
-                $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
-                $strErrorHeader = $this->fehler(500);
+            } else {
+                $strErrorDesc = 'Method not supported';
+                $strErrorHeader = $this->fehler(422);
             }
-        } else {
-            $strErrorDesc = 'Method not supported';
-            $strErrorHeader = $this->fehler(422);
+        } catch (Error $e) {
+            $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+            $strErrorHeader = $this->fehler(500);
         }
         if (!$strErrorDesc) {
             $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
@@ -130,17 +129,15 @@ class EvaluationController extends BaseController
         $strErrorDesc = '';
         $requestMethod = $_SERVER["REQUEST_METHOD"];
         $arrQueryStringParams = $this->getQueryStringParams();
-
-        // abfrage ob es eine GET_Methode ist
-        if (strtoupper($requestMethod) == 'GET') {
-            try {
+        try {
+            // abfrage ob es eine GET_Methode ist
+            if (strtoupper($requestMethod) == 'GET') {
                 // Aufruf benötigter Klassen 
                 $bildermodel = new ModelBilder();
-
                 if (!$this->sessionCheck()) {
                     $strErrorDesc = "Nicht akzeptierte Session";
                     $strErrorHeader = $this->fehler(405);
-                } else if (!$this->userCheck('admin', 'teilnehmende')) {
+                } else if (!$this->userCheck('admin', 'teilnehmende', 'jury')) {
                     $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
                     $strErrorHeader = $this->fehler(401);
                 } else if ($_SESSION['user_role'] == 'jury' || $_SESSION['user_role'] == 'admin') {
@@ -152,19 +149,18 @@ class EvaluationController extends BaseController
                     }
                     $answer['pics'] = $base64;
                     $responseData = json_encode($answer);
-
                 } else if ($_SESSION['user_role'] != 'teilnehmende') {
                     if (isset($arrQueryStringParams['userId'])) {
                         $responseData = 0;
                     }
                 }
-            } catch (Error $e) {
-                $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
-                $strErrorHeader = $this->fehler(500);
+            } else {
+                $strErrorDesc = 'Method not supported';
+                $strErrorHeader = $this->fehler(422);
             }
-        } else {
-            $strErrorDesc = 'Method not supported';
-            $strErrorHeader = $this->fehler(422);
+        } catch (Error $e) {
+            $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+            $strErrorHeader = $this->fehler(500);
         }
         if (!$strErrorDesc) {
             $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
@@ -181,10 +177,10 @@ class EvaluationController extends BaseController
         $strErrorDesc = '';
         $requestMethod = $_SERVER["REQUEST_METHOD"];
         $arrQueryStringParams = $this->getQueryStringParams();
+        try {
+            // abfrage ob es eine GET_Methode ist
+            if (strtoupper($requestMethod) == 'GET') {
 
-        // abfrage ob es eine GET_Methode ist
-        if (strtoupper($requestMethod) == 'GET') {
-            try {
                 // Aufruf benötigter Klassen 
                 $bildermodel = new ModelBilder();
 
@@ -218,13 +214,13 @@ class EvaluationController extends BaseController
                         $responseData = 0;
                     }
                 }
-            } catch (Error $e) {
-                $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
-                $strErrorHeader = $this->fehler(500);
+            } else {
+                $strErrorDesc = 'Method not supported';
+                $strErrorHeader = $this->fehler(422);
             }
-        } else {
-            $strErrorDesc = 'Method not supported';
-            $strErrorHeader = $this->fehler(422);
+        } catch (Error $e) {
+            $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+            $strErrorHeader = $this->fehler(500);
         }
         if (!$strErrorDesc) {
             $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));

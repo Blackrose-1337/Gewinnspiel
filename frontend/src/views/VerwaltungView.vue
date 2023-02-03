@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Ref } from "vue";
 import { ref, onBeforeMount } from "vue";
+import { useQuasar } from "quasar";
 import { useAuthStore } from "@/stores/auth";
 import Formular from "@/components/Formular.vue";
 import Sidebar from "@/components/Sidebar.vue";
@@ -10,6 +11,7 @@ import { useRouter } from "vue-router";
 
 const router = useRouter();
 const authStore = useAuthStore();
+const $q = useQuasar();
 
 const selectedUser = ref(null as unknown) as Ref<User>;
 selectedUser.value = {
@@ -22,8 +24,15 @@ async function onUserChanged(u: User) {
 }
 async function check() {
     const answer: boolean = await authStore.check();
-    if (answer == false) {
+    if (answer === false) {
         router.push("/login");
+    } else if (authStore.role != "admin") {
+        $q.notify({
+            type: "negative",
+            message: "Keine Berechtigung für diese Seite",
+            color: "red",
+        });
+        router.push("/");
     }
 }
 
@@ -39,7 +48,7 @@ onBeforeMount(() => {
                 <Project :user="selectedUser" />
             </div>
             <div class="col 4 q-gutter-md q-pa-md">
-                <Formular :user="selectedUser" :view="view" />
+                <Formular :user="selectedUser" :view="'Project'" />
             </div>
         </div>
     </main>

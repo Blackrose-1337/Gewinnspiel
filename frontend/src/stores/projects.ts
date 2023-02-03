@@ -43,8 +43,8 @@ export const useProjectStore = defineStore({
         },
         async getProjects() {
             try {
-                this.projects.splice(0);
                 const projects = await api.get<Project[]>("project/takeAll");
+                this.projects.splice(0);
                 projects.forEach(p => this.projects.push(p));
             }catch (err) {
                 console.error(err);
@@ -57,11 +57,6 @@ export const useProjectStore = defineStore({
             this.project = p;
         },
         async postProject() {
-            
-            // gezielter Fehler eingebaut für Test
-            //this.project.userId = 2342;
-            
-            //Daten werden an Backendgesendet
             const bool= api.post<boolean>("project/update", this.project);
             return bool;
         },
