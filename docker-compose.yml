@@ -10,10 +10,11 @@ services:
   php:
     build: ./backend/php
     ports:
-      - 8000:80
+      - "127.0.0.1:8000:80"
     volumes:
       - ./backend/php:/var/www/html
       - ./data:/var/www/data
+      - ./data:/var/www/html/myimages
       - .htaccess:/var/www/html/.htaccess
 
   vueweb:

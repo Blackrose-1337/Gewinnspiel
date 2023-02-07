@@ -28,12 +28,16 @@ class CompetitionController extends BaseController
                         $number = $this->countfolder("../../data");
                         $newPath = $generalpath . strval($number);
                         mkdir($newPath, 0777, false);
+                        $newPath = $newPath . '/' . $this->GUID();
+                        mkdir($newPath, 0777, false);
                         $this->saveImage($picturebase64, $newPath, $newproject->getId());
                     } elseif (PHP_OS == "Windows") {
                         mkdir("C:\Wettbewerb");
                         $generalpath = "C:\Wettbewerb\project";
                         $number = $this->countfolder("C:\Wettbewerb");
                         $newPath = $generalpath . strval($number);
+                        mkdir($newPath, 0777, false);
+                        $newPath = $newPath . '/' . $this->GUID();
                         mkdir($newPath, 0777, false);
                         $this->saveImage($picturebase64, $newPath, $newproject->getId());
                     }

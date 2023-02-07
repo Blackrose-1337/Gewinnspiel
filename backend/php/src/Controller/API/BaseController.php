@@ -90,11 +90,11 @@ class BaseController
         $modelimage = new ModelBilder;
         $count = 0;
         foreach ($picturebase64 as $base64) {
-
             $picture = explode(',', $base64['bildbase']);
             $newpath = $path . "/Image" . $count . ".png";
-            $img = imagecreatefromstring(base64_decode($picture[1]));
-            imagepng($img, $newpath, 0);
+            $ifp = fopen($newpath, 'w');
+            fwrite($ifp, base64_decode($picture[1]));
+            fclose($ifp);
             $count++;
             $modelimage->createImagePath($projectid, $newpath);
         }
@@ -102,14 +102,21 @@ class BaseController
 
     protected function getImage($path)
     {
-        $handle = file_get_contents(('../' . $path));
-        $img = (base64_encode($handle));
+
+        // $img = (base64_encode($handle));
         $test = [
-            'img' => $img,
+            'img' => 'http://localhost:8000/' . $path,
         ];
         return $test;
     }
+    protected function GUID()
+    {
+        if (function_exists('com_create_guid') === true) {
+            return trim(com_create_guid(), '{}');
+        }
 
+        return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
+    }
     protected function sendmail($empfaenger, $link, $pw)
     {
         // Betreff
