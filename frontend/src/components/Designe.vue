@@ -106,6 +106,19 @@ load();
 .my-picker {
     max-width: 150px;
 }
+@media (max-width: 1300px) {
+    .row > .col-3,
+    .row > .col-xs-3 {
+        min-width: 320px;
+        height: auto;
+        width: 25%;
+    }
+    .row > .col-5,
+    .row > .col-xs-5 {
+        height: auto;
+        width: auto;
+    }
+}
 #editorjs {
     background-color: rgb(241, 241, 241);
     margin: 15px;

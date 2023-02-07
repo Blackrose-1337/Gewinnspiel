@@ -3,20 +3,14 @@ import { ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useQuasar } from "quasar";
 import Formular from "@/components/Formular.vue";
-import { useUserStore } from "@/stores/users";
 import { useCompetitionStore } from "@/stores/competition";
-import type { User, Project, Competiion, ProjectBild } from "@/stores/interfaces";
+import type { User, Project, ProjectBild } from "@/stores/interfaces";
 
 const $q = useQuasar();
 
-const userstore = useUserStore();
 const competitionstore = useCompetitionStore();
 
-const bsp: string[] = [];
-var bild = new Image();
-
 const { competition, competitionDetails } = storeToRefs(competitionstore);
-const { user } = storeToRefs(userstore);
 
 const usermodel = ref() as User;
 const projectmodel: Project = ref({
@@ -25,7 +19,6 @@ const projectmodel: Project = ref({
     title: "",
     text: "",
 }) as Project;
-const projectpics: ProjectBild = [] as ProjectBild[];
 const dialog = ref(false);
 const filesPng = ref();
 
@@ -121,8 +114,6 @@ async function sendcompetitionstep2() {
             color: "red",
         });
     } else {
-        // while (projectpics.length != filesPng.value.length) {
-
         competition.value.project = projectmodel.value;
         competition.value.user = usermodel.value;
 
@@ -169,10 +160,6 @@ function isValidEmail(val: string) {
     const emailPattern =
         /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,7}$/;
     return emailPattern.test(val) || "Invalid email";
-}
-
-function checkFileSize(files: any) {
-    return files.filter((file: any) => file.size < 2048);
 }
 
 function checkFileType(files: any) {

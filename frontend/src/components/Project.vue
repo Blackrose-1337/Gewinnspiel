@@ -6,7 +6,7 @@ import type { User, Project } from "@/stores/interfaces";
 import { useProjectStore } from "@/stores/projects";
 import { toRefs, watch, onMounted, computed, ref } from "vue";
 import { useEvaluationStore } from "@/stores/evaluation.ts";
-
+import Loading from "vue-loading-overlay";
 const props = defineProps<{
     user?: User;
     selectedproject?: Project;
@@ -19,12 +19,13 @@ const evaluationstore = useEvaluationStore();
 const $q = useQuasar();
 
 //---------------storeToRefs------------------------------
-// const { project } = storeToRefs(projectStore) as Project;
 const project = computed(() => projectStore.project);
 const img = computed(() => evaluationstore.img);
 const { user } = toRefs(props) as User;
 const { selectedproject } = toRefs(props) as Project;
 const { view } = toRefs(props);
+let isLoading = ref(false);
+const fullPage = ref(true);
 
 const bsp: string[] = ref([]) as unknown as string[];
 var bild = new Image();
@@ -46,18 +47,22 @@ async function save() {
 }
 
 async function load() {
+    isLoading.value = true;
     if (user.value == null) {
     } else {
         projectStore.clear();
         await projectStore.getProject(user.value.id);
         loadimage();
     }
+    setTimeout(() => {
+        isLoading.value = false;
+    }, 1000);
 }
 function loadimage() {
     bsp.value = [];
     if (project.value.pics !== null && project.value.pics !== "undefined") {
         project.value.pics.forEach((e: { img: string }) => {
-            bild.src = "data:image/png;base64," + e.img;
+            bild.src = e.img;
             bsp.value.push(bild.src);
         });
     }
@@ -65,11 +70,15 @@ function loadimage() {
 
 async function loadProject() {
     bsp.value = [];
+    isLoading.value = true;
     projectStore.setProject(selectedproject.value);
     await evaluationstore.getImages(selectedproject.value.id);
     projectStore.clear();
     project.value.pics = evaluationstore.img;
     loadimage();
+    setTimeout(() => {
+        isLoading.value = false;
+    }, 1000);
 }
 
 function expand($event: any) {
@@ -98,6 +107,7 @@ watch(selectedproject, changeselectedproject => {
 });
 </script>
 <template>
+    <loading :active.sync="isLoading" :can-cancel="true" :is-full-page="fullPage"></loading>
     <div v-if="view === 'Project' || view === 'User'">
         <div>
             <h4 class="q-ma-md">Projekttitle</h4>
@@ -108,6 +118,7 @@ watch(selectedproject, changeselectedproject => {
         <div class="row q-gutter-lg pic">
             <img v-for="pic in bsp" class="minipic q-pa-md" :src="pic" :ratio="1" @click="expand($event)" />
         </div>
+
         <div v-if="view == 'Project'">
             <q-btn label="Änderungen Speichern" color="blue" @click="save" class="rebtn" />
         </div>
@@ -118,7 +129,14 @@ watch(selectedproject, changeselectedproject => {
             <p>{{ project.text }}</p>
         </div>
         <div class="row q-gutter-lg pic">
-            <img v-for="pic in bsp" class="minipic q-pa-md" :src="pic" :ratio="1" @click="expand($event)" />
+            <img
+                spinner-color="green"
+                v-for="pic in bsp"
+                class="minipic q-pa-md"
+                :src="pic"
+                :ratio="1"
+                @click="expand($event)"
+            />
         </div>
     </div>
 </template>

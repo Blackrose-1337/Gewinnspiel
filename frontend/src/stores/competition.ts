@@ -3,7 +3,6 @@ import NetworkHelper from "@/utils/networkHelper";
 import { HTTPError } from "ky";
 import { Notify } from "quasar";
 import type { Competition, CompetitionDetails, Project, User, ProjectBild } from "@/stores/interfaces";
-import { isNull } from "lodash";
 
 const api = new NetworkHelper();
 
@@ -46,7 +45,6 @@ export const useCompetitionStore = defineStore({
         },
         async postCompetition(c: Competition) {
             c.user.role = "teilnehmende";
-            
             const bool = api.post<boolean>("competition/competition", c);   
             return bool;
         

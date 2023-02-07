@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { ref, toRefs, watch, computed } from "vue";
+import { toRefs, watch, computed } from "vue";
 import Projectload from "@/components/Project.vue";
 import type { Project } from "@/stores/interfaces";
 import { useEvaluationStore } from "@/stores/evaluation.ts";
-import { storeToRefs } from "pinia";
 
 const props = defineProps<{
     project?: Project;
@@ -11,7 +10,6 @@ const props = defineProps<{
 
 const evaluationstore = useEvaluationStore();
 
-const { bewertung } = storeToRefs(evaluationstore);
 const kriterien = computed(() => evaluationstore.kriterien);
 
 let { project } = toRefs(props) as Project;

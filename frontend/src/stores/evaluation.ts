@@ -5,6 +5,7 @@ import type { Bewertung, Kriterien, Auswertung } from "@/stores/interfaces";
 
 
 
+
 const api = new NetworkHelper();
 
 export type State = {
