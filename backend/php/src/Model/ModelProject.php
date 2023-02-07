@@ -83,10 +83,8 @@ class ModelProject extends ModelBase
     public function fakeWriteData($data)
     {
         $data['id'] = $this->getFakeId();
-        //$test = sonderzeichen($data);
-        $test = json_encode($data);
-        //echo $test;
-        return json_decode($test);
+        $answer = json_encode($data);
+        return json_decode($answer);
     }
 
     public function getFakeProject($userId)

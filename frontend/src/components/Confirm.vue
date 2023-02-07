@@ -7,7 +7,7 @@ const confirmStore = useConfirmStore();
 const route = useRoute();
 const router = useRouter();
 
-function test() {
+function login() {
     router.push("/login");
 }
 
@@ -36,7 +36,7 @@ onMounted(() => {
     <div v-if="user.id === 2">
         <q-card flat align="center" class="q-ma-sm">
             <h4>Ihre E-mail {{ user.email }} ist bereits bestätigt. Sie können sich unter</h4>
-            <q-btn push size="30px" label="Login" @click="test()"></q-btn>
+            <q-btn push size="30px" label="Login" @click="login()"></q-btn>
             <h4>einloggen um ihr Projekt anzusehen.</h4>
         </q-card>
     </div>

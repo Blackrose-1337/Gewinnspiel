@@ -14,7 +14,6 @@ class ConfirmController extends BaseController
                 $usermodel = new ModelTeilnehmende();
                 // Userdaten nehmen Mocking
                 if (isset($arrQueryStringParams['token'])) {
-                    error_log('test');
                     $answer = $usermodel->tokencheck($arrQueryStringParams['token']);
                     $responseData = json_encode($answer);
                 } else {

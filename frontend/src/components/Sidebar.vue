@@ -16,8 +16,8 @@ const projectStore = useProjectStore();
 //---------------storeToRefs------------------------------
 const { users } = storeToRefs(userStore);
 const { projects } = storeToRefs(projectStore);
-let test = ref(1);
-const selected = computed(() => test.value);
+let styleId = ref(1);
+const selected = computed(() => styleId.value);
 
 const emit = defineEmits<{
     (event: "change:selection", value: User): void;
@@ -28,14 +28,11 @@ const emit = defineEmits<{
 
 function changeSelection(p: User) {
     emit("change:selection", p);
-    console.log(p.id);
-    test.value = p.id;
-    console.log(test);
-    console.log(selected.value);
+    styleId.value = p.id;
 }
 function changeSelectProject(pro: Project) {
     emit("change:selectproject", pro);
-    test.value = pro.id;
+    styleId.value = pro.id;
 }
 
 function addJury() {

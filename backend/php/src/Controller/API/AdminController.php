@@ -4,7 +4,6 @@ class AdminController extends BaseController
     // Funktion um das alte Passwort zu reseten und ein neues Passwort für den User zu generieren 
     public function pwresetAction()
     {
-        error_log("---------------TEST--------------------");
         $strErrorDesc = '';
         $requestMethod = $_SERVER["REQUEST_METHOD"];
         // QueryParams entgegennehmen
@@ -41,10 +40,8 @@ class AdminController extends BaseController
             $strErrorHeader = $this->fehler(500);
         }
         if (!$strErrorDesc && ($requestMethod == 'GET')) {
-            error_log("---------------TEST4--------------------");
             $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
         } else {
-            error_log("---------------TEST5--------------------");
             $this->sendOutput(
                 json_encode(array('error' => $strErrorDesc)),
                 array('Content-Type: application/json', $strErrorHeader)

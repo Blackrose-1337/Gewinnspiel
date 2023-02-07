@@ -1,9 +1,8 @@
 import ky, { type Options } from "ky";
 import { formatISO } from "date-fns";
 import _ from "lodash";
-import { Cookies, SessionStorage } from "quasar";
+import { Cookies } from "quasar";
 
-// Cookies.set("www.stickstoff.de-competition","asdEBKA23+test",{ expires: '12min'})
 const token = Cookies.get("PHPSESSID") ?? null;
 export default class NetworkHelper {
     private API =

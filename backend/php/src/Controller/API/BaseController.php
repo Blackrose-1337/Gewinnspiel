@@ -104,10 +104,10 @@ class BaseController
     {
 
         // $img = (base64_encode($handle));
-        $test = [
+        $answer = [
             'img' => 'http://localhost:8000/' . $path,
         ];
-        return $test;
+        return $answer;
     }
     protected function GUID()
     {

@@ -24,11 +24,6 @@ export const useAuthStore = defineStore({
         },
         async login(email: string, password: string) {
             try {
-                //test backend-valid
-                // const res = await api.post<{ success: boolean; user: { email: string } }>("src/index.php/auth/login", {
-                //     email: "poppel",
-                //     password,
-                //  });
                 const res = await api.post<{ success: boolean; role: string; error: string }>("auth/login", {
                     email,
                     password,
