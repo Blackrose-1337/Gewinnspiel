@@ -66,7 +66,7 @@ class BaseController
     {
         switch ($nr) {
             case 200:
-                return "200";
+                return "HTTP/1.1 200 OK";
         }
     }
 
@@ -91,12 +91,13 @@ class BaseController
         $count = 0;
         foreach ($picturebase64 as $base64) {
             $picture = explode(',', $base64['bildbase']);
-            $newpath = $path . "/Image" . $count . ".png";
+            $newpath = $path . "/image" . $count . ".png";
             $ifp = fopen($newpath, 'w');
             fwrite($ifp, base64_decode($picture[1]));
             fclose($ifp);
             $count++;
-            $modelimage->createImagePath($projectid, $newpath);
+
+            $modelimage->createImagePath($projectid, 'images/' . $newpath);
         }
     }
 
@@ -105,7 +106,7 @@ class BaseController
 
         // $img = (base64_encode($handle));
         $answer = [
-            'img' => 'http://localhost:8000/' . $path,
+            'img' => $path,
         ];
         return $answer;
     }
@@ -122,7 +123,7 @@ class BaseController
         // Betreff
 
         $betreff = 'Bestätigungsmail Stickstoff Wettbewerb';
-        $link = "http://localhost:3000/confirm/" . $link;
+        $link = "https://gewinnspiel.stickstoff-magazin.de/confirm/" . $link;
         // Nachricht
         $nachricht = '
         <html>
@@ -144,7 +145,7 @@ class BaseController
 
         // zusätzliche Header
         $header[] = 'To:' . $empfaenger;
-        $header[] = 'From: Stickstoff Wettbewerb <Stickstoff@Wettbewerb.com>';
+        $header[] = 'From: Stickstoff Wettbewerb <Stickstoff-Magazin@wettbewerb.de>';
 
         // verschicke die E-Mail
         mail($empfaenger, $betreff, $nachricht, implode("\r\n", $header));

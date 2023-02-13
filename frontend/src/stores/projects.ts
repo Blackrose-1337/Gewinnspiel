@@ -3,6 +3,7 @@ import NetworkHelper from "@/utils/networkHelper";
 import { Notify } from "quasar";
 import { HTTPError } from "ky";
 import type { Project, User } from "@/stores/interfaces";
+import { partial } from "lodash";
 
 
 const api = new NetworkHelper();
@@ -40,6 +41,13 @@ export const useProjectStore = defineStore({
                 this.project.pics.splice(0, 0);
             }
             
+        },
+        async remove($id : number) {
+            const param = {
+                "id": $id,
+            }
+            const a = await api.post<boolean>("project/delete", param);
+            return a
         },
         async getProjects() {
             try {

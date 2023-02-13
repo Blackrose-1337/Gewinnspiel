@@ -84,12 +84,10 @@ export const useEvaluationStore = defineStore({
         },
         async getAnalysis() {
             const ans = await api.get<Auswertung[]>("evaluation/analysis", null);
-            console.log(ans)
             this.auswertung = ans;
             this.auswertung.forEach(e => {
                 e.value = +e.value
             });
-            console.log(this.auswertung)
         },
         async update(idProject: number) {
             if (this.bewertung.length === 0) {

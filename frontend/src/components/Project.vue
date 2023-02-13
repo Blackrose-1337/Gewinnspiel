@@ -46,19 +46,33 @@ async function save() {
     }
 }
 
+async function remove() {
+    const bool: boolean = await projectStore.remove(project.value.id);
+    if (bool == true) {
+        $q.notify({
+            type: "positive",
+            message: "Bilder und Projekt wurden gelöscht",
+            color: "green",
+        });
+    } else {
+        $q.notify({
+            type: "negative",
+            message: "Der Speichervorgang ist gescheitert",
+            color: "red",
+        });
+    }
+}
+
 async function load() {
     isLoading.value = true;
     if (user.value == null) {
     } else {
         projectStore.clear();
         await projectStore.getProject(user.value.id);
-        loadimage();
+        await loadimage();
     }
-    setTimeout(() => {
-        isLoading.value = false;
-    }, 1000);
 }
-function loadimage() {
+async function loadimage() {
     bsp.value = [];
     if (project.value.pics !== null && project.value.pics !== "undefined") {
         project.value.pics.forEach((e: { img: string }) => {
@@ -66,6 +80,9 @@ function loadimage() {
             bsp.value.push(bild.src);
         });
     }
+    setTimeout(() => {
+        isLoading.value = false;
+    }, 500);
 }
 
 async function loadProject() {
@@ -75,10 +92,7 @@ async function loadProject() {
     await evaluationstore.getImages(selectedproject.value.id);
     projectStore.clear();
     project.value.pics = evaluationstore.img;
-    loadimage();
-    setTimeout(() => {
-        isLoading.value = false;
-    }, 1000);
+    await loadimage();
 }
 
 function expand($event: any) {
@@ -107,7 +121,12 @@ watch(selectedproject, changeselectedproject => {
 });
 </script>
 <template>
-    <loading :active.sync="isLoading" :can-cancel="true" :is-full-page="fullPage"></loading>
+    <loading
+        :active.sync="isLoading"
+        backgroundColor="rgba(0, 0, 0, 0.021)"
+        :can-cancel="true"
+        :is-full-page="fullPage"
+    ></loading>
     <div v-if="view === 'Project' || view === 'User'">
         <div>
             <h4 class="q-ma-md">Projekttitle</h4>
@@ -121,6 +140,9 @@ watch(selectedproject, changeselectedproject => {
 
         <div v-if="view == 'Project'">
             <q-btn label="Änderungen Speichern" color="blue" @click="save" class="rebtn" />
+        </div>
+        <div v-if="view == 'Project'">
+            <q-btn label="Projekt Löschen" color="red" @click="remove" class="rebtn" />
         </div>
     </div>
     <div v-else>
@@ -145,7 +167,6 @@ watch(selectedproject, changeselectedproject => {
 .minipic {
     width: 20vw;
     height: 20vh;
-
     box-shadow: 0 1px 5px rgb(0 0 0 / 20%), 0 2px 2px rgb(0 0 0 / 14%), 0 3px 1px -2px rgb(0 0 0 / 12%);
     /* min-height: 24px;
     min-width: 24px; */

@@ -141,4 +141,47 @@ class ProjectController extends BaseController
             );
         }
     }
+
+    public function deleteAction()
+    {
+        $strErrorDesc = '';
+        $requestMethod = $_SERVER["REQUEST_METHOD"];
+        try {
+            // abfrage ob es eine POST_Methode ist
+            if (strtoupper($requestMethod) == 'POST') {
+                if (!$this->sessionCheck()) {
+                    $strErrorDesc = "Nicht akzeptierte Session";
+                    $strErrorHeader = $this->fehler(405);
+                }
+                if (!$this->userCheck('admin')) {
+                    $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
+                    $strErrorHeader = $this->fehler(401);
+                } else {
+                    // Aufruf benötigter Klassen 
+                    $projectmodel = new ModelProject();
+                    // Post Daten holen
+                    $data = json_decode(file_get_contents('php://input'), true);
+                    if ($data['id'] !== 0) {
+                        $responseData = $projectmodel->deleteProject($data);
+                    } else {
+                        $responseData = false;
+                    }
+                }
+            } else {
+                $strErrorDesc = 'Method not supported';
+                $strErrorHeader = $this->fehler(422);
+            }
+        } catch (Error $e) {
+            $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+            $strErrorHeader = $this->fehler(500);
+        }
+        if (!$strErrorDesc) {
+            $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
+        } else {
+            $this->sendOutput(
+                json_encode(array('error' => $strErrorDesc)),
+                array('Content-Type: application/json', $strErrorHeader)
+            );
+        }
+    }
 }

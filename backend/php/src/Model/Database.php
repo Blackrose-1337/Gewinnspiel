@@ -2,10 +2,10 @@
 class Database
 {
 
-    private $host = DB_HOST;
-    private $user = DB_USERNAME;
-    private $pass = DB_PASSWORD;
-    private $dbname = DB_DATABASE_NAME;
+    private $host;
+    private $user;
+    private $pass;
+    private $dbname;
 
 
     private $dbh;
@@ -14,6 +14,10 @@ class Database
 
     public function __construct()
     {
+        $this->host = getenv("DB_HOST");
+        $this->user = getenv("DB_USERNAME");
+        $this->pass = getenv("DB_PASSWORD");
+        $this->dbname = getenv("DB_DATABASE_NAME");
         // Set DSN - Verbindungsstring auf den Server
         $dsn = 'mysql:host=' . $this->host . ';dbname=' . $this->dbname . ";charset=utf8;";
         $options = array(

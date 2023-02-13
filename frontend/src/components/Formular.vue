@@ -100,6 +100,21 @@ async function savechange() {
         }
     }
 }
+async function remove() {
+    const answer = await userStore.remove(model.value.id);
+    if (answer == true) {
+        $q.notify({
+            type: "positive",
+            message: "User wurde gelöscht",
+            color: "green",
+        });
+    } else {
+        $q.notify({
+            type: answer.success,
+            message: answer.error,
+        });
+    }
+}
 async function resestpw() {
     const answer = await userStore.resetPW(model.value.id);
     if (answer == true) {
@@ -253,6 +268,9 @@ watch(user, changeUser => {
         <div v-if="view == 'User' || view == 'Project'">
             <q-btn label="Passwort zurücksetzen" color="red" @click="resestpw" class="rebtn" />
             <q-btn label="Änderungen Speichern" color="blue" @click="savechange" class="rebtn" />
+        </div>
+        <div v-if="view == 'Project'">
+            <q-btn label="User Löschen" color="red" @click="remove" class="rebtn" />
         </div>
     </div>
 </template>

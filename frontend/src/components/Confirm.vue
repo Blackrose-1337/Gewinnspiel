@@ -13,14 +13,14 @@ function login() {
 
 const user = computed(() => confirmStore.user);
 onMounted(() => {
-    confirmStore.confirm(route.params.poppel);
+    confirmStore.confirm(route.params.value);
 });
 </script>
 <template>
     <div v-if="user.id === 0">
         <q-card flat align="center">
             <h4>
-                Der Bestätigungstoken ({{ $route.params.poppel }}) existiert nicht. Bitte wenden Sie sich an den
+                Der Bestätigungstoken ({{ $route.params.value }}) existiert nicht. Bitte wenden Sie sich an den
                 Administrator der Seite.
             </h4>
         </q-card>

@@ -1,24 +1,22 @@
-Date : 2023-02-08 09:00:30
+Date : 2023-02-09 16:22:01
 Directory : /home/vagrant/Project_M133
-Total : 79 files,  12223 codes, 1995 comments, 913 blanks, all 15131 lines
+Total : 95 files,  15886 codes, 519 comments, 595 blanks, all 17000 lines
 
 Languages
 +--------------------+------------+------------+------------+------------+------------+
 | language           | files      | code       | comment    | blank      | total      |
 +--------------------+------------+------------+------------+------------+------------+
-| JSON               |          9 |      7,122 |         25 |          8 |      7,155 |
-| PHP                |         25 |      2,028 |        397 |        276 |      2,701 |
-| vue                |         19 |      1,627 |          9 |        130 |      1,766 |
+| JSON               |         10 |     10,876 |         25 |          9 |     10,910 |
+| PHP                |         23 |      2,015 |        389 |        275 |      2,679 |
+| vue                |         19 |      1,624 |          9 |        129 |      1,762 |
 | TypeScript         |         12 |        639 |         57 |         87 |        783 |
 | SQL                |          2 |        453 |          0 |         30 |        483 |
-| Ini                |          1 |        135 |      1,480 |        336 |      1,951 |
-| CSS                |          1 |         61 |          3 |         14 |         78 |
+| JavaScript         |         15 |         72 |         22 |         16 |        110 |
+| CSS                |          6 |         66 |          3 |         19 |         88 |
 | Docker             |          2 |         51 |         13 |         15 |         79 |
 | YAML               |          1 |         39 |          1 |          9 |         49 |
-| JavaScript         |          2 |         24 |          9 |          3 |         36 |
+| HTML               |          2 |         27 |          0 |          1 |         28 |
 | JSON with Comments |          1 |         18 |          0 |          1 |         19 |
-| HTML               |          1 |         13 |          0 |          0 |         13 |
-| Shell Script       |          1 |          7 |          1 |          0 |          8 |
 | Markdown           |          1 |          5 |          0 |          4 |          9 |
 | XML                |          1 |          1 |          0 |          0 |          1 |
 +--------------------+------------+------------+------------+------------+------------+
@@ -27,21 +25,24 @@ Directories
 +-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
 | path                                                                                | files      | code       | comment    | blank      | total      |
 +-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
-| .                                                                                   |         79 |     12,223 |      1,995 |        913 |     15,131 |
-| . (Files)                                                                           |          7 |        107 |         16 |         18 |        141 |
-| backend                                                                             |         26 |      2,199 |      1,870 |        620 |      4,689 |
-| backend/php                                                                         |         26 |      2,199 |      1,870 |        620 |      4,689 |
-| backend/php (Files)                                                                 |          3 |        182 |      1,487 |        347 |      2,016 |
-| backend/php/src                                                                     |         23 |      2,017 |        383 |        273 |      2,673 |
-| backend/php/src (Files)                                                             |          1 |         45 |          1 |          5 |         51 |
-| backend/php/src/Controller                                                          |          8 |      1,006 |         79 |         38 |      1,123 |
-| backend/php/src/Controller/API                                                      |          8 |      1,006 |         79 |         38 |      1,123 |
-| backend/php/src/Model                                                               |          9 |        855 |        293 |        209 |      1,357 |
+| .                                                                                   |         95 |     15,886 |        519 |        595 |     17,000 |
+| . (Files)                                                                           |          5 |      3,843 |          1 |         16 |      3,860 |
+| backend                                                                             |         25 |      2,062 |        396 |        286 |      2,744 |
+| backend/php                                                                         |         25 |      2,062 |        396 |        286 |      2,744 |
+| backend/php (Files)                                                                 |          2 |         47 |          7 |         11 |         65 |
+| backend/php/src                                                                     |         23 |      2,015 |        389 |        275 |      2,679 |
+| backend/php/src (Files)                                                             |          1 |         45 |          1 |          6 |         52 |
+| backend/php/src/Controller                                                          |          8 |      1,006 |         79 |         39 |      1,124 |
+| backend/php/src/Controller/API                                                      |          8 |      1,006 |         79 |         39 |      1,124 |
+| backend/php/src/Model                                                               |          9 |        859 |        293 |        209 |      1,361 |
 | backend/php/src/helpers                                                             |          3 |         62 |          9 |         12 |         83 |
-| backend/php/src/inc                                                                 |          2 |         49 |          1 |          9 |         59 |
-| frontend                                                                            |         44 |      9,464 |        109 |        245 |      9,818 |
+| backend/php/src/inc                                                                 |          2 |         43 |          7 |          9 |         59 |
+| frontend                                                                            |         63 |      9,528 |        122 |        263 |      9,913 |
 | frontend (Files)                                                                    |         12 |      7,165 |         42 |         18 |      7,225 |
-| frontend/src                                                                        |         32 |      2,299 |         67 |        227 |      2,593 |
+| frontend/dist                                                                       |         19 |         67 |         13 |         19 |         99 |
+| frontend/dist (Files)                                                               |          1 |         14 |          0 |          1 |         15 |
+| frontend/dist/assets                                                                |         18 |         53 |         13 |         18 |         84 |
+| frontend/src                                                                        |         32 |      2,296 |         67 |        226 |      2,589 |
 | frontend/src (Files)                                                                |          2 |        152 |         20 |         22 |        194 |
 | frontend/src/assets                                                                 |          2 |         62 |          3 |         14 |         79 |
 | frontend/src/components                                                             |         10 |      1,114 |          8 |         78 |      1,200 |
@@ -50,7 +51,7 @@ Directories
 | frontend/src/router                                                                 |          1 |         69 |         19 |          6 |         94 |
 | frontend/src/stores                                                                 |          7 |        439 |          2 |         48 |        489 |
 | frontend/src/utils                                                                  |          1 |         84 |         15 |         21 |        120 |
-| frontend/src/views                                                                  |          9 |        379 |          0 |         38 |        417 |
+| frontend/src/views                                                                  |          9 |        376 |          0 |         37 |        413 |
 | mysql                                                                               |          2 |        453 |          0 |         30 |        483 |
 | mysql/initscripts                                                                   |          2 |        453 |          0 |         30 |        483 |
 +-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
@@ -59,19 +60,19 @@ Files
 +-------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
 | filename                                                                            | language           | code       | comment    | blank      | total      |
 +-------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| /home/vagrant/Project_M133/.package-lock.json                                       | JSON               |      3,754 |          0 |          1 |      3,755 |
 | /home/vagrant/Project_M133/README.md                                                | Markdown           |          5 |          0 |          4 |          9 |
 | /home/vagrant/Project_M133/backend/php/Dockerfile                                   | Docker             |         42 |          7 |          8 |         57 |
 | /home/vagrant/Project_M133/backend/php/composer.json                                | JSON               |          5 |          0 |          3 |          8 |
-| /home/vagrant/Project_M133/backend/php/php.ini                                      | Ini                |        135 |      1,480 |        336 |      1,951 |
 | /home/vagrant/Project_M133/backend/php/src/Controller/API/AdminController.php       | PHP                |        104 |         13 |          6 |        123 |
 | /home/vagrant/Project_M133/backend/php/src/Controller/API/AuthController.php        | PHP                |        164 |          7 |          1 |        172 |
-| /home/vagrant/Project_M133/backend/php/src/Controller/API/BaseController.php        | PHP                |        160 |         11 |         19 |        190 |
+| /home/vagrant/Project_M133/backend/php/src/Controller/API/BaseController.php        | PHP                |        160 |         11 |         20 |        191 |
 | /home/vagrant/Project_M133/backend/php/src/Controller/API/CompetitionController.php | PHP                |        102 |         11 |          0 |        113 |
 | /home/vagrant/Project_M133/backend/php/src/Controller/API/ConfirmController.php     | PHP                |         37 |          4 |          0 |         41 |
 | /home/vagrant/Project_M133/backend/php/src/Controller/API/EvaluationController.php  | PHP                |        212 |         12 |         12 |        236 |
 | /home/vagrant/Project_M133/backend/php/src/Controller/API/ProjectController.php     | PHP                |        135 |          9 |          0 |        144 |
 | /home/vagrant/Project_M133/backend/php/src/Controller/API/UserController.php        | PHP                |         92 |         12 |          0 |        104 |
-| /home/vagrant/Project_M133/backend/php/src/Model/Database.php                       | PHP                |         77 |         14 |         18 |        109 |
+| /home/vagrant/Project_M133/backend/php/src/Model/Database.php                       | PHP                |         81 |         14 |         18 |        113 |
 | /home/vagrant/Project_M133/backend/php/src/Model/ModelBase.php                      | PHP                |         59 |          9 |         15 |         83 |
 | /home/vagrant/Project_M133/backend/php/src/Model/ModelBewertung.php                 | PHP                |         95 |         30 |         20 |        145 |
 | /home/vagrant/Project_M133/backend/php/src/Model/ModelBilder.php                    | PHP                |         50 |         17 |         10 |         77 |
@@ -84,13 +85,31 @@ Files
 | /home/vagrant/Project_M133/backend/php/src/helpers/session_helper.php               | PHP                |         10 |          0 |          3 |         13 |
 | /home/vagrant/Project_M133/backend/php/src/helpers/url_helper.php                   | PHP                |          4 |          2 |          1 |          7 |
 | /home/vagrant/Project_M133/backend/php/src/inc/bootstrap.php                        | PHP                |         41 |          1 |          6 |         48 |
-| /home/vagrant/Project_M133/backend/php/src/inc/config.php                           | PHP                |          8 |          0 |          3 |         11 |
-| /home/vagrant/Project_M133/backend/php/src/index.php                                | PHP                |         45 |          1 |          5 |         51 |
-| /home/vagrant/Project_M133/delete.php                                               | PHP                |          4 |         11 |          1 |         16 |
+| /home/vagrant/Project_M133/backend/php/src/inc/config.php                           | PHP                |          2 |          6 |          3 |         11 |
+| /home/vagrant/Project_M133/backend/php/src/index.php                                | PHP                |         45 |          1 |          6 |         52 |
 | /home/vagrant/Project_M133/docker-compose.yml                                       | YAML               |         39 |          1 |          9 |         49 |
 | /home/vagrant/Project_M133/frontend/.eslintrc.cjs                                   | JavaScript         |         17 |          1 |          2 |         20 |
 | /home/vagrant/Project_M133/frontend/.prettierrc.js                                  | JavaScript         |          7 |          8 |          1 |         16 |
 | /home/vagrant/Project_M133/frontend/Dockerfile                                      | Docker             |          9 |          6 |          7 |         22 |
+| /home/vagrant/Project_M133/frontend/dist/assets/AuswertungView.a906f8ca.js          | JavaScript         |          1 |          0 |          1 |          2 |
+| /home/vagrant/Project_M133/frontend/dist/assets/BestaetigungView.69c2ae7d.js        | JavaScript         |          1 |          0 |          1 |          2 |
+| /home/vagrant/Project_M133/frontend/dist/assets/BewertungView.36b578bf.js           | JavaScript         |          1 |          0 |          1 |          2 |
+| /home/vagrant/Project_M133/frontend/dist/assets/DesigneView.4f80e41e.css            | CSS                |          1 |          0 |          1 |          2 |
+| /home/vagrant/Project_M133/frontend/dist/assets/DesigneView.ee8f7371.js             | JavaScript         |         11 |          0 |          1 |         12 |
+| /home/vagrant/Project_M133/frontend/dist/assets/LoginView.864950c7.js               | JavaScript         |          2 |          0 |          1 |          3 |
+| /home/vagrant/Project_M133/frontend/dist/assets/Project.9699bcb4.js                 | JavaScript         |          1 |          0 |          1 |          2 |
+| /home/vagrant/Project_M133/frontend/dist/assets/Project.c9660bdb.css                | CSS                |          1 |          0 |          1 |          2 |
+| /home/vagrant/Project_M133/frontend/dist/assets/ProjectView.d5f8c645.js             | JavaScript         |          1 |          0 |          1 |          2 |
+| /home/vagrant/Project_M133/frontend/dist/assets/Sidebar.5b2adb96.js                 | JavaScript         |          1 |          0 |          1 |          2 |
+| /home/vagrant/Project_M133/frontend/dist/assets/Sidebar.64422143.css                | CSS                |          1 |          0 |          1 |          2 |
+| /home/vagrant/Project_M133/frontend/dist/assets/UserView.b4d2ad54.css               | CSS                |          1 |          0 |          1 |          2 |
+| /home/vagrant/Project_M133/frontend/dist/assets/UserView.ebc7cdd7.js                | JavaScript         |          1 |          0 |          1 |          2 |
+| /home/vagrant/Project_M133/frontend/dist/assets/VerwaltungView.2bce3dd8.js          | JavaScript         |          1 |          0 |          1 |          2 |
+| /home/vagrant/Project_M133/frontend/dist/assets/evaluation.8fa88ef7.js              | JavaScript         |          1 |          0 |          1 |          2 |
+| /home/vagrant/Project_M133/frontend/dist/assets/index.3a5cc6cf.js                   | JavaScript         |         25 |         13 |          1 |         39 |
+| /home/vagrant/Project_M133/frontend/dist/assets/index.d46ff168.css                  | CSS                |          1 |          0 |          1 |          2 |
+| /home/vagrant/Project_M133/frontend/dist/assets/use-fullscreen.70f676c3.js          | JavaScript         |          1 |          0 |          1 |          2 |
+| /home/vagrant/Project_M133/frontend/dist/index.html                                 | HTML               |         14 |          0 |          1 |         15 |
 | /home/vagrant/Project_M133/frontend/env.d.ts                                        | TypeScript         |          0 |          1 |          1 |          2 |
 | /home/vagrant/Project_M133/frontend/index.html                                      | HTML               |         13 |          0 |          0 |         13 |
 | /home/vagrant/Project_M133/frontend/package-lock.json                               | JSON               |      6,992 |          0 |          1 |      6,993 |
@@ -122,7 +141,7 @@ Files
 | /home/vagrant/Project_M133/frontend/src/views/BestaetigungView.vue                  | vue                |          9 |          0 |          1 |         10 |
 | /home/vagrant/Project_M133/frontend/src/views/BewertungView.vue                     | vue                |         42 |          0 |          5 |         47 |
 | /home/vagrant/Project_M133/frontend/src/views/DesigneView.vue                       | vue                |         32 |          0 |          3 |         35 |
-| /home/vagrant/Project_M133/frontend/src/views/LoginView.vue                         | vue                |        100 |          0 |          9 |        109 |
+| /home/vagrant/Project_M133/frontend/src/views/LoginView.vue                         | vue                |         97 |          0 |          8 |        105 |
 | /home/vagrant/Project_M133/frontend/src/views/ProjectView.vue                       | vue                |         41 |          0 |          5 |         46 |
 | /home/vagrant/Project_M133/frontend/src/views/UserView.vue                          | vue                |         62 |          0 |          6 |         68 |
 | /home/vagrant/Project_M133/frontend/src/views/VerwaltungView.vue                    | vue                |         52 |          0 |          5 |         57 |
@@ -132,11 +151,9 @@ Files
 | /home/vagrant/Project_M133/frontend/tsconfig.vite-config.json                       | JSON               |          8 |          0 |          1 |          9 |
 | /home/vagrant/Project_M133/frontend/tsconfig.vitest.json                            | JSON               |          8 |          5 |          0 |         13 |
 | /home/vagrant/Project_M133/frontend/vite.config.ts                                  | TypeScript         |         30 |          1 |          3 |         34 |
-| /home/vagrant/Project_M133/install.php                                              | PHP                |          7 |          3 |          2 |         12 |
 | /home/vagrant/Project_M133/mysql/initscripts/001tabels.sql                          | SQL                |         98 |          0 |         20 |        118 |
 | /home/vagrant/Project_M133/mysql/initscripts/002datas.sql                           | SQL                |        355 |          0 |         10 |        365 |
 | /home/vagrant/Project_M133/package-lock.json                                        | JSON               |         40 |          0 |          1 |         41 |
 | /home/vagrant/Project_M133/package.json                                             | JSON               |          5 |          0 |          1 |          6 |
-| /home/vagrant/Project_M133/poppel.sh                                                | Shell Script       |          7 |          1 |          0 |          8 |
-| Total                                                                               |                    |     12,223 |      1,995 |        913 |     15,131 |
+| Total                                                                               |                    |     15,886 |        519 |        595 |     17,000 |
 +-------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+

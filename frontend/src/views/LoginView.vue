@@ -3,6 +3,7 @@ import { ref, toRefs } from "vue";
 import { useQuasar } from "quasar";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
+import { computed } from "@vue/reactivity";
 
 const props = defineProps({
     redirectTo: {
@@ -15,8 +16,8 @@ const { redirectTo } = toRefs(props);
 const $q = useQuasar();
 const authStore = useAuthStore();
 const router = useRouter();
-const email = ref("");
-const password = ref("");
+const email = ref(import.meta.env.MODE === "production" ? "" : "poppel@gmx.ch");
+const password = ref(import.meta.env.MODE === "production" ? "" : "exampel1DDH?");
 const showPassword = ref(false);
 
 function isValidEmail(val: string) {
@@ -30,11 +31,6 @@ function isValidpw(val: string) {
 }
 
 async function login() {
-    // email.value = "nanomail@gmail.com";
-    email.value = "poppel@gmx.ch";
-    // email.value = "business@gmail.com";
-
-    password.value = "exampel1DDH?";
     if (isValidEmail(email.value) != true) {
         $q.notify({
             message: "Email ist inakzeptabel",

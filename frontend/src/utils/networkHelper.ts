@@ -6,7 +6,7 @@ import { Cookies } from "quasar";
 const token = Cookies.get("PHPSESSID") ?? null;
 export default class NetworkHelper {
     private API =
-        import.meta.env.MODE === "production" ? "/api/" : `http://${window.location.host.split(":")[0]}:8000/src/index.php/`;
+        import.meta.env.MODE === "production" ? "index.php/api/" : `http://${window.location.host.split(":")[0]}:8000/src/index.php/`;
 
     private getOptionsAndUrl(url: string, queryParams: any | null) {
         const options = {

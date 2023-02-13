@@ -26,7 +26,6 @@ export const useUserStore = defineStore({
                 'userId': u
             }
                 this.user = await api.get<User>("user/getUser", param);  
-                console.log(this.user);
             } catch (err) {
                 console.error(err);
             }
@@ -49,6 +48,14 @@ export const useUserStore = defineStore({
             } catch (err) {
                 throw err;
             }
+        },
+        async remove(userId:number) {
+            const param =
+                {
+                    "userId": userId,
+            }
+            const res = await api.post<boolean>("admin/remove", param);
+            return res;
         },
 
         async resetPW(userId:number) {

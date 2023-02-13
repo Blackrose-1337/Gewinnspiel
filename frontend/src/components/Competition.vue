@@ -5,6 +5,7 @@ import { useQuasar } from "quasar";
 import Formular from "@/components/Formular.vue";
 import { useCompetitionStore } from "@/stores/competition";
 import type { User, Project, ProjectBild } from "@/stores/interfaces";
+import Loading from "vue-loading-overlay";
 
 const $q = useQuasar();
 
@@ -21,11 +22,14 @@ const projectmodel: Project = ref({
 }) as Project;
 const dialog = ref(false);
 const filesPng = ref();
+let isLoading = ref(false);
+const fullPage = ref(true);
 
 function changeUserModel(u: User) {
     usermodel.value = u;
 }
 function sendcompetition() {
+    isLoading.value = true;
     //clear von übertragungs Bilder falls noch von versuch zuvor befüllt
     competition.value.pics.splice(0);
     //abfrage ob Bilder hochgeladen wurden falls ja werden diese in Base64 konvertiert
@@ -49,6 +53,7 @@ function sendcompetition() {
         setTimeout(() => {
             sendcompetitionstep2();
         }, 500);
+        isLoading.value = false;
     } else {
         $q.notify({
             type: "negative",
@@ -146,12 +151,8 @@ function datecheck() {
         currentDateWithFormat > competitionDetails.value.wettbewerbbeginn &&
         currentDateWithFormat < competitionDetails.value.wettbewerbende
     ) {
-        console.log(currentDateWithFormat + " > " + competitionDetails.value.wettbewerbbeginn);
-        console.log(currentDateWithFormat + " < " + competitionDetails.value.wettbewerbende);
         return true;
     } else {
-        console.log(currentDateWithFormat + " > " + competitionDetails.value.wettbewerbbeginn);
-        console.log(currentDateWithFormat + " < " + competitionDetails.value.wettbewerbende);
         return false;
     }
 }
@@ -182,6 +183,12 @@ load();
 </script>
 
 <template>
+    <loading
+        :active.sync="isLoading"
+        backgroundColor="rgba(0, 0, 0, 0.021)"
+        :can-cancel="true"
+        :is-full-page="fullPage"
+    ></loading>
     <div v-if="datecheck()">
         <q-card flat>
             <q-card-section align="center" v-html="competitionDetails.title" />
@@ -223,7 +230,7 @@ load();
                 <q-checkbox
                     left-label
                     v-model="teilnahmebedingungenbestätigung"
-                    label="Teilnahmebedingungen"
+                    label="Teilnahmebedingungen annehmen"
                     class="col-4"
                 />
                 <q-space />

@@ -24,8 +24,8 @@ class CompetitionController extends BaseController
                     $answerProject = $newproject->createProject($data['project']);
                     $picturebase64 = $data['pics'];
                     if (PHP_OS == "Linux") {
-                        $generalpath = "../data/project";
-                        $number = $this->countfolder("../../data");
+                        $generalpath = "./project";
+                        $number = $this->countfolder("./images");
                         $newPath = $generalpath . strval($number);
                         mkdir($newPath, 0777, false);
                         $newPath = $newPath . '/' . $this->GUID();

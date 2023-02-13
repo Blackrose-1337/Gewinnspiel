@@ -108,16 +108,61 @@ class AdminController extends BaseController
         }
     }
 
-    private function parseData($string)
+    public function removeAction()
     {
-        $data = null;
+        $strErrorDesc = '';
+        $requestMethod = $_SERVER["REQUEST_METHOD"];
         try {
-            $data = json_decode($string);
-        } catch (Exception $e) {
-            $data = false;
+            // abfrage ob es eine POST_Methode ist
+            if (strtoupper($requestMethod) == 'POST') {
+                if (!$this->sessionCheck()) {
+                    $strErrorDesc = "Nicht akzeptierte Session";
+                    $strErrorHeader = $this->fehler(405);
+                }
+                if (!$this->userCheck('admin')) {
+                    $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
+                    $strErrorHeader = $this->fehler(401);
+                } else {
+                    // Aufruf benötigter Klassen 
+                    $projectmodel = new ModelProject();
+                    $usermodel = new ModelTeilnehmende();
+                    // Post Daten holen
+                    $data = json_decode(file_get_contents('php://input'), true);
+                    if ($data['id'] !== 0) {
+                        $projectmodel->deleteProjectWithUserId($data);
+                        $responseData = $usermodel->deleteUser($data);
+                    } else {
+                        $responseData = false;
+                    }
+                }
+            } else {
+                $strErrorDesc = 'Method not supported';
+                $strErrorHeader = $this->fehler(422);
+            }
+        } catch (Error $e) {
+            $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+            $strErrorHeader = $this->fehler(500);
         }
-
-        return $data;
+        if (!$strErrorDesc) {
+            $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
+        } else {
+            $this->sendOutput(
+                json_encode(array('error' => $strErrorDesc)),
+                array('Content-Type: application/json', $strErrorHeader)
+            );
+        }
     }
+
+// private function parseData($string)
+// {
+//     $data = null;
+//     try {
+//         $data = json_decode($string);
+//     } catch (Exception $e) {
+//         $data = false;
+//     }
+
+//     return $data;
+// }
 
 }

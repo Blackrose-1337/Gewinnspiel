@@ -120,6 +120,14 @@ class ModelTeilnehmende extends ModelBase
 
         return $data;
     }
+
+    public function deleteUser($data)
+    {
+        $this->db->query("DELETE FROM User WHERE id = :id");
+        $this->db->bind(":id", $data["userId"]);
+        $answer = $this->db->execute();
+        return $answer;
+    }
     private function getAllUser()
     {
         // Get-Data from Mysql

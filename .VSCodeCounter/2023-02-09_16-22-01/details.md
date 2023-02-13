@@ -1,29 +1,29 @@
 # Details
 
-Date : 2023-02-08 09:00:30
+Date : 2023-02-09 16:22:01
 
 Directory /home/vagrant/Project_M133
 
-Total : 79 files,  12223 codes, 1995 comments, 913 blanks, all 15131 lines
+Total : 95 files,  15886 codes, 519 comments, 595 blanks, all 17000 lines
 
 [Summary](results.md) / Details / [Diff Summary](diff.md) / [Diff Details](diff-details.md)
 
 ## Files
 | filename | language | code | comment | blank | total |
 | :--- | :--- | ---: | ---: | ---: | ---: |
+| [.package-lock.json](/.package-lock.json) | JSON | 3,754 | 0 | 1 | 3,755 |
 | [README.md](/README.md) | Markdown | 5 | 0 | 4 | 9 |
 | [backend/php/Dockerfile](/backend/php/Dockerfile) | Docker | 42 | 7 | 8 | 57 |
 | [backend/php/composer.json](/backend/php/composer.json) | JSON | 5 | 0 | 3 | 8 |
-| [backend/php/php.ini](/backend/php/php.ini) | Ini | 135 | 1,480 | 336 | 1,951 |
 | [backend/php/src/Controller/API/AdminController.php](/backend/php/src/Controller/API/AdminController.php) | PHP | 104 | 13 | 6 | 123 |
 | [backend/php/src/Controller/API/AuthController.php](/backend/php/src/Controller/API/AuthController.php) | PHP | 164 | 7 | 1 | 172 |
-| [backend/php/src/Controller/API/BaseController.php](/backend/php/src/Controller/API/BaseController.php) | PHP | 160 | 11 | 19 | 190 |
+| [backend/php/src/Controller/API/BaseController.php](/backend/php/src/Controller/API/BaseController.php) | PHP | 160 | 11 | 20 | 191 |
 | [backend/php/src/Controller/API/CompetitionController.php](/backend/php/src/Controller/API/CompetitionController.php) | PHP | 102 | 11 | 0 | 113 |
 | [backend/php/src/Controller/API/ConfirmController.php](/backend/php/src/Controller/API/ConfirmController.php) | PHP | 37 | 4 | 0 | 41 |
 | [backend/php/src/Controller/API/EvaluationController.php](/backend/php/src/Controller/API/EvaluationController.php) | PHP | 212 | 12 | 12 | 236 |
 | [backend/php/src/Controller/API/ProjectController.php](/backend/php/src/Controller/API/ProjectController.php) | PHP | 135 | 9 | 0 | 144 |
 | [backend/php/src/Controller/API/UserController.php](/backend/php/src/Controller/API/UserController.php) | PHP | 92 | 12 | 0 | 104 |
-| [backend/php/src/Model/Database.php](/backend/php/src/Model/Database.php) | PHP | 77 | 14 | 18 | 109 |
+| [backend/php/src/Model/Database.php](/backend/php/src/Model/Database.php) | PHP | 81 | 14 | 18 | 113 |
 | [backend/php/src/Model/ModelBase.php](/backend/php/src/Model/ModelBase.php) | PHP | 59 | 9 | 15 | 83 |
 | [backend/php/src/Model/ModelBewertung.php](/backend/php/src/Model/ModelBewertung.php) | PHP | 95 | 30 | 20 | 145 |
 | [backend/php/src/Model/ModelBilder.php](/backend/php/src/Model/ModelBilder.php) | PHP | 50 | 17 | 10 | 77 |
@@ -36,13 +36,31 @@ Total : 79 files,  12223 codes, 1995 comments, 913 blanks, all 15131 lines
 | [backend/php/src/helpers/session_helper.php](/backend/php/src/helpers/session_helper.php) | PHP | 10 | 0 | 3 | 13 |
 | [backend/php/src/helpers/url_helper.php](/backend/php/src/helpers/url_helper.php) | PHP | 4 | 2 | 1 | 7 |
 | [backend/php/src/inc/bootstrap.php](/backend/php/src/inc/bootstrap.php) | PHP | 41 | 1 | 6 | 48 |
-| [backend/php/src/inc/config.php](/backend/php/src/inc/config.php) | PHP | 8 | 0 | 3 | 11 |
-| [backend/php/src/index.php](/backend/php/src/index.php) | PHP | 45 | 1 | 5 | 51 |
-| [delete.php](/delete.php) | PHP | 4 | 11 | 1 | 16 |
+| [backend/php/src/inc/config.php](/backend/php/src/inc/config.php) | PHP | 2 | 6 | 3 | 11 |
+| [backend/php/src/index.php](/backend/php/src/index.php) | PHP | 45 | 1 | 6 | 52 |
 | [docker-compose.yml](/docker-compose.yml) | YAML | 39 | 1 | 9 | 49 |
 | [frontend/.eslintrc.cjs](/frontend/.eslintrc.cjs) | JavaScript | 17 | 1 | 2 | 20 |
 | [frontend/.prettierrc.js](/frontend/.prettierrc.js) | JavaScript | 7 | 8 | 1 | 16 |
 | [frontend/Dockerfile](/frontend/Dockerfile) | Docker | 9 | 6 | 7 | 22 |
+| [frontend/dist/assets/AuswertungView.a906f8ca.js](/frontend/dist/assets/AuswertungView.a906f8ca.js) | JavaScript | 1 | 0 | 1 | 2 |
+| [frontend/dist/assets/BestaetigungView.69c2ae7d.js](/frontend/dist/assets/BestaetigungView.69c2ae7d.js) | JavaScript | 1 | 0 | 1 | 2 |
+| [frontend/dist/assets/BewertungView.36b578bf.js](/frontend/dist/assets/BewertungView.36b578bf.js) | JavaScript | 1 | 0 | 1 | 2 |
+| [frontend/dist/assets/DesigneView.4f80e41e.css](/frontend/dist/assets/DesigneView.4f80e41e.css) | CSS | 1 | 0 | 1 | 2 |
+| [frontend/dist/assets/DesigneView.ee8f7371.js](/frontend/dist/assets/DesigneView.ee8f7371.js) | JavaScript | 11 | 0 | 1 | 12 |
+| [frontend/dist/assets/LoginView.864950c7.js](/frontend/dist/assets/LoginView.864950c7.js) | JavaScript | 2 | 0 | 1 | 3 |
+| [frontend/dist/assets/Project.9699bcb4.js](/frontend/dist/assets/Project.9699bcb4.js) | JavaScript | 1 | 0 | 1 | 2 |
+| [frontend/dist/assets/Project.c9660bdb.css](/frontend/dist/assets/Project.c9660bdb.css) | CSS | 1 | 0 | 1 | 2 |
+| [frontend/dist/assets/ProjectView.d5f8c645.js](/frontend/dist/assets/ProjectView.d5f8c645.js) | JavaScript | 1 | 0 | 1 | 2 |
+| [frontend/dist/assets/Sidebar.5b2adb96.js](/frontend/dist/assets/Sidebar.5b2adb96.js) | JavaScript | 1 | 0 | 1 | 2 |
+| [frontend/dist/assets/Sidebar.64422143.css](/frontend/dist/assets/Sidebar.64422143.css) | CSS | 1 | 0 | 1 | 2 |
+| [frontend/dist/assets/UserView.b4d2ad54.css](/frontend/dist/assets/UserView.b4d2ad54.css) | CSS | 1 | 0 | 1 | 2 |
+| [frontend/dist/assets/UserView.ebc7cdd7.js](/frontend/dist/assets/UserView.ebc7cdd7.js) | JavaScript | 1 | 0 | 1 | 2 |
+| [frontend/dist/assets/VerwaltungView.2bce3dd8.js](/frontend/dist/assets/VerwaltungView.2bce3dd8.js) | JavaScript | 1 | 0 | 1 | 2 |
+| [frontend/dist/assets/evaluation.8fa88ef7.js](/frontend/dist/assets/evaluation.8fa88ef7.js) | JavaScript | 1 | 0 | 1 | 2 |
+| [frontend/dist/assets/index.3a5cc6cf.js](/frontend/dist/assets/index.3a5cc6cf.js) | JavaScript | 25 | 13 | 1 | 39 |
+| [frontend/dist/assets/index.d46ff168.css](/frontend/dist/assets/index.d46ff168.css) | CSS | 1 | 0 | 1 | 2 |
+| [frontend/dist/assets/use-fullscreen.70f676c3.js](/frontend/dist/assets/use-fullscreen.70f676c3.js) | JavaScript | 1 | 0 | 1 | 2 |
+| [frontend/dist/index.html](/frontend/dist/index.html) | HTML | 14 | 0 | 1 | 15 |
 | [frontend/env.d.ts](/frontend/env.d.ts) | TypeScript | 0 | 1 | 1 | 2 |
 | [frontend/index.html](/frontend/index.html) | HTML | 13 | 0 | 0 | 13 |
 | [frontend/package-lock.json](/frontend/package-lock.json) | JSON | 6,992 | 0 | 1 | 6,993 |
@@ -74,7 +92,7 @@ Total : 79 files,  12223 codes, 1995 comments, 913 blanks, all 15131 lines
 | [frontend/src/views/BestaetigungView.vue](/frontend/src/views/BestaetigungView.vue) | vue | 9 | 0 | 1 | 10 |
 | [frontend/src/views/BewertungView.vue](/frontend/src/views/BewertungView.vue) | vue | 42 | 0 | 5 | 47 |
 | [frontend/src/views/DesigneView.vue](/frontend/src/views/DesigneView.vue) | vue | 32 | 0 | 3 | 35 |
-| [frontend/src/views/LoginView.vue](/frontend/src/views/LoginView.vue) | vue | 100 | 0 | 9 | 109 |
+| [frontend/src/views/LoginView.vue](/frontend/src/views/LoginView.vue) | vue | 97 | 0 | 8 | 105 |
 | [frontend/src/views/ProjectView.vue](/frontend/src/views/ProjectView.vue) | vue | 41 | 0 | 5 | 46 |
 | [frontend/src/views/UserView.vue](/frontend/src/views/UserView.vue) | vue | 62 | 0 | 6 | 68 |
 | [frontend/src/views/VerwaltungView.vue](/frontend/src/views/VerwaltungView.vue) | vue | 52 | 0 | 5 | 57 |
@@ -84,11 +102,9 @@ Total : 79 files,  12223 codes, 1995 comments, 913 blanks, all 15131 lines
 | [frontend/tsconfig.vite-config.json](/frontend/tsconfig.vite-config.json) | JSON | 8 | 0 | 1 | 9 |
 | [frontend/tsconfig.vitest.json](/frontend/tsconfig.vitest.json) | JSON | 8 | 5 | 0 | 13 |
 | [frontend/vite.config.ts](/frontend/vite.config.ts) | TypeScript | 30 | 1 | 3 | 34 |
-| [install.php](/install.php) | PHP | 7 | 3 | 2 | 12 |
 | [mysql/initscripts/001tabels.sql](/mysql/initscripts/001tabels.sql) | SQL | 98 | 0 | 20 | 118 |
 | [mysql/initscripts/002datas.sql](/mysql/initscripts/002datas.sql) | SQL | 355 | 0 | 10 | 365 |
 | [package-lock.json](/package-lock.json) | JSON | 40 | 0 | 1 | 41 |
 | [package.json](/package.json) | JSON | 5 | 0 | 1 | 6 |
-| [poppel.sh](/poppel.sh) | Shell Script | 7 | 1 | 0 | 8 |
 
 [Summary](results.md) / Details / [Diff Summary](diff.md) / [Diff Details](diff-details.md)
