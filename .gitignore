@@ -1,5 +1,4 @@
 mysql/mysqldata/**
 data
-.htaccess
 backend/php/src/.htaccess
 Test
