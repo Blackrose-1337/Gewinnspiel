@@ -74,12 +74,13 @@ class AdminController extends BaseController
                         // Falls id 0 hinterlegt ist wird ein neuer User erstellt
                         if ($data['id'] == 0) {
                             $usermodel->createUser($data);
+                            $responseData = 1
                             // Andernfalls wird mit der Id der User gesucht und die Daten überschrieben
                         } else {
                             $usermodel->changeUser($data);
                             $responseData = 1;
                         }
-                    } else if ($_SESSION['user_role'] == 'teilnehmende') {
+                    } else if ($_SESSION['user_role'] == 'teilnehmende' && $_SESSION['user_id'] == $data['id']) {
                         $usermodel->changeUser($data);
                         $responseData = 1;
                     } else {
@@ -128,7 +129,7 @@ class AdminController extends BaseController
                     $usermodel = new ModelTeilnehmende();
                     // Post Daten holen
                     $data = json_decode(file_get_contents('php://input'), true);
-                    if ($data['id'] !== 0) {
+                    if ($data['userId'] !== 0) {
                         $projectmodel->deleteProjectWithUserId($data);
                         $responseData = $usermodel->deleteUser($data);
                     } else {

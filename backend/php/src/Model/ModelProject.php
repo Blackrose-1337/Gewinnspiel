@@ -70,9 +70,17 @@ class ModelProject extends ModelBase
     public function deleteProjectWithUserId($data)
     {
         $answer = $this->getProject($data['userId']);
-        $this->db->query("DELETE FROM Image WHERE projectid = :id");
+        $this->db->query("SELECT id
+                        FROM Image
+                        WHERE projectid = :id");
         $this->db->bind(":id", $answer['id']);
-        $this->db->execute();
+        $check = $this->db->resultSet();
+        error_log(isset($check[0]));
+        if (isset($check[0])) {
+            $this->db->query("DELETE FROM Image WHERE projectid = :id");
+            $this->db->bind(":id", $answer['id']);
+            $this->db->execute();
+        }
         $this->db->query("DELETE FROM Project  WHERE id = :id");
         $this->db->bind(":id", $answer['id']);
         $answer = $this->db->execute();
