@@ -2,3 +2,4 @@ mysql/mysqldata/**
 data
 backend/php/src/.htaccess
 Test
+frontend/dist
