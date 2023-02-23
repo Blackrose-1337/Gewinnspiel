@@ -1,4 +1,13 @@
 <?php
+// define('PROJECT_ROOT_PATH', __DIR__ . "/../../");
+// require_once PROJECT_ROOT_PATH . "PHPMailer-master/src/Exception.php";
+// require_once PROJECT_ROOT_PATH . "PHPMailer-master/src/PHPMailer.php";
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+
+
 /*
 Hauptcontroller mit bestimmten methoden
 */
@@ -30,7 +39,6 @@ class BaseController
                 header($httpHeader);
             }
         }
-        error_log("-------------------------sendet DATA----------------------------");
         echo $data;
         exit;
     }
@@ -97,7 +105,7 @@ class BaseController
             fclose($ifp);
             $count++;
 
-            $modelimage->createImagePath($projectid, 'images/' . $newpath);
+            $modelimage->createImagePath($projectid, $newpath);
         }
     }
 
@@ -118,37 +126,80 @@ class BaseController
 
         return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
     }
-    protected function sendmail($empfaenger, $link, $pw)
+    protected function sendmail($empfaenger, $link, $pw, $name, $surname, $date)
     {
-        // Betreff
+        $mail = new PHPMailer(true);
+        try {
+            $mail->isMail();
+            $date = date("d-m-Y", strtotime($date));
+            // Betreff
+            $betreff = 'Bestätigungsmail Stickstoff Wettbewerb';
+            // Link anpassung
+            $link = "https://gewinnspiel.stickstoff-magazin.de/" . $link;
+            // Nachricht
+            $nachricht = '<!DOCTYPE html>
+            <html lang="de"> 
+        <body>
 
-        $betreff = 'Bestätigungsmail Stickstoff Wettbewerb';
-        $link = "https://gewinnspiel.stickstoff-magazin.de/confirm/" . $link;
-        // Nachricht
-        $nachricht = '
-        <html>
-            <head>
-                <title>Bestätigung Stickstoff Wettbewerb</title>
-            </head>
-            <body>
-                <p>Mit dem folgenden Link bestätigen Sie, dass Sie sich an dem Wettbewerb angemeldet haben.</p></br>
-                <h4>' . '<a href=' . $link . '>Bestätigungslink</a>' . '</h4></br></br>
-                <p>Hier folgt noch ihr Passwort mit dem Sie sich Anmelden können auf der Seite, um ihr Projekt nochmals einzusehen und gegebenenfalls Änderungen machen können.</p></br>
-                <h4>' . $pw . '</h4>
-            </body>
-        </html>
-        ';
+        <p>Liebe*r ' . $name . ' ' . $surname . '</p>
+        <p>Vielen Dank für die Teilnahme am grossen stickstoff-Magazin Gewinnspiel.</p>
+        <p>Bitte bestätigen Sie mit klick auf folgenden Link ihre E-Mail-Adresse, erst nach dieser Bestätigung können Sie am Gewinnnspiel teilnehmen.</br>
+        <a href=' . $link . '>Bestätigungslink</a></p>
+        <p>Mit Ihrer Teilnahme wurde automatisch ein Account angelegt, mit dem Ihren Beitrag falls nötig nochmal anpassen können. Dies ist bis zum Teilnahmeschluss des Gewinnspiels am ' . $date . ' möglich.</p>
+        <p> Sie können sich unter https://gewinnspiel.stickstoff-magazin.de/login mit folgenden Zugangsdaten anmelden:</br>
+        Benutzer: ' . $empfaenger . '</br>
+        Passwort: ' . $pw . '</p>
+       
+        <p>Das stickstoff-Magazin Team wünscht Ihnen viel Erfolg!</p>
+        </body>
+        </html>'
+            ;
 
-        // für HTML-E-Mails muss der 'Content-type'-Header gesetzt werden
-        $header[] = 'MIME-Version: 1.0';
-        $header[] = 'Content-type: text/html; charset=iso-8859-1';
 
-        // zusätzliche Header
-        $header[] = 'To:' . $empfaenger;
-        $header[] = 'From: Stickstoff Wettbewerb <Stickstoff-Magazin@wettbewerb.de>';
+
+            // <html>
+            //     <head>
+            //         <title>Bestätigung Stickstoff Wettbewerb</title>
+            //     </head>
+            //     <body>
+            //         <p>Mit dem folgenden Link bestätigen Sie, dass Sie sich an dem Wettbewerb angemeldet haben.</p></br>
+            //         <h4>' . '<a href=' . $link . '>Bestätigungslink</a>' . '</h4></br></br>
+            //         <p>Hier folgt noch ihr Passwort mit dem Sie sich Anmelden können auf der Seite, um ihr Projekt nochmals einzusehen und gegebenenfalls Änderungen machen können.</p></br>
+            //         <h4>' . $pw . '</h4>
+            //     </body>
+            // </html>
+            // ';
+
+            // für HTML-E-Mails muss der 'Content-type'-Header gesetzt werden
+            $mail->Host = 'localhost'; // Hier die IP-Adresse oder Domain des Mail-Servers eintragen
+
+            // Empfänger und Inhalt
+            $mail->setFrom('noreply@stickstoff-magazin.de', 'Stickstoff-Magazin');
+            $mail->CharSet = 'UTF-8';
+            $mail->isHtml(true);
+            $mail->addAddress($empfaenger);
+            $mail->Subject = $betreff;
+            $mail->Body = $nachricht;
+            $mail->send();
+        } catch (Exception $e) {
+            error_log('Die E-Mail konnte nicht gesendet werden. Fehlermeldung: ', $mail->ErrorInfo);
+        }
+        // $header[] = 'MIME-Version: 1.0';
+        // $header[] = 'Content-type: text/html; charset=utf-8';
+
+        // // zusätzliche Header
+        // $header[] = 'To:' . $empfaenger;
+        // $header[] = 'From:  Stickstoff-Magazin <noreply@stickstoff-magazin.de>';
 
         // verschicke die E-Mail
-        mail($empfaenger, $betreff, $nachricht, implode("\r\n", $header));
+        // if (mail($empfaenger, $betreff, $nachricht, implode("\r\n", $header))) {
+        //     error_log("MAIL ERFOLGREICH VERSENDET Daten: " . $empfaenger . " " . $betreff . " " . $nachricht . " " . $header);
+        //     if (isset(error_get_last()['message'])) {
+        //         error_log(" mögliche: " . error_get_last()['message']);
+        //     }
+        // } else {
+        //     error_log(" Beim senden der Mail ist ein Fehler aufgetreten: " . error_get_last()['message']);
+        // }
     }
 
     protected function createUserSession($id, $email, $name, $role)
@@ -164,10 +215,8 @@ class BaseController
     protected function sessionCheck()
     {
         if (isset($_COOKIE['PHPSESSID']) && isset($_SESSION['id']) && $_COOKIE['PHPSESSID'] == $_SESSION['id']) {
-            error_log('True Sesssion');
             return 1;
         } else {
-            error_log('False Session');
             return 0;
         }
     }
@@ -176,13 +225,10 @@ class BaseController
     {
         switch ($_SESSION['user_role']) {
             case $val1:
-                error_log('True role');
                 return 1;
             case $val2:
-                error_log('True role');
                 return 1;
             case $val3:
-                error_log('True role');
                 return 1;
             default:
                 return 0;

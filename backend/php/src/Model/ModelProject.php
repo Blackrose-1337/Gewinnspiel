@@ -1,5 +1,6 @@
 <?php
 require_once PROJECT_ROOT_PATH . "Model/ModelBase.php";
+require_once PROJECT_ROOT_PATH . "Model/ModelBilder.php";
 /**
  *
  */
@@ -53,12 +54,19 @@ class ModelProject extends ModelBase
         $this->db->bind(":userId", $data["userId"]);
 
         // Ausführung des eintrags
-        return $this->db->execute();
+        $answer = $this->db->execute();
+        error_log(json_encode($answer));
+
+        return $answer;
 
     }
 
     public function deleteProject($data)
     {
+        $picmodel = new ModelBilder;
+
+        $picpath = $picmodel->getDeletePath($data['id']);
+        $this->rrmdir($picpath);
         $this->db->query("DELETE FROM Image WHERE projectid = :id");
         $this->db->bind(":id", $data["id"]);
         $this->db->execute();
@@ -69,13 +77,17 @@ class ModelProject extends ModelBase
     }
     public function deleteProjectWithUserId($data)
     {
+        $picmodel = new ModelBilder;
+
         $answer = $this->getProject($data['userId']);
+        $picpath = $picmodel->getDeletePath($answer['id']);
+        $this->rrmdir($picpath);
+
         $this->db->query("SELECT id
                         FROM Image
                         WHERE projectid = :id");
         $this->db->bind(":id", $answer['id']);
         $check = $this->db->resultSet();
-        error_log(isset($check[0]));
         if (isset($check[0])) {
             $this->db->query("DELETE FROM Image WHERE projectid = :id");
             $this->db->bind(":id", $answer['id']);
@@ -85,6 +97,22 @@ class ModelProject extends ModelBase
         $this->db->bind(":id", $answer['id']);
         $answer = $this->db->execute();
         return $answer;
+    }
+
+    private function rrmdir($picpath)
+    {
+        if (is_dir($picpath)) {
+            $objects = scandir($picpath);
+            foreach ($objects as $object) {
+                if ($object != "." && $object != "..") {
+                    if (is_dir($picpath . DIRECTORY_SEPARATOR . $object) && !is_link($picpath . "/" . $object))
+                        $this->rrmdir($picpath . DIRECTORY_SEPARATOR . $object);
+                    else
+                        unlink($picpath . DIRECTORY_SEPARATOR . $object);
+                }
+            }
+            rmdir($picpath);
+        }
     }
 
     // holt bestimmtes Projekt von der DB
@@ -101,7 +129,6 @@ class ModelProject extends ModelBase
 
     public function getUserIdWithId($projectId)
     {
-        error_log($projectId);
         $this->db->query("SELECT userId FROM Project WHERE id= :id");
         $this->db->bind(":id", $projectId);
         $data = $this->db->resultSet();

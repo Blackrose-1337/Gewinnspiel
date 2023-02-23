@@ -15,7 +15,6 @@ class CompetitionController extends BaseController
                 $data = json_decode(file_get_contents('php://input'), true);
                 // User erstellen
                 $answerUser = $usermodel->createUser($data['user']);
-                error_log(json_encode($answerUser));
                 if ($answerUser == 0) {
                     $responseData = 2;
                 } else {
@@ -24,8 +23,8 @@ class CompetitionController extends BaseController
                     $answerProject = $newproject->createProject($data['project']);
                     $picturebase64 = $data['pics'];
                     if (PHP_OS == "Linux") {
-                        $generalpath = "./project";
-                        $number = $this->countfolder("./images");
+                        $generalpath = "./images/project";
+                        $number = $newproject->getId();
                         $newPath = $generalpath . strval($number);
                         mkdir($newPath, 0777, false);
                         $newPath = $newPath . '/' . $this->GUID();
@@ -41,7 +40,9 @@ class CompetitionController extends BaseController
                         mkdir($newPath, 0777, false);
                         $this->saveImage($picturebase64, $newPath, $newproject->getId());
                     }
-                    $this->sendmail($data['user']['email'], $usermodel->getToken(), $usermodel->getPw());
+                    $competitionmodel = new ModelCompetition();
+                    $ans = $competitionmodel->getCompetition();
+                    $this->sendmail($data['user']['email'], $usermodel->getToken(), $usermodel->getPw(), $data['user']['name'], $data['user']['surname'], $ans['wettbewerbende']);
                     // Reaktion zurücksenden
                     if ($answerProject == 1& $answerUser == 1) {
                         $responseData = true;
@@ -73,9 +74,9 @@ class CompetitionController extends BaseController
         try {
             if (strtoupper($requestMethod) == 'GET') {
                 // Aufruf benötigter Klassen 
-                $usermodel = new ModelCompetition();
-                $arr = $usermodel->getCompetition();
-                $responseData = json_encode($arr);
+                $competitionmodel = new ModelCompetition();
+                $ans = $competitionmodel->getCompetition();
+                $responseData = json_encode($ans);
             } elseif (strtoupper($requestMethod) == 'POST') {
                 if (!$this->sessionCheck()) {
                     $strErrorDesc = "Nicht akzeptierte Session";

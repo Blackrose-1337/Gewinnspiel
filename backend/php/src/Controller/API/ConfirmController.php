@@ -12,9 +12,9 @@ class ConfirmController extends BaseController
             if (strtoupper($requestMethod) == 'GET') {
                 // Aufruf benötigter Klassen 
                 $usermodel = new ModelTeilnehmende();
-                // Userdaten nehmen Mocking
                 if (isset($arrQueryStringParams['token'])) {
                     $answer = $usermodel->tokencheck($arrQueryStringParams['token']);
+
                     $responseData = json_encode($answer);
                 } else {
                     $strErrorDesc = 'Falsche Ressource';

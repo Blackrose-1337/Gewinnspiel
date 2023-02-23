@@ -44,7 +44,6 @@ class ModelTeilnehmende extends ModelBase
         $this->db->query("SELECT id FROM User WHERE email = :email");
         $this->db->bind(":email", $data["email"]);
         $check = $this->db->resultSet();
-        error_log(json_encode($check));
         if (isset($check[0])) {
             return 0;
         } else {
@@ -265,7 +264,6 @@ class ModelTeilnehmende extends ModelBase
 
     public function tokencheck($token)
     {
-        error_log($token);
         $this->db->query("UPDATE User SET optIn = 1 WHERE token = :token");
         $this->db->bind(":token", $token);
         $answer = $this->db->execute();
@@ -273,8 +271,6 @@ class ModelTeilnehmende extends ModelBase
             $this->db->query("SELECT COUNT(optIn) FROM User WHERE token = :token");
             $this->db->bind(":token", $token);
             $answer = $this->db->resultSet();
-            error_log(json_encode($answer[0]['COUNT(optIn)']));
-            error_log('check');
             $newdata[0]['id'] = 0;
             if ($answer[0]['COUNT(optIn)'] == 1) {
                 $answer = 2;

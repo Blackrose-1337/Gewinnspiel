@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import NetworkHelper from "@/utils/networkHelper";
 import { Notify } from "quasar";
 import { HTTPError } from "ky";
-import type { Project, User } from "@/stores/interfaces";
+import type { Project, User, ProjectBild } from "@/stores/interfaces";
 import { partial } from "lodash";
 
 
@@ -12,16 +12,18 @@ export type State = {
     projects: Project[];
     project: Project;
     user: User;
+    newimage: ProjectBild[]
 };
 
 export const useProjectStore = defineStore({
     id: "projects",
     state: () =>
     ({
-            projects: [],
-            project: {} as Project,
-            user: {} as User,
-        } as State),
+        projects: [],
+        project: {} as Project,
+        user: {} as User,
+        newimage:[] as ProjectBild[],
+    } as State),
     actions: {
         async getProject(userId: number) {
             try {
@@ -42,7 +44,7 @@ export const useProjectStore = defineStore({
             }
             
         },
-        async remove($id : number) {
+        async projectremove($id : number) {
             const param = {
                 "id": $id,
             }
@@ -65,6 +67,14 @@ export const useProjectStore = defineStore({
             this.project = p;
         },
         async postProject() {
+            const bool= api.post<boolean>("project/update", this.project);
+            return bool;
+        },
+        async postPicupload() {
+            const bool= api.post<boolean>("project/update", this.project);
+            return bool;
+        },
+        async postDeletePic() {
             const bool= api.post<boolean>("project/update", this.project);
             return bool;
         },

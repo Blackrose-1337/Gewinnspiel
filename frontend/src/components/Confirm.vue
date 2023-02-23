@@ -1,22 +1,34 @@
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useConfirmStore } from "@/stores/confirm";
+import Loading from "vue-loading-overlay";
 
 const confirmStore = useConfirmStore();
 const route = useRoute();
 const router = useRouter();
-
+let isLoading = ref(false);
+const fullPage = ref(true);
 function login() {
     router.push("/login");
+}
+async function load() {
+    await confirmStore.confirm(route.params.value);
+    isLoading.value = false;
 }
 
 const user = computed(() => confirmStore.user);
 onMounted(() => {
-    confirmStore.confirm(route.params.value);
+    load();
 });
 </script>
 <template>
+    <loading
+        :active.sync="isLoading"
+        backgroundColor="rgba(0, 0, 0, 0.021)"
+        :can-cancel="true"
+        :is-full-page="fullPage"
+    />
     <div v-if="user.id === 0">
         <q-card flat align="center">
             <h4>

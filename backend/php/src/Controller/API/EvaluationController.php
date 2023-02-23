@@ -103,7 +103,6 @@ class EvaluationController extends BaseController
                     $strErrorHeader = $this->fehler(401);
                 } else {
                     $bewertungmodel = new ModelBewertung();
-                    error_log(json_encode($arrQueryStringParams));
                     $answer = $bewertungmodel->getBewertung($arrQueryStringParams);
                     $responseData = json_encode($answer);
                 }

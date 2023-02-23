@@ -80,7 +80,6 @@ class UserController extends BaseController
                     // Daten in json unformen
                     unset($user['saltId']);
                     unset($user['pwId']);
-                    error_log(json_encode($user));
                     $responseData = json_encode($user);
                 } else {
                     $strErrorDesc = 'Method not supported';
@@ -88,7 +87,6 @@ class UserController extends BaseController
                 }
             }
             if (!$strErrorDesc) {
-                error_log($responseData);
                 $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
             } else {
                 $this->sendOutput(

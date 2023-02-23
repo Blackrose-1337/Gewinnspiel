@@ -54,7 +54,7 @@ const router = createRouter({
             component: () => import("../views/AuswertungView.vue")
         },
         {
-            path: "/confirm/:value",
+            path: "/:value",
             name: "confirm",
             meta: { requiresAuth: false },
             component: () => import("../views/BestaetigungView.vue")

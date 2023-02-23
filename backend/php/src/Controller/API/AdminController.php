@@ -74,7 +74,7 @@ class AdminController extends BaseController
                         // Falls id 0 hinterlegt ist wird ein neuer User erstellt
                         if ($data['id'] == 0) {
                             $usermodel->createUser($data);
-                            $responseData = 1
+                            $responseData = 1;
                             // Andernfalls wird mit der Id der User gesucht und die Daten überschrieben
                         } else {
                             $usermodel->changeUser($data);

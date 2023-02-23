@@ -19,12 +19,18 @@ class ModelBilder extends ModelBase
     }
     public function getPictureByProId($proid)
     {
-        error_log($proid);
         $this->db->query("SELECT * FROM Image
         WHERE projectid = :projectid");
         $this->db->bind(":projectid", $proid);
         $data = $this->db->resultSet();
         return $data;
+    }
+
+    public function getDeletePath($id)
+    {
+        $ans = $this->getPictureByProId($id);
+        $temp = explode('/', $ans[0]['path']);
+        return $temp[0] . '/' . $temp[1] . '/' . $temp[2];
     }
 
     public function getAllPaths()

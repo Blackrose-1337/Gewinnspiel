@@ -49,6 +49,11 @@ async function login() {
                     message: "Login aktzeptiert",
                     type: "positive",
                 });
+                if (authStore.role === "teilnehmende") {
+                    redirectTo.value = "/user";
+                } else if (authStore.role === "jury") {
+                    redirectTo.value = "/evaluation";
+                }
                 await router.push(redirectTo.value);
             } else {
                 $q.notify({

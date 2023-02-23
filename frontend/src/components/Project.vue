@@ -2,7 +2,7 @@
 import image from "@/components/icons/base64pic.json";
 import { propsToAttrMap } from "@vue/shared";
 import { useQuasar } from "quasar";
-import type { User, Project } from "@/stores/interfaces";
+import type { User, Project, ProjectBild } from "@/stores/interfaces";
 import { useProjectStore } from "@/stores/projects";
 import { toRefs, watch, onMounted, computed, ref } from "vue";
 import { useEvaluationStore } from "@/stores/evaluation.ts";
@@ -20,14 +20,15 @@ const $q = useQuasar();
 
 //---------------storeToRefs------------------------------
 const project = computed(() => projectStore.project);
+const newimage = computed(() => projectStore.newimage);
 const img = computed(() => evaluationstore.img);
 const { user } = toRefs(props) as User;
 const { selectedproject } = toRefs(props) as Project;
 const { view } = toRefs(props);
 let isLoading = ref(false);
 const fullPage = ref(true);
-
-const bsp: string[] = ref([]) as unknown as string[];
+const filesImages = ref();
+const pics: string[] = ref([]) as unknown as string[];
 var bild = new Image();
 async function save() {
     const bool: boolean = await projectStore.postProject();
@@ -45,9 +46,8 @@ async function save() {
         });
     }
 }
-
 async function remove() {
-    const bool: boolean = await projectStore.remove(project.value.id);
+    const bool: boolean = await projectStore.projectremove(project.value.id);
     if (bool == true) {
         $q.notify({
             type: "positive",
@@ -62,7 +62,42 @@ async function remove() {
         });
     }
 }
-
+async function removepic(file: any) {
+    const ans = await projectStore.postDeletePic(file.toString());
+}
+function removeImage(file: any) {
+    filesImages.value.splice(filesImages.value.indexOf(file), 1);
+}
+async function upload() {
+    //clear von übertragungs Bilder falls noch von versuch zuvor befüllt
+    newimage.value.pics.splice(0);
+    //abfrage ob Bilder hochgeladen wurden falls ja werden diese in Base64 konvertiert
+    if (filesImages.value) {
+        for (let index = 0; index < filesImages.value.length; index++) {
+            const element = filesImages.value[index];
+            let file = element;
+            let reader = new FileReader();
+            reader.onloadend = function () {
+                const bild: ProjectBild = {
+                    id: 0,
+                    projectId: project.value.id,
+                    bildbase: reader.result as string,
+                };
+                newimage.value.pics.push(bild);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+}
+function checkFileType(files: any) {
+    return files.filter((file: any) => file.type === "image/png" || file.type === "image/jpeg");
+}
+function onRejected(rejectedEntries: any) {
+    $q.notify({
+        type: "negative",
+        message: `${rejectedEntries.length} file(s) did not pass validation constraints`,
+    });
+}
 async function load() {
     isLoading.value = true;
     if (user.value == null) {
@@ -73,20 +108,19 @@ async function load() {
     }
 }
 async function loadimage() {
-    bsp.value = [];
+    pics.value = [];
     if (project.value.pics !== null && project.value.pics !== "undefined") {
         project.value.pics.forEach((e: { img: string }) => {
             bild.src = e.img;
-            bsp.value.push(bild.src);
+            pics.value.push(bild.src);
         });
     }
     setTimeout(() => {
         isLoading.value = false;
     }, 500);
 }
-
 async function loadProject() {
-    bsp.value = [];
+    pics.value = [];
     isLoading.value = true;
     projectStore.setProject(selectedproject.value);
     await evaluationstore.getImages(selectedproject.value.id);
@@ -94,7 +128,6 @@ async function loadProject() {
     project.value.pics = evaluationstore.img;
     await loadimage();
 }
-
 function expand($event: any) {
     if ($event.target.classList.contains("expandanimation")) {
         $event.target.classList.remove("expandanimation");
@@ -134,8 +167,75 @@ watch(selectedproject, changeselectedproject => {
             <h4 class="q-ma-md">Projekttext</h4>
             <q-input v-model="project.text" outlined class="q-ma-md" autogrow />
         </div>
-        <div class="row q-gutter-lg pic">
-            <img v-for="pic in bsp" class="minipic q-pa-md" :src="pic" :ratio="1" @click="expand($event)" />
+        <div class="q-pa-sm">
+            <q-file
+                class="picloader"
+                v-model="filesImages"
+                rounded
+                outlined
+                append
+                use-chips
+                label="Filtered (png,jpeg only) *"
+                multiple
+                :filter="checkFileType"
+                @rejected="onRejected"
+                counter
+            >
+                <template #prepend>
+                    <q-icon name="attach_file" />
+                </template>
+                <template #file="{ file }">
+                    <q-chip class="fileele full-width q-my-xs" square>
+                        <q-avatar size="50px" icon="description" text-color="blue" color="white"> </q-avatar>
+                        {{ file.name }}
+                        <q-space />
+                        <q-btn class="fileele q-pa-sm" flat icon="delete" @click="removeImage(file)" />
+                    </q-chip>
+                </template>
+            </q-file>
+            <q-btn round dense flat icon="upload" @click="upload()" />
+        </div>
+        <div v-for="pic in pics" class="row q-gutter-lg pic">
+            <img class="minipic q-pa-md" :src="pic" :ratio="1" />
+            <q-btn class="fileele q-pa-sm" flat icon="delete" @click="removepic(pic)" />
+
+            <!-- <q-file
+                class="picloader"
+                v-model="bsp"
+                rounded
+                outlined
+                append
+                use-chips
+                :rules="[val => !!val || 'Pflichtfeld *']"
+                label="Filtered (png,jpeg only) *"
+                multiple
+                :filter="checkFileType"
+                @rejected="onRejected"
+                counter
+            >
+                <template #prepend>
+                    <q-icon name="attach_file" />
+                </template>
+
+                <template #file="{ file }">
+                    <div class="row full-width">
+                        <div class="col-2">
+            
+                            <q-avatar rounded>
+                                <img :src="file.toString()" />
+                            </q-avatar>
+                           
+                        </div>
+                        <div class="col-8">
+                            <q-chip class="fileele full-width q-my-xs" square>
+                                {{ file.toString().split("/")[file.toString().split("/").length - 1] }}
+                                <q-space />
+                                <q-btn class="fileele q-pa-sm" flat icon="delete" @click="removepic(file)" />
+                            </q-chip>
+                        </div>
+                    </div>
+                </template>
+            </q-file> -->
         </div>
 
         <div v-if="view == 'Project'">
@@ -153,7 +253,7 @@ watch(selectedproject, changeselectedproject => {
         <div class="row q-gutter-lg pic">
             <img
                 spinner-color="green"
-                v-for="pic in bsp"
+                v-for="pic in pics"
                 class="minipic q-pa-md"
                 :src="pic"
                 :ratio="1"
@@ -166,19 +266,13 @@ watch(selectedproject, changeselectedproject => {
 <style>
 .minipic {
     width: 20vw;
-    height: 20vh;
+
     box-shadow: 0 1px 5px rgb(0 0 0 / 20%), 0 2px 2px rgb(0 0 0 / 14%), 0 3px 1px -2px rgb(0 0 0 / 12%);
     /* min-height: 24px;
     min-width: 24px; */
     align-self: center;
+    aspect-ratio: auto;
     z-index: 999;
-}
-
-.fullimage {
-    width: 100% !important;
-    height: 100% !important;
-    display: flex;
-    position: absolute;
 }
 
 .texts {
@@ -190,10 +284,12 @@ watch(selectedproject, changeselectedproject => {
     margin: 5px;
 }
 .expandanimation {
-    height: 90vh;
-    width: 90vw;
+    max-width: 100vw;
+    width: 70vw;
+    height: auto;
 
-    animation: expander 0.5s;
+    animation: expander 1.5s;
+    aspect-ratio: auto;
     position: fixed;
     left: 0;
     right: 0;
@@ -202,27 +298,26 @@ watch(selectedproject, changeselectedproject => {
     margin: auto;
     z-index: 9999;
 }
-.reexpandanimation {
-    height: 20vh;
-    width: 20vw;
 
+.reexpandanimation {
+    aspect-ratio: auto;
+    width: 20vw;
     animation: reexpander 0.3s;
 }
-
 @keyframes expander {
     0% {
         width: 20vw;
-        height: 20vh;
     }
     100% {
-        width: 90vw;
-        height: 90vh;
+        width: 70vw;
     }
 }
 @keyframes reexpander {
     100% {
         width: 20vw;
-        height: 20vh;
     }
+}
+.fileele {
+    min-height: 50px;
 }
 </style>

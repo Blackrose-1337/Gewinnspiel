@@ -16,8 +16,6 @@ class ModelBewertung extends ModelBase
 
     public function getBewertung($data)
     {
-        error_log('------------There-----------------');
-        error_log(json_encode($data));
         $this->db->query("SELECT * FROM Bewertung
         WHERE administrativeId= :administrativeId AND projectId= :projectId");
         $this->db->bind(":projectId", $data['projectId']);

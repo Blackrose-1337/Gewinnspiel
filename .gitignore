@@ -1,5 +1,5 @@
 mysql/mysqldata/**
 data
+frontend/dist
 backend/php/src/.htaccess
 Test
-frontend/dist

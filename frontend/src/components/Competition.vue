@@ -25,11 +25,14 @@ const filesPng = ref();
 let isLoading = ref(false);
 const fullPage = ref(true);
 
+function remove(file: any) {
+    filesPng.value.splice(filesPng.value.indexOf(file), 1);
+}
+
 function changeUserModel(u: User) {
     usermodel.value = u;
 }
 function sendcompetition() {
-    isLoading.value = true;
     //clear von übertragungs Bilder falls noch von versuch zuvor befüllt
     competition.value.pics.splice(0);
     //abfrage ob Bilder hochgeladen wurden falls ja werden diese in Base64 konvertiert
@@ -53,7 +56,6 @@ function sendcompetition() {
         setTimeout(() => {
             sendcompetitionstep2();
         }, 500);
-        isLoading.value = false;
     } else {
         $q.notify({
             type: "negative",
@@ -121,9 +123,10 @@ async function sendcompetitionstep2() {
     } else {
         competition.value.project = projectmodel.value;
         competition.value.user = usermodel.value;
-
+        isLoading.value = true;
         const ans: number = await competitionstore.postCompetition(competition.value);
         if (ans == 1) {
+            isLoading.value = false;
             dialog.value = true;
             $q.notify({
                 type: "positiv",
@@ -131,12 +134,14 @@ async function sendcompetitionstep2() {
                 color: "green",
             });
         } else if (ans == 2) {
+            isLoading.value = false;
             $q.notify({
                 type: "negative",
                 message: "Sie haben bereits am Wettbewerb teilgenommen",
                 color: "red",
             });
         } else {
+            isLoading.value = false;
             $q.notify({
                 type: "negative",
                 message: "Da ist was schieff gelaufen",
@@ -164,7 +169,7 @@ function isValidEmail(val: string) {
 }
 
 function checkFileType(files: any) {
-    return files.filter((file: any) => file.type === "image/png");
+    return files.filter((file: any) => file.type === "image/png" || file.type === "image/jpeg");
 }
 
 function onRejected(rejectedEntries: any) {
@@ -220,13 +225,27 @@ load();
                     v-model="filesPng"
                     rounded
                     outlined
+                    append
+                    use-chips
                     :rules="[val => !!val || 'Pflichtfeld *']"
-                    label="Filtered (png only) *"
+                    label="Filtered (png,jpeg only) *"
                     multiple
                     :filter="checkFileType"
                     @rejected="onRejected"
                     counter
-                />
+                >
+                    <template #prepend>
+                        <q-icon name="attach_file" />
+                    </template>
+                    <template #file="{ file }">
+                        <q-chip class="fileele full-width q-my-xs" square>
+                            <q-avatar size="50px" icon="description" text-color="blue" color="white"> </q-avatar>
+                            {{ file.name }}
+                            <q-space />
+                            <q-btn class="fileele q-pa-sm" flat icon="delete" @click="remove(file)" />
+                        </q-chip>
+                    </template>
+                </q-file>
                 <q-checkbox
                     left-label
                     v-model="teilnahmebedingungenbestätigung"
@@ -234,7 +253,7 @@ load();
                     class="col-4"
                 />
                 <q-space />
-                <q-btn label="Senden" color="green" @click="sendcompetition" class="col-3" />
+                <q-btn label="Senden" :loading="isLoading" color="green" @click="sendcompetition" class="col-3" />
             </div>
         </div>
         <div class="textarea">
@@ -254,7 +273,7 @@ load();
                         </span>
                     </q-card-section>
                     <q-card-actions align="right">
-                        <q-btn flat label="Cancel" color="primary" v-close-popup />
+                        <q-btn flat label="OK" color="primary" v-close-popup />
                     </q-card-actions>
                 </q-card>
             </q-dialog>
@@ -271,6 +290,10 @@ load();
 .picloader {
     padding-left: 8px;
 }
+.fileele {
+    min-height: 50px;
+}
+
 .place {
     position: relative;
 }

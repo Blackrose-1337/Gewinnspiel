@@ -266,10 +266,10 @@ watch(user, changeUser => {
             </div>
         </div>
         <div v-if="view == 'User' || view == 'Project'">
-            <q-btn label="Passwort zurücksetzen" color="red" @click="resestpw" class="rebtn" />
             <q-btn label="Änderungen Speichern" color="blue" @click="savechange" class="rebtn" />
         </div>
         <div v-if="view == 'Project'">
+            <q-btn label="Passwort zurücksetzen" color="red" @click="resestpw" class="rebtn" />
             <q-btn label="User Löschen" color="red" @click="remove" class="rebtn" />
         </div>
     </div>

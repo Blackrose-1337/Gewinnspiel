@@ -42,7 +42,6 @@ class ProjectController extends BaseController
                 } else if ($_SESSION['user_role'] != 'teilnehmende') {
                     if (isset($arrQueryStringParams['userId'])) {
                         $answer = json_encode($projectmodel->getProject($_SESSION['user_id']));
-                        error_log($answer);
                         $responseData = 0;
                     }
                 }
@@ -120,6 +119,7 @@ class ProjectController extends BaseController
                     $data = json_decode(file_get_contents('php://input'), true);
                     if ($data['id'] !== 0) {
                         $responseData = $projectmodel->updateProject($data);
+                        error_log('test');
                     } else {
                         $responseData = false;
                     }

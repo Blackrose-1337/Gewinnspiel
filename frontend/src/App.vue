@@ -49,7 +49,12 @@ onMounted(() => {
                 </q-toolbar-title>
             </q-toolbar>
             <q-tabs align="left">
-                <q-route-tab to="/customer" @click="settitle('Admin')" label="Wettbewerb" />
+                <q-route-tab
+                    to="/customer"
+                    v-if="role !== 'jury' && role !== 'teilnehmende'"
+                    @click="settitle('Admin')"
+                    label="Wettbewerb"
+                />
                 <q-route-tab to="/user" label="User" v-if="role === 'teilnehmende'" />
                 <q-btn flat v-bind:label="title" class="fullheight" v-if="role === 'admin'">
                     <q-menu>
