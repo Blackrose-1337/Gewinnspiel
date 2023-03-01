@@ -19,18 +19,39 @@ class ModelBilder extends ModelBase
     }
     public function getPictureByProId($proid)
     {
-        $this->db->query("SELECT * FROM Image
-        WHERE projectid = :projectid");
+        $this->db->query("SELECT EXISTS(SELECT * FROM Image
+        WHERE projectid = :projectid)");
         $this->db->bind(":projectid", $proid);
-        $data = $this->db->resultSet();
+        $data = $this->db->execute();
+        if ($data == 1) {
+            $this->db->query("SELECT * FROM Image
+            WHERE projectid = :projectid");
+            $this->db->bind(":projectid", $proid);
+            $data = $this->db->resultSet();
+        }
         return $data;
+    }
+
+    public function DeletePath($path, $id)
+    {
+        error_log($path);
+        error_log($id);
+        $this->db->query("DELETE FROM Image WHERE projectid = :id AND path = :path");
+        $this->db->bind(":id", $id);
+        $this->db->bind(":path", $path);
+        $answer = $this->db->execute();
+        return $answer;
     }
 
     public function getDeletePath($id)
     {
         $ans = $this->getPictureByProId($id);
-        $temp = explode('/', $ans[0]['path']);
-        return $temp[0] . '/' . $temp[1] . '/' . $temp[2];
+        if ($ans != 0) {
+            $temp = explode('/', $ans[0]['path']);
+            return $temp[0] . '/' . $temp[1] . '/' . $temp[2];
+        } else {
+            return 0;
+        }
     }
 
     public function getAllPaths()

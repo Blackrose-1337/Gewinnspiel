@@ -41,7 +41,7 @@ class ModelTeilnehmende extends ModelBase
         $salt = new ModelSalt;
         $modelpw = new ModelPw;
 
-        $this->db->query("SELECT id FROM User WHERE email = :email");
+        $this->db->query("SELECT id FROM User WHERE LOWER(email) = LOWER(:email)");
         $this->db->bind(":email", $data["email"]);
         $check = $this->db->resultSet();
         if (isset($check[0])) {
@@ -138,7 +138,7 @@ class ModelTeilnehmende extends ModelBase
     {
         $datas = $this->getAllUser();
         foreach ($datas as $data) {
-            if ($data['email'] == $userMail) {
+            if (strtolower($data['email']) == strtolower($userMail)) {
                 return $data;
             } else {
 

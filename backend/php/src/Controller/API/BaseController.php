@@ -93,10 +93,26 @@ class BaseController
         }
     }
 
-    protected function saveImage($picturebase64, $path, $projectid)
+    // protected function saveImage($picturebase64, $path, $projectid)
+    // {
+    //     $modelimage = new ModelBilder;
+    //     $count = 0;
+    //     foreach ($picturebase64 as $base64) {
+    //         $picture = explode(',', $base64['bildbase']);
+    //         $newpath = $path . "/image" . $count . ".png";
+    //         $ifp = fopen($newpath, 'w');
+    //         fwrite($ifp, base64_decode($picture[1]));
+    //         fclose($ifp);
+    //         $count++;
+
+    //         $modelimage->createImagePath($projectid, $newpath);
+    //     }
+    // }
+
+    protected function saveImage($picturebase64, $path, $projectid, $number = 1)
     {
         $modelimage = new ModelBilder;
-        $count = 0;
+        $count = $number;
         foreach ($picturebase64 as $base64) {
             $picture = explode(',', $base64['bildbase']);
             $newpath = $path . "/image" . $count . ".png";
@@ -104,7 +120,6 @@ class BaseController
             fwrite($ifp, base64_decode($picture[1]));
             fclose($ifp);
             $count++;
-
             $modelimage->createImagePath($projectid, $newpath);
         }
     }
@@ -154,22 +169,6 @@ class BaseController
         </body>
         </html>'
             ;
-
-
-
-            // <html>
-            //     <head>
-            //         <title>Bestätigung Stickstoff Wettbewerb</title>
-            //     </head>
-            //     <body>
-            //         <p>Mit dem folgenden Link bestätigen Sie, dass Sie sich an dem Wettbewerb angemeldet haben.</p></br>
-            //         <h4>' . '<a href=' . $link . '>Bestätigungslink</a>' . '</h4></br></br>
-            //         <p>Hier folgt noch ihr Passwort mit dem Sie sich Anmelden können auf der Seite, um ihr Projekt nochmals einzusehen und gegebenenfalls Änderungen machen können.</p></br>
-            //         <h4>' . $pw . '</h4>
-            //     </body>
-            // </html>
-            // ';
-
             // für HTML-E-Mails muss der 'Content-type'-Header gesetzt werden
             $mail->Host = 'localhost'; // Hier die IP-Adresse oder Domain des Mail-Servers eintragen
 
@@ -184,22 +183,6 @@ class BaseController
         } catch (Exception $e) {
             error_log('Die E-Mail konnte nicht gesendet werden. Fehlermeldung: ', $mail->ErrorInfo);
         }
-        // $header[] = 'MIME-Version: 1.0';
-        // $header[] = 'Content-type: text/html; charset=utf-8';
-
-        // // zusätzliche Header
-        // $header[] = 'To:' . $empfaenger;
-        // $header[] = 'From:  Stickstoff-Magazin <noreply@stickstoff-magazin.de>';
-
-        // verschicke die E-Mail
-        // if (mail($empfaenger, $betreff, $nachricht, implode("\r\n", $header))) {
-        //     error_log("MAIL ERFOLGREICH VERSENDET Daten: " . $empfaenger . " " . $betreff . " " . $nachricht . " " . $header);
-        //     if (isset(error_get_last()['message'])) {
-        //         error_log(" mögliche: " . error_get_last()['message']);
-        //     }
-        // } else {
-        //     error_log(" Beim senden der Mail ist ein Fehler aufgetreten: " . error_get_last()['message']);
-        // }
     }
 
     protected function createUserSession($id, $email, $name, $role)

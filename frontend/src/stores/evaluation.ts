@@ -25,8 +25,6 @@ export const useEvaluationStore = defineStore({
             auswertung: [] as Auswertung[],
         } as State),
     getters: {
-        // isAuthenticated: state => state._isAuthenticated,
-
     },
     actions: {
         clear() {
@@ -76,9 +74,12 @@ export const useEvaluationStore = defineStore({
             };
             this.img= [];
             const ans = await api.get<string[]>("evaluation/images", param);
-            
+            const host = import.meta.env.MODE === "production" ? "" : `http://localhost:8000/`;
             ans.pics.forEach(e => {
+                e.img = host + e.img;
                 this.img.push(e);
+                
+                console.log('image: ' , e);
             });
             return this.img;
         },

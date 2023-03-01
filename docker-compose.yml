@@ -14,11 +14,18 @@ services:
     volumes:
       - ./backend/php:/var/www/html
       - ./data:/var/www/data
-      - ./data:/var/www/html/myimages
-      - .htaccess:/var/www/html/.htaccess
+      - ./data:/var/www/html/images
+      # - ./.htaccess:/var/www/html/.htaccess
+    environment:
+      DB_HOST: mysql
+      DB_USERNAME: wettbewerbuser
+      DB_PASSWORD: userpass
+      DB_DATABASE_NAME: stickstoff
+
 
   vueweb:
     build: ./frontend
+    command: npm run dev
     ports:
       - 3000:3000
     volumes:

@@ -42,6 +42,7 @@ COPY composer.json /var/composer/
 RUN cd /var/composer/ && composer install
 RUN mkdir /var/www/data
 RUN chown -R www-data:www-data /var/www/data
+COPY .htaccess /var/www/html/
 
 # Apache Rewrite Module
 RUN a2enmod rewrite

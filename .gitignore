@@ -3,3 +3,4 @@ data
 frontend/dist
 backend/php/src/.htaccess
 Test
+node_modules

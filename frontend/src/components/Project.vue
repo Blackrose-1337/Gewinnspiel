@@ -20,7 +20,7 @@ const $q = useQuasar();
 
 //---------------storeToRefs------------------------------
 const project = computed(() => projectStore.project);
-const newimage = computed(() => projectStore.newimage);
+let newimage = computed(() => projectStore.newimage);
 const img = computed(() => evaluationstore.img);
 const { user } = toRefs(props) as User;
 const { selectedproject } = toRefs(props) as Project;
@@ -28,7 +28,8 @@ const { view } = toRefs(props);
 let isLoading = ref(false);
 const fullPage = ref(true);
 const filesImages = ref();
-const pics: string[] = ref([]) as unknown as string[];
+let previewImage = ref();
+const pics = ref([] as string[]);
 var bild = new Image();
 async function save() {
     const bool: boolean = await projectStore.postProject();
@@ -64,28 +65,65 @@ async function remove() {
 }
 async function removepic(file: any) {
     const ans = await projectStore.postDeletePic(file.toString());
+    if (ans === 1) {
+        $q.notify({
+            type: "positiv",
+            message: `Das Bild wurde gelöscht`,
+        });
+        loadimage();
+    } else {
+        $q.notify({
+            type: "negative",
+            message: `Das Bild wurde nicht gelöscht`,
+        });
+    }
 }
+
 function removeImage(file: any) {
     filesImages.value.splice(filesImages.value.indexOf(file), 1);
 }
 async function upload() {
     //clear von übertragungs Bilder falls noch von versuch zuvor befüllt
-    newimage.value.pics.splice(0);
+    if (newimage.value.length > 0) {
+        newimage.value.splice(0);
+    }
     //abfrage ob Bilder hochgeladen wurden falls ja werden diese in Base64 konvertiert
     if (filesImages.value) {
+        let promises = [];
         for (let index = 0; index < filesImages.value.length; index++) {
             const element = filesImages.value[index];
             let file = element;
             let reader = new FileReader();
-            reader.onloadend = function () {
-                const bild: ProjectBild = {
-                    id: 0,
-                    projectId: project.value.id,
-                    bildbase: reader.result as string,
+            let promise = new Promise<void>((resolve, reject) => {
+                reader.onloadend = function () {
+                    const bild: ProjectBild = {
+                        id: 0,
+                        projectId: project.value.id,
+                        bildbase: reader.result as string,
+                    };
+                    newimage.value.push(bild);
+                    console.log(newimage.value);
+                    resolve();
                 };
-                newimage.value.pics.push(bild);
-            };
-            reader.readAsDataURL(file);
+                reader.readAsDataURL(file);
+            });
+            promises.push(promise);
+        }
+        await Promise.all(promises);
+        const ans = await projectStore.postPicupload();
+        {
+            if (ans === 1) {
+                $q.notify({
+                    type: "positiv",
+                    message: `Das Bild wurde erfolgreich hochgeladen`,
+                });
+                loadimage();
+            } else {
+                $q.notify({
+                    type: "negative",
+                    message: `Das Bild wurde nicht hochgeladen`,
+                });
+            }
         }
     }
 }
@@ -108,6 +146,7 @@ async function load() {
     }
 }
 async function loadimage() {
+    isLoading.value = true;
     pics.value = [];
     if (project.value.pics !== null && project.value.pics !== "undefined") {
         project.value.pics.forEach((e: { img: string }) => {
@@ -128,14 +167,12 @@ async function loadProject() {
     project.value.pics = evaluationstore.img;
     await loadimage();
 }
-function expand($event: any) {
-    if ($event.target.classList.contains("expandanimation")) {
-        $event.target.classList.remove("expandanimation");
-        $event.target.classList.add("reexpandanimation");
-    } else {
-        $event.target.classList.remove("reexpandanimation");
-        $event.target.classList.add("expandanimation");
-    }
+
+function showImage(image: any) {
+    previewImage.value = image;
+}
+function hideImage() {
+    previewImage.value = null;
 }
 watch(user, changeuser => {
     load();
@@ -195,9 +232,15 @@ watch(selectedproject, changeselectedproject => {
             </q-file>
             <q-btn round dense flat icon="upload" @click="upload()" />
         </div>
-        <div v-for="pic in pics" class="row q-gutter-lg pic">
-            <img class="minipic q-pa-md" :src="pic" :ratio="1" />
-            <q-btn class="fileele q-pa-sm" flat icon="delete" @click="removepic(pic)" />
+        <div class="image-container q-pa-sm test">
+            <div v-for="pic in pics" class="row">
+                <img :src="pic" @click="showImage(pic)" />
+                <q-btn class="fileele" flat icon="delete" @click="removepic(pic)" />
+                <br />
+            </div>
+            <div class="image-preview" v-if="previewImage" @click="hideImage()">
+                <img :src="previewImage" @click="hideImage()" />
+            </div>
 
             <!-- <q-file
                 class="picloader"
@@ -250,72 +293,68 @@ watch(selectedproject, changeselectedproject => {
             <h3>{{ project.title }}</h3>
             <p>{{ project.text }}</p>
         </div>
-        <div class="row q-gutter-lg pic">
-            <img
-                spinner-color="green"
-                v-for="pic in pics"
-                class="minipic q-pa-md"
-                :src="pic"
-                :ratio="1"
-                @click="expand($event)"
-            />
+        <div class="image-container test">
+            <img v-for="pic in pics" :src="pic" @click="showImage(pic)" />
+            <div class="image-preview" v-if="previewImage" @click="hideImage">
+                <img :src="previewImage" @click="hideImage" />
+                <br />
+            </div>
         </div>
     </div>
 </template>
 
-<style>
-.minipic {
-    width: 20vw;
-
-    box-shadow: 0 1px 5px rgb(0 0 0 / 20%), 0 2px 2px rgb(0 0 0 / 14%), 0 3px 1px -2px rgb(0 0 0 / 12%);
-    /* min-height: 24px;
-    min-width: 24px; */
-    align-self: center;
-    aspect-ratio: auto;
-    z-index: 999;
+<style scoped>
+.image-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
 }
 
+.image-container img {
+    width: auto;
+    max-height: 25vh;
+    max-width: 30vw;
+    padding: 5px;
+    cursor: pointer;
+    filter: brightness(100%);
+    transition: filter 0.3s;
+}
+
+.image-container img:hover {
+    filter: brightness(80%);
+}
+
+.image-preview img {
+    /* max-width: 80%;
+    max-height: 80%; */
+    object-fit: contain;
+    cursor: pointer;
+    transform: scale(4);
+}
+.image-preview img:hover {
+    filter: brightness(100%);
+}
+
+.image-preview {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.823);
+    z-index: 9999; /* sorgt dafür, dass das Vorschaubild immer über anderen Inhalten erscheint */
+}
+.test {
+    align-items: center;
+}
 .texts {
     background-color: rgb(168, 153, 85);
     border-radius: 15px;
     margin: 10px;
-}
-.pic {
-    margin: 5px;
-}
-.expandanimation {
-    max-width: 100vw;
-    width: 70vw;
-    height: auto;
-
-    animation: expander 1.5s;
-    aspect-ratio: auto;
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 8vh;
-    bottom: 0;
-    margin: auto;
-    z-index: 9999;
-}
-
-.reexpandanimation {
-    aspect-ratio: auto;
-    width: 20vw;
-    animation: reexpander 0.3s;
-}
-@keyframes expander {
-    0% {
-        width: 20vw;
-    }
-    100% {
-        width: 70vw;
-    }
-}
-@keyframes reexpander {
-    100% {
-        width: 20vw;
-    }
 }
 .fileele {
     min-height: 50px;
