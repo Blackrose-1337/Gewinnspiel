@@ -34,8 +34,6 @@ class ModelBilder extends ModelBase
 
     public function DeletePath($path, $id)
     {
-        error_log($path);
-        error_log($id);
         $this->db->query("DELETE FROM Image WHERE projectid = :id AND path = :path");
         $this->db->bind(":id", $id);
         $this->db->bind(":path", $path);

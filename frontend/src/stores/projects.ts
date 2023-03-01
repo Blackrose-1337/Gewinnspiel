@@ -71,21 +71,19 @@ export const useProjectStore = defineStore({
             return bool;
         },
         async postPicupload() {
-            console.log('store');
-            console.log(this.newimage);
             const bool= await api.post<boolean>("project/addPicture", this.newimage);
             return bool;
         },
-        async postDeletePic(imgpath: string) {
+        async deletePic(imgpath: string) {
 
             const value = {
                 "projectId": this.project.id,
                 "imgpath": imgpath
             }
-            const bool = await api.post<boolean>("project/deletePicture", value);
-            if (bool === true) {
+            const bool = await api.post<number>("project/deletePicture", value);
+            if (bool == 1) {
                 this.project.pics.forEach((e, index) => {
-                    if (e === imgpath) {
+                    if (e.img.split('/')[4] === imgpath.split("/")[6]) {
                         this.project.pics.splice(index, 1);
                     }
                 });

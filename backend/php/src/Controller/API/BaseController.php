@@ -93,26 +93,11 @@ class BaseController
         }
     }
 
-    // protected function saveImage($picturebase64, $path, $projectid)
-    // {
-    //     $modelimage = new ModelBilder;
-    //     $count = 0;
-    //     foreach ($picturebase64 as $base64) {
-    //         $picture = explode(',', $base64['bildbase']);
-    //         $newpath = $path . "/image" . $count . ".png";
-    //         $ifp = fopen($newpath, 'w');
-    //         fwrite($ifp, base64_decode($picture[1]));
-    //         fclose($ifp);
-    //         $count++;
-
-    //         $modelimage->createImagePath($projectid, $newpath);
-    //     }
-    // }
-
     protected function saveImage($picturebase64, $path, $projectid, $number = 1)
     {
         $modelimage = new ModelBilder;
         $count = $number;
+
         foreach ($picturebase64 as $base64) {
             $picture = explode(',', $base64['bildbase']);
             $newpath = $path . "/image" . $count . ".png";
@@ -126,8 +111,6 @@ class BaseController
 
     protected function getImage($path)
     {
-
-        // $img = (base64_encode($handle));
         $answer = [
             'img' => $path,
         ];

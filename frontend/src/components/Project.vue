@@ -64,10 +64,10 @@ async function remove() {
     }
 }
 async function removepic(file: any) {
-    const ans = await projectStore.postDeletePic(file.toString());
+    const ans = await projectStore.deletePic(file.toString());
     if (ans === 1) {
         $q.notify({
-            type: "positiv",
+            type: "positive",
             message: `Das Bild wurde gelöscht`,
         });
         loadimage();
@@ -83,6 +83,7 @@ function removeImage(file: any) {
     filesImages.value.splice(filesImages.value.indexOf(file), 1);
 }
 async function upload() {
+    isLoading.value = true;
     //clear von übertragungs Bilder falls noch von versuch zuvor befüllt
     if (newimage.value.length > 0) {
         newimage.value.splice(0);
@@ -102,7 +103,6 @@ async function upload() {
                         bildbase: reader.result as string,
                     };
                     newimage.value.push(bild);
-                    console.log(newimage.value);
                     resolve();
                 };
                 reader.readAsDataURL(file);
@@ -111,19 +111,21 @@ async function upload() {
         }
         await Promise.all(promises);
         const ans = await projectStore.postPicupload();
-        {
-            if (ans === 1) {
-                $q.notify({
-                    type: "positiv",
-                    message: `Das Bild wurde erfolgreich hochgeladen`,
-                });
-                loadimage();
-            } else {
-                $q.notify({
-                    type: "negative",
-                    message: `Das Bild wurde nicht hochgeladen`,
-                });
-            }
+        await evaluationstore.getImages(project.value.id);
+        projectStore.clear();
+        project.value.pics = evaluationstore.img;
+        filesImages.value.splice(0, filesImages.value.length);
+        if (ans === 1) {
+            $q.notify({
+                type: "positive",
+                message: `Das Bild wurde erfolgreich hochgeladen`,
+            });
+            loadimage();
+        } else {
+            $q.notify({
+                type: "negative",
+                message: `Das Bild wurde nicht hochgeladen`,
+            });
         }
     }
 }

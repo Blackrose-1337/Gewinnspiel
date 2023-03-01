@@ -55,7 +55,6 @@ class ModelProject extends ModelBase
 
         // Ausführung des eintrags
         $answer = $this->db->execute();
-        error_log(json_encode($answer));
 
         return $answer;
 

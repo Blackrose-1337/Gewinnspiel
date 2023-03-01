@@ -16,7 +16,8 @@ class ProjectController extends BaseController
                 if (!$this->sessionCheck()) {
                     $strErrorDesc = "Nicht akzeptierte Session";
                     $strErrorHeader = $this->fehler(405);
-                } else if (!$this->userCheck('admin', 'teilnehmende')) {
+                }
+                if (!$this->userCheck('admin', 'teilnehmende')) {
                     $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
                     $strErrorHeader = $this->fehler(401);
                 } else if ($_SESSION['user_role'] == 'teilnehmende') {
@@ -119,7 +120,6 @@ class ProjectController extends BaseController
                     $data = json_decode(file_get_contents('php://input'), true);
                     if ($data['id'] !== 0) {
                         $responseData = $projectmodel->updateProject($data);
-                        error_log('test');
                     } else {
                         $responseData = false;
                     }
@@ -235,6 +235,7 @@ class ProjectController extends BaseController
     {
         $strErrorDesc = '';
         $requestMethod = $_SERVER["REQUEST_METHOD"];
+        $imagePath = getenv('ENVIRONMENT') === 'production' ? '../../data' : './images';
         try {
             // abfrage ob es eine POST_Methode ist
             if (strtoupper($requestMethod) == 'POST') {
@@ -251,14 +252,10 @@ class ProjectController extends BaseController
                     $projectmodel = new ModelProject();
                     // Post Daten holen
                     $data = json_decode(file_get_contents('php://input'), true);
-
-                    error_log('-------------------------------------');
-                    $data[0]['id'] = $projectmodel->getUserIdWithId($data[0]['projectId']);
-
-
-                    if ($data[0]['id'] == $_SESSION['user_id'] || $_SESSION['user_role'] == 'admin') {
+                    $id = $projectmodel->getUserIdWithId($data[0]['projectId']);
+                    if ($id[0]['userId'] == $_SESSION['user_id'] || $_SESSION['user_role'] == 'admin') {
                         if ($data[0]['projectId'] !== 0) {
-                            $parent_dir = './images/project' . $data[0]['projectId'] . '/*';
+                            $parent_dir = $imagePath . '/project' . $data[0]['projectId'] . '/*';
                             $newpath = glob($parent_dir);
                             $maxTsFile = 0;
                             $nFileName = "";
@@ -274,9 +271,7 @@ class ProjectController extends BaseController
                                 $ele = explode('/', $nFileName);
                                 $ele = explode('e', $ele[4]);
                                 $ele = explode('.', $ele[1]);
-                                error_log(json_encode($ele));
                                 $number = (int) $ele[0] + 1;
-
                                 $this->saveImage($data, $newpath[0], $data[0]['projectId'], $number);
                             } else {
                                 $this->saveImage($data, $newpath[0], $data[0]['projectId']);

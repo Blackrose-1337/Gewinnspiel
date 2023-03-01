@@ -78,8 +78,6 @@ export const useEvaluationStore = defineStore({
             ans.pics.forEach(e => {
                 e.img = host + e.img;
                 this.img.push(e);
-                
-                console.log('image: ' , e);
             });
             return this.img;
         },

@@ -132,6 +132,7 @@ class EvaluationController extends BaseController
             // abfrage ob es eine GET_Methode ist
             if (strtoupper($requestMethod) == 'GET') {
                 // Aufruf benötigter Klassen 
+                $projectmodel = new ModelProject();
                 $bildermodel = new ModelBilder();
                 if (!$this->sessionCheck()) {
                     $strErrorDesc = "Nicht akzeptierte Session";
@@ -139,7 +140,7 @@ class EvaluationController extends BaseController
                 } else if (!$this->userCheck('admin', 'teilnehmende', 'jury')) {
                     $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
                     $strErrorHeader = $this->fehler(401);
-                } else if ($_SESSION['user_role'] == 'jury' || $_SESSION['user_role'] == 'admin') {
+                } else if ($_SESSION['user_role'] == 'jury' || $_SESSION['user_role'] == 'admin' || $_SESSION['user_id'] == $projectmodel->getUserIdWithId($arrQueryStringParams['id'])[0]['userId']) {
                     $imgs = $bildermodel->getPictureByProId($arrQueryStringParams['id']);
                     $base64 = [];
                     foreach ($imgs as $img) {
