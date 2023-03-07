@@ -7,5 +7,4 @@
 // define("APPROOT", dirname(dirname(__DIR__)));
 
 // define("URLROOT", "http://localhost:8000");
-
 ?>

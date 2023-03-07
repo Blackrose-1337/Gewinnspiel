@@ -1,4 +1,5 @@
 <?php
+// zusätzlicher Aufruf der benötigten Modele zum abruf von Funktionen
 require_once PROJECT_ROOT_PATH . "Model/ModelBase.php";
 require_once PROJECT_ROOT_PATH . "Model/ModelSalt.php";
 require_once PROJECT_ROOT_PATH . "Model/ModelPw.php";
@@ -37,13 +38,16 @@ class ModelTeilnehmende extends ModelBase
     //Create User
     public function createUser($data)
     {
-        // initalisieren von Objekten
+        // Aufruf benötigter Klassen
         $salt = new ModelSalt;
         $modelpw = new ModelPw;
 
+        // Überprüfung, ob E-Mail bereits existiert
         $this->db->query("SELECT id FROM User WHERE LOWER(email) = LOWER(:email)");
         $this->db->bind(":email", $data["email"]);
         $check = $this->db->resultSet();
+
+        // falls die DB eine Übereinstimmung hat, wird 'false' zurückgegeben
         if (isset($check[0])) {
             return 0;
         } else {
@@ -52,10 +56,8 @@ class ModelTeilnehmende extends ModelBase
             // salt erstellen und direkt auf der Datenbank speichern
             $salt->createSaltDB();
 
-            // den frisch generierten Salteintrag holen
+            // den frisch generierten Salteintrag holen und Salteintrag auf Variable festhalten
             $this->db->query("SELECT * FROM Salt ORDER BY ID DESC LIMIT 1");
-
-            // Salteintrag auf Variable festhalten
             $salt = $this->db->resultSet();
 
             // random genierten String auf Variable setzen
@@ -67,12 +69,11 @@ class ModelTeilnehmende extends ModelBase
             // mit generiertem String und Salt ein Hash generieren, welcher direkt auf der Datenbank gespeichert wird.
             $modelpw->generateHashDB($pw, $salt[0]["salt"]);
 
-            // frisch generierten Pweintrag (Hash) nur die Id holen
+            // frisch generierten Pweintrag (Hash) nur die Id holen und auf Variable setzen
             $this->db->query("SELECT id FROM Pw ORDER BY ID DESC LIMIT 1");
-
-            // Id eintrag auf Variable festhalten
             $modelpw = $this->db->resultSet();
 
+            // Im Model Token hinterlegen
             $this->setToken($this->rndtoken());
 
             // Eintragsvorbereitung User in die Datenbank
@@ -107,50 +108,55 @@ class ModelTeilnehmende extends ModelBase
         }
     }
 
-    // Session erstellen und Token für Frontend
-
-
-    // get all User expect admin
+    // alle User von DB holen ausser Admin rollen
     public function getDataUser()
     {
-        // Get-Data from Mysql   id,name,surname,role,email,land,plz,ortschaft,strasse,strNr,tel
+        // Abfrage aller Daten ausser 'role' == admin
         $this->db->query("SELECT * FROM User WHERE role !='admin'");
         $data = $this->db->resultSet();
 
         return $data;
     }
 
+    // Löschen eines User mittels ID
     public function deleteUser($data)
     {
+        // User löschen mittels Id vergleich
         $this->db->query("DELETE FROM User WHERE id = :id");
         $this->db->bind(":id", $data["userId"]);
         $answer = $this->db->execute();
         return $answer;
     }
+
+    // Alle User der DB holen
     private function getAllUser()
     {
-        // Get-Data from Mysql
+        // Alle User der DB holen
         $this->db->query("SELECT * FROM User");
         $data = $this->db->resultSet();
         return $data;
     }
+
+    // User von DB holen mittels Mail
     public function getUserwithMail($userMail)
     {
+        // Abruf aller User
         $datas = $this->getAllUser();
+        // Vergleich der Mailadresse mit Lowercase (Gross- und Kleinschreibung ignorieren)
         foreach ($datas as $data) {
             if (strtolower($data['email']) == strtolower($userMail)) {
                 return $data;
-            } else {
-
             }
         }
-
+        return 0;
     }
 
-    // Get single User
+    // Get single User with ID
     public function getUser($userId)
     {
+        // Userabruf 
         $datas = $this->getDataUser();
+        // Mit foreach-loop id abgleichen
         foreach ($datas as $data) {
             if ($data['id'] == $userId) {
                 return $data;
@@ -159,7 +165,7 @@ class ModelTeilnehmende extends ModelBase
         return $datas;
     }
 
-    // change User values
+    // Änderungen von User Daten mittels ID
     public function changeUser($data)
     {
         // Eintragsvorbereitung der Datenanpassung über Id
@@ -183,74 +189,7 @@ class ModelTeilnehmende extends ModelBase
         return $this->db->execute();
     }
 
-    // Testfunktionen
-    public function fakeChangeUser($data)
-    {
-        // get user by id
-        echo $this->name = $data['name'];
-        echo $this->surname = $data['surname'];
-        echo $this->email = $data['email'];
-        echo $this->role = $data['role'];
-        echo $this->land = $data['land'];
-        echo $this->plz = $data['plz'];
-        echo $this->ortschaft = $data['ortschaft'];
-        echo $this->strasse = $data['strasse'];
-        echo $this->strNr = $data['strNr'];
-        echo $this->tel = $data['tel'];
-    }
-    public function getFakeDataUser()
-    {
-        $data = [
-            ['id' => 2, 'name' => 'Peter', 'surname' => 'Laucher', 'role' => 'jury', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => 84669, 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => 23, 'tel' => 4465155, 'textid' => 12, 'pwId' => 32, 'saltId' => 20],
-            ['id' => 3, 'name' => 'Ricarda', 'surname' => 'Murer', 'role' => 'teilnehmende', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => 84669, 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => 12, 'tel' => 4465155, 'textid' => 13, 'pwId' => 12, 'saltId' => 2],
-            ['id' => 4, 'name' => 'Philippe', 'surname' => 'Egger', 'role' => 'teilnehmende', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => 84669, 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => 3, 'tel' => 4465155, 'textid' => 14, 'pwId' => 2, 'saltId' => 12],
-            ['id' => 5, 'name' => 'Joel', 'surname' => 'Packer', 'role' => 'teilnehmende', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => 84669, 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => 213, 'tel' => 4465155, 'textid' => 15, 'pwId' => 3, 'saltId' => 3],
-            ['id' => 6, 'name' => 'Claudia', 'surname' => 'Schlirrer', 'role' => 'jury', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => 84669, 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => 200, 'tel' => 4465155, 'textid' => 16, 'pwId' => 7, 'saltId' => 4],
-        ];
-        return $data;
-    }
-
-    public function fakewriteData($data)
-    {
-        $data['id'] = $this->getFakeId();
-        $newdata = $this->sonderzeichen($data);
-        $newdata = json_encode($newdata);
-
-        return json_decode($newdata);
-    }
-
-    public function fakeCreateUser($data)
-    {
-        echo json_encode($data);
-    }
-
-
-    /**
-     * TestMethode die einfach nur Fake-Daten liefert, solange man noch keine DB hat
-     * private int $textId;
-     *
-     * @return $data : Liste aus Orders
-     */
-    public function getFakeOrderDataForUserID($userid)
-    {
-        $data = [
-            ['id' => '2', 'name' => 'Peter', 'surname' => 'Laucher', 'email' => 'test1@test.ch', 'land' => 'DE', 'plz' => '84669', 'ortschaft' => 'rostock', 'strasse' => 'Lauerstr.', 'strNr' => '23', 'tel' => '4465155', 'textid' => '12', 'pwId' => '32', 'saltId' => '20'],
-        ];
-
-        return $data;
-    }
-    // FAKE Get single User
-    public function getFakeUser($userId)
-    {
-        $datas = $this->getFakeDataUser();
-        foreach ($datas as $data) {
-            if ($data['id'] == $userId) {
-                return $data;
-            }
-        }
-        return $datas;
-    }
-
+    // User DB informationen abrufen und gezielt bereitstellen
     public function getUserinfo($data)
     {
         $this->db->query("SELECT name, surname, email FROM User WHERE id= :id");
@@ -262,28 +201,40 @@ class ModelTeilnehmende extends ModelBase
         return $data;
     }
 
+    // Token überprüfung
     public function tokencheck($token)
     {
+
+        // Versuch optIn zu ändern, wo Tokens übereinstimmen
         $this->db->query("UPDATE User SET optIn = 1 WHERE token = :token");
         $this->db->bind(":token", $token);
         $answer = $this->db->execute();
+
+        // falls der Versuch fehlgeschlagen ist wird nach dem Token auf der DB gesucht
         if ($answer == 0) {
             $this->db->query("SELECT COUNT(optIn) FROM User WHERE token = :token");
             $this->db->bind(":token", $token);
             $answer = $this->db->resultSet();
-            $newdata[0]['id'] = 0;
+
+            // Wert setzen zur beeinflussung, welche Antwort der User erhält
+            $newdata[0]['id'] = 0; // Token existiert nicht auf der Datenbank
+
+            // falls ein Token gefunden wurde wird die Antwort überschrieben
             if ($answer[0]['COUNT(optIn)'] == 1) {
                 $answer = 2;
                 $this->db->query("SELECT name,surname,email FROM User WHERE token = :token");
                 $this->db->bind(":token", $token);
                 $newdata = $this->db->resultSet();
-                $newdata[0]['id'] = 2;
+                $newdata[0]['id'] = 2; // Token existiert und optIn ist bereits positiv
             }
+
+            // falls die optIn Änderung erfolgreich war
         } elseif ($answer == 1) {
+            // Userinformationen abrufen für Antwort
             $this->db->query("SELECT name,surname,email FROM User WHERE token = :token");
             $this->db->bind(":token", $token);
             $newdata = $this->db->resultSet();
-            $newdata[0]['id'] = 1;
+            $newdata[0]['id'] = 1; // erfolgreiche Bestätigung und optIn wurde gesetzt
         }
         return $newdata[0];
     }

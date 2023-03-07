@@ -1,4 +1,5 @@
 <?php
+// zusätzlicher Aufruf der benötigten Modele zum abruf von Funktionen
 require_once PROJECT_ROOT_PATH . "Model/ModelBase.php";
 /**
  *
@@ -11,7 +12,7 @@ class ModelCompetition extends ModelBase
     private string $text;
     private string $teilnehmerbedingungen;
 
-    // Holt Wettbewerbsinformationen von DB
+    // holt alle Wettbewerbsinformationen von DB (alle Datensätze / hat bloss einen )
     public function getCompetition()
     {
         $this->db->query("SELECT * FROM Competition");
@@ -35,13 +36,6 @@ class ModelCompetition extends ModelBase
         return $this->db->execute();
     }
 
-    // Testfunktion
-    public function getfakecompetition()
-    {
-        $data = ['id' => $this->getFakeId(), 'title' => 'Wettbewerbstitel', 'text' => 'Die von der Frankfurter Brentano-Gesellschaft seit mehr als 20 Jahren herausgegebene Frankfurter Bibliothek ist die größte Lyriksammlung der deutschen Buchhandelsgeschichte. Sie bietet einen Querschnitt durch die Lebenswirklichkeit der Gegenwart – gespiegelt in der in breiten gesellschaftlichen Kreisen gepflegten kleinen Literaturproduktion, die oft unveröffentlicht bleibt und verlorengeht. Über die Präsentation und Bewahrung von Hochliteratur hinaus, soll, der Romantik folgend, aber auch die Lyrik aus der Mitte unseres Volks berücksichtigt werden, die den Alltag und die Gedankenwelt spiegelt und Sozial- und Mentalitätsgeschichte schreibt. In der Frankfurter Bibliothek veröffentlichte Autoren erfüllen übrigens die Zulassungsvoraussetzung zum Fernstudium “Literarisches Schreiben” (Staatliche Zulassung) der Frankfurter Cornelia Goethe Akademie. Mit der Teilnahme am Gedichtwettbewerb geht der Einsender keinerlei Verpflichtungen ein (keine Kosten, keine Buchbestellung, keine Studienanmeldung).', 'teilnehmerbedingung' => '- Mindestens 18 Jahre alt'];
-
-        return $data;
-    }
     /**
      * Get the value of title
      */
@@ -101,9 +95,5 @@ class ModelCompetition extends ModelBase
 
         return $this;
     }
-
-
-
 }
-
 ?>

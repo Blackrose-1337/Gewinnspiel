@@ -5,9 +5,12 @@ class ModelSalt extends ModelBase
     //Attribute
     private int $salt;
 
+    // neuer Salt wird generiert und auf der DB überschrieben
     public function resetSaltbyID(int $id)
     {
+        // generiert neuen Salt
         $salt = $this->randomSalt();
+        // überschreiben auf der DB
         $this->db->query("UPDATE Salt SET salt = :salt WHERE id = :id");
         $this->db->bind(":salt", $salt);
         $this->db->bind(":id", $id);
@@ -20,16 +23,18 @@ class ModelSalt extends ModelBase
         return rand(1000000000, 9999999999);
     }
 
-    // Hinterlegt generierten Salt in der DB
+    // Salt wird auf der DB eingetragen
     public function createSaltDB()
     {
+        // salt generieren
         $salt = $this->randomSalt();
+        // salt auf DB speichern
         $this->db->query("INSERT INTO Salt (salt) Values (:salt)");
         $this->db->bind(":salt", $salt);
         return $this->db->execute();
     }
 
-    // Holt Salt von der DB mit ID
+    // holt Salt von der DB mit ID
     public function getSaltbyID($id)
     {
         $this->db->query("SELECT salt FROM Salt WHERE id= $id");

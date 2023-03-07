@@ -98,7 +98,7 @@ load();
 
         <div class="muh row q-gutter-md">
             <q-space />
-            <q-btn label="Änderungen Speichern" color="blue" @click="save" class="col-2 rebtn" />
+            <q-btn label="Änderungen Speichern" color="blue" @click="save" class="col-2 genbtn" />
         </div>
     </div>
 </template>

@@ -17,6 +17,7 @@ const props = defineProps<{
 const projectStore = useProjectStore();
 const evaluationstore = useEvaluationStore();
 const $q = useQuasar();
+// let projectRef = ref<any>();
 
 //---------------storeToRefs------------------------------
 const project = computed(() => projectStore.project);
@@ -25,6 +26,7 @@ const img = computed(() => evaluationstore.img);
 const { user } = toRefs(props) as User;
 const { selectedproject } = toRefs(props) as Project;
 const { view } = toRefs(props);
+
 let isLoading = ref(false);
 const fullPage = ref(true);
 const filesImages = ref();
@@ -47,6 +49,7 @@ async function save() {
         });
     }
 }
+
 async function remove() {
     const bool: boolean = await projectStore.projectremove(project.value.id);
     if (bool == true) {
@@ -78,11 +81,12 @@ async function removepic(file: any) {
         });
     }
 }
-
 function removeImage(file: any) {
     filesImages.value.splice(filesImages.value.indexOf(file), 1);
 }
+
 async function upload() {
+    console.log("test");
     isLoading.value = true;
     //clear von übertragungs Bilder falls noch von versuch zuvor befüllt
     if (newimage.value.length > 0) {
@@ -176,6 +180,12 @@ function showImage(image: any) {
 function hideImage() {
     previewImage.value = null;
 }
+
+function childFunction() {
+    console.log("test");
+    return 1;
+}
+
 watch(user, changeuser => {
     load();
 });
@@ -192,6 +202,7 @@ watch(selectedproject, changeselectedproject => {
     loadProject();
 });
 </script>
+
 <template>
     <loading
         :active.sync="isLoading"
@@ -232,62 +243,31 @@ watch(selectedproject, changeselectedproject => {
                     </q-chip>
                 </template>
             </q-file>
-            <q-btn round dense flat icon="upload" @click="upload()" />
         </div>
-        <div class="image-container q-pa-sm test">
-            <div v-for="pic in pics" class="row">
-                <img :src="pic" @click="showImage(pic)" />
-                <q-btn class="fileele" flat icon="delete" @click="removepic(pic)" />
-                <br />
+        <div class="row justify-between">
+            <div class="column content-center image-container q-pa-sm">
+                <div v-for="pic in pics" class="row">
+                    <img :src="pic" @click="showImage(pic)" />
+                    <q-btn class="fileele" flat icon="delete" @click="removepic(pic)" />
+                </div>
+                <div class="image-preview" v-if="previewImage" @click="hideImage">
+                    <img :src="previewImage" @click="hideImage" />
+                </div>
             </div>
-            <div class="image-preview" v-if="previewImage" @click="hideImage()">
-                <img :src="previewImage" @click="hideImage()" />
+            <div>
+                <div class="row">
+                    <q-space />
+                    <q-btn class="genbtn" color="blue" label="Bilder Speichern" icon="upload" @click="upload" />
+                </div>
+                <div class="row" v-if="view == 'Project'">
+                    <q-space />
+                    <q-btn label="Änderungen Speichern" color="blue" @click="save" class="genbtn" />
+                </div>
+                <div class="row" v-if="view == 'Project'">
+                    <q-space />
+                    <q-btn label="Projekt Löschen" color="red" @click="remove" class="genbtn" />
+                </div>
             </div>
-
-            <!-- <q-file
-                class="picloader"
-                v-model="bsp"
-                rounded
-                outlined
-                append
-                use-chips
-                :rules="[val => !!val || 'Pflichtfeld *']"
-                label="Filtered (png,jpeg only) *"
-                multiple
-                :filter="checkFileType"
-                @rejected="onRejected"
-                counter
-            >
-                <template #prepend>
-                    <q-icon name="attach_file" />
-                </template>
-
-                <template #file="{ file }">
-                    <div class="row full-width">
-                        <div class="col-2">
-            
-                            <q-avatar rounded>
-                                <img :src="file.toString()" />
-                            </q-avatar>
-                           
-                        </div>
-                        <div class="col-8">
-                            <q-chip class="fileele full-width q-my-xs" square>
-                                {{ file.toString().split("/")[file.toString().split("/").length - 1] }}
-                                <q-space />
-                                <q-btn class="fileele q-pa-sm" flat icon="delete" @click="removepic(file)" />
-                            </q-chip>
-                        </div>
-                    </div>
-                </template>
-            </q-file> -->
-        </div>
-
-        <div v-if="view == 'Project'">
-            <q-btn label="Änderungen Speichern" color="blue" @click="save" class="rebtn" />
-        </div>
-        <div v-if="view == 'Project'">
-            <q-btn label="Projekt Löschen" color="red" @click="remove" class="rebtn" />
         </div>
     </div>
     <div v-else>
@@ -295,7 +275,7 @@ watch(selectedproject, changeselectedproject => {
             <h3>{{ project.title }}</h3>
             <p>{{ project.text }}</p>
         </div>
-        <div class="image-container test">
+        <div class="column content-center image-container">
             <img v-for="pic in pics" :src="pic" @click="showImage(pic)" />
             <div class="image-preview" v-if="previewImage" @click="hideImage">
                 <img :src="previewImage" @click="hideImage" />
@@ -311,6 +291,9 @@ watch(selectedproject, changeselectedproject => {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+}
+.probtn {
+    width: 10%;
 }
 
 .image-container img {
@@ -350,9 +333,7 @@ watch(selectedproject, changeselectedproject => {
     background-color: rgba(0, 0, 0, 0.823);
     z-index: 9999; /* sorgt dafür, dass das Vorschaubild immer über anderen Inhalten erscheint */
 }
-.test {
-    align-items: center;
-}
+
 .texts {
     background-color: rgb(168, 153, 85);
     border-radius: 15px;

@@ -1,4 +1,5 @@
 <?php
+// zusätzlicher Aufruf der benötigten Modele zum abruf von Funktionen
 require_once PROJECT_ROOT_PATH . "Model/ModelBase.php";
 class ModelBewertung extends ModelBase
 {
@@ -6,7 +7,7 @@ class ModelBewertung extends ModelBase
     private int $administrativeId;
     private int $userId;
 
-    // Holt Kriterien von DB
+    // holt Kriterien von DB
     public function getKriterien()
     {
         $this->db->query("SELECT * FROM Kriterien");
@@ -14,6 +15,7 @@ class ModelBewertung extends ModelBase
         return $data;
     }
 
+    // holt alle Bewertungen, bei dennen Projekt-ID mit Project-ID(DB) übereinstimmt und User-ID mit Administrative-ID(DB) übereinstimmt
     public function getBewertung($data)
     {
         $this->db->query("SELECT * FROM Bewertung
@@ -24,6 +26,7 @@ class ModelBewertung extends ModelBase
         return $data;
     }
 
+    // gibt eine Summe der Bewertungspunkte für jedes Projekt in der Tabelle "Bewertung" berechnet, gruppiert nach Projekt-ID
     public function getAuswertung()
     {
         $this->db->query("SELECT projectId, SUM(bewertung) AS 'value'  
@@ -67,18 +70,6 @@ class ModelBewertung extends ModelBase
         return $answer;
     }
 
-    // Testfunktionen
-    public function getFakeKriterien()
-    {
-        $data = [
-            ['id' => 2, 'frage' => 'Was geht?'],
-            ['id' => 4, 'frage' => 'Wie geht es?'],
-            ['id' => 3, 'frage' => 'Was auch immmer geht?'],
-            ['id' => 5, 'frage' => 'Wohin geht es?'],
-        ];
-        return $data;
-    }
-
     /**
      * Get the value of administrativeId
      */
@@ -115,26 +106,6 @@ class ModelBewertung extends ModelBase
     public function setUserId($userId)
     {
         $this->userId = $userId;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of bewertungsId
-     */
-    public function getBewertungsId()
-    {
-        return $this->bewertungsId;
-    }
-
-    /**
-     * Set the value of bewertungsId
-     *
-     * @return  self
-     */
-    public function setBewertungsId($bewertungsId)
-    {
-        $this->bewertungsId = $bewertungsId;
 
         return $this;
     }

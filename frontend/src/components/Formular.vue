@@ -115,8 +115,9 @@ async function remove() {
         });
     }
 }
-async function resestpw() {
+async function resetpw() {
     const answer = await userStore.resetPW(model.value.id);
+    console.log(answer);
     if (answer == true) {
         $q.notify({
             type: "positive",
@@ -125,8 +126,8 @@ async function resestpw() {
         });
     } else {
         $q.notify({
-            type: answer.success,
-            message: answer.error,
+            type: "negative",
+            message: "Das ist was Schiefgelaufen",
         });
     }
 }
@@ -266,11 +267,11 @@ watch(user, changeUser => {
             </div>
         </div>
         <div v-if="view == 'User' || view == 'Project'">
-            <q-btn label="Änderungen Speichern" color="blue" @click="savechange" class="rebtn" />
+            <q-btn label="Änderungen Speichern" color="blue" @click="savechange" class="genbtn" />
         </div>
         <div v-if="view == 'Project'">
-            <q-btn label="Passwort zurücksetzen" color="red" @click="resestpw" class="rebtn" />
-            <q-btn label="User Löschen" color="red" @click="remove" class="rebtn" />
+            <q-btn label="Passwort zurücksetzen" color="red" @click="resetpw" class="genbtn" />
+            <q-btn label="User Löschen" color="red" @click="remove" class="genbtn" />
         </div>
     </div>
 </template>
@@ -279,7 +280,7 @@ watch(user, changeUser => {
 .vorwahl {
     text-align: center;
 }
-.rebtn {
+.genbtn {
     border-radius: 30px;
     max-height: 56px;
     min-height: 56px;

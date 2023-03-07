@@ -1,4 +1,6 @@
 <?php
+
+// zusätzlicher Aufruf der benötigten Modele zum abruf von Funktionen
 require_once PROJECT_ROOT_PATH . "Model/ModelBase.php";
 require_once PROJECT_ROOT_PATH . "Model/ModelBilder.php";
 /**
@@ -20,7 +22,7 @@ class ModelProject extends ModelBase
         return $data;
     }
 
-    // Projekt auf der DB hinterlegen
+    // Projekt wird als Datensatz in die DB eingetragen
     public function createProject($data)
     {
         $this->db->query("INSERT INTO Project
@@ -44,6 +46,11 @@ class ModelProject extends ModelBase
     // Änderung vom Projekt auf der DB
     public function updateProject($data)
     {
+        if ($_SESSION['user_role'] == 'admin') {
+            $id = $data["userId"];
+        } else {
+            $id = $_SESSION['user_id'];
+        }
         //Vorbereitung Mysql Eintrag mit überprüfung von id des Projects und entsprechender userId
         $this->db->query("UPDATE Project SET
         title = :title, text = :text
@@ -51,7 +58,7 @@ class ModelProject extends ModelBase
         $this->db->bind(":title", $data["title"]);
         $this->db->bind(":text", $data["text"]);
         $this->db->bind(":id", $data["id"]);
-        $this->db->bind(":userId", $data["userId"]);
+        $this->db->bind(":userId", $id);
 
         // Ausführung des eintrags
         $answer = $this->db->execute();
@@ -60,44 +67,55 @@ class ModelProject extends ModelBase
 
     }
 
+    // leitet die Projekt-ID an die Löschfunktion weiter
     public function deleteProject($data)
     {
-        $picmodel = new ModelBilder;
-
-        $picpath = $picmodel->getDeletePath($data['id']);
-        $this->rrmdir($picpath);
-        $this->db->query("DELETE FROM Image WHERE projectid = :id");
-        $this->db->bind(":id", $data["id"]);
-        $this->db->execute();
-        $this->db->query("DELETE FROM Project  WHERE id = :id");
-        $this->db->bind(":id", $data["id"]);
-        $answer = $this->db->execute();
+        // Löschprozess mit Projekt-ID initialisieren
+        $answer = $this->deletePro($data['id']);
         return $answer;
     }
-    public function deleteProjectWithUserId($data)
+
+    // löscht das gesammte Projekt wie auch die hinterlegten Bildpfade von der DB mittels Projekt-ID
+    private function deletePro($id)
     {
         $picmodel = new ModelBilder;
-
-        $answer = $this->getProject($data['userId']);
-        $picpath = $picmodel->getDeletePath($answer['id']);
+        // Aufruf Lösch Pfad mit entsprechender Projekt-ID
+        $picpath = $picmodel->getDeletePath($id);
+        // Löschen des Projektordners auf dem System
         $this->rrmdir($picpath);
 
+        // Überprüfung ob Einträge existieren auf Image von der DB
         $this->db->query("SELECT id
                         FROM Image
                         WHERE projectid = :id");
-        $this->db->bind(":id", $answer['id']);
+        $this->db->bind(":id", $id);
         $check = $this->db->resultSet();
+
         if (isset($check[0])) {
+            // Löschen der DB Einträge 'Image' die zum Projekt gehören
             $this->db->query("DELETE FROM Image WHERE projectid = :id");
-            $this->db->bind(":id", $answer['id']);
+            $this->db->bind(":id", $id);
             $this->db->execute();
         }
+
+        // Löschen des Projektes selbst (erst möglich wenn alle Einträge unter 'Image' entfernt wurden)
         $this->db->query("DELETE FROM Project  WHERE id = :id");
-        $this->db->bind(":id", $answer['id']);
+        $this->db->bind(":id", $id);
         $answer = $this->db->execute();
+
+        return $answer;
+    }
+    // holt die Projekt-ID von der DB und leitet die Projekt-ID an die Löschfunktion weiter
+    public function deleteProjectWithUserId($data)
+    {
+        // Projekt-ID von DB Holen
+        $answer = $this->getProject($data['userId']);
+        // Löschprozess mit Projekt-ID initialisieren
+        $answer = $this->deletePro($answer['id']);
         return $answer;
     }
 
+    // Recursive Löschfunktion eines Ordnerpfades
     private function rrmdir($picpath)
     {
         if (is_dir($picpath)) {
@@ -126,6 +144,7 @@ class ModelProject extends ModelBase
         return $datas;
     }
 
+    // holt die User-ID von der DB mittels Projekt-ID
     public function getUserIdWithId($projectId)
     {
         $this->db->query("SELECT userId FROM Project WHERE id= :id");
@@ -133,46 +152,6 @@ class ModelProject extends ModelBase
         $data = $this->db->resultSet();
         return $data;
     }
-
-
-    // Testfunktionen
-    public function fakeWriteData($data)
-    {
-        $data['id'] = $this->getFakeId();
-        $answer = json_encode($data);
-        return json_decode($answer);
-    }
-
-    public function getFakeProject($userId)
-    {
-        $datas = $this->getFakeAllProject();
-        foreach ($datas as $data) {
-            if ($data['userId'] == $userId) {
-                return $data;
-            }
-        }
-        return $datas;
-    }
-
-    public function getFakeAllProject()
-    {
-        $datas = [
-            ['id' => '0', 'userId' => '3', 'title' => 'Olaaa Chica', 'text' => 'Nicht viel zu sagen die Bilder sprechen für sich.'],
-            ['id' => '1', 'userId' => '4', 'title' => 'What??', 'text' => 'COOKIES COOOKIES COOOOOOKIES!!!!'],
-            [
-                'id' => '2',
-                'userId' => '5',
-                'title' => 'Moonshine',
-                'text' => 'Im en so geblendet ja behaglich ausdenken gewachsen ernsthaft. Angenommen brotkugeln an getunchten vertreiben ab. Zu er
-            nachtessen flusterton fluchtigen so so angenommen. Wendete beinahe so bosheit zu spruche schones te in. Ihr sprachen die
-            kurioses schuftet erzahlte. Erstaunt brannten hut konntest was streckte wei freilich trostlos. Sei messingnen ordentlich
-            wahrhaftig hinstellte als die neidgefuhl. Leuchtete tag verwegene unbemerkt hob tal geburstet.'
-            ]
-        ];
-        return $datas;
-
-    }
-
 
     /**
      * Get the value of userId
@@ -193,8 +172,6 @@ class ModelProject extends ModelBase
 
         return $this;
     }
-
-
 
     /**
      * Get the value of title

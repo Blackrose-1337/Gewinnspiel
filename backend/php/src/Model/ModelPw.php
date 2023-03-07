@@ -6,9 +6,10 @@ class ModelPw extends ModelBase
     private string $hash;
 
 
-    // Hash reset
+    // Hash (reset) neuer Hash wird generiert und auf der DB überschrieben.
     public function resetHashbyId(int $salt, int $id)
     {
+        // neus Passwort wird generiert
         $pw = $this->getString();
         $hash = $this->mySha512($pw, $salt, 10000);
 
@@ -17,6 +18,7 @@ class ModelPw extends ModelBase
         $this->db->bind(":id", $id);
         $this->db->execute();
 
+        // das neue Passwort wird zurückgegeben
         return $pw;
     }
 
@@ -29,7 +31,7 @@ class ModelPw extends ModelBase
         return $str;
     }
 
-    // Hash vergleich
+    // Hash vergleich von der DB
     public function controllHash($pw, float $salt, $pwid)
     {
         $hash = $this->mySha512($pw, $salt, 10000);
@@ -43,7 +45,7 @@ class ModelPw extends ModelBase
 
     }
 
-    // Hash auf DB hinterlegen
+    // Hash generieren und auf der DB eintragen
     public function generateHashDB(string $pw, $salt)
     {
         // generieren des hashes mit string, salt und 10000 durchläufen

@@ -1,46 +1,59 @@
 <?php
 class AdminController extends BaseController
 {
-    // Funktion um das alte Passwort zu reseten und ein neues Passwort für den User zu generieren 
+    //API Funktion um das alte Passwort zu reseten und ein neues Passwort für den User zu generieren 
     public function pwresetAction()
     {
+        // Variablen setzen
         $strErrorDesc = '';
+        // Kommunikations-Methode entnehmen
         $requestMethod = $_SERVER["REQUEST_METHOD"];
         // QueryParams entgegennehmen
         $arrQueryStringParams = $this->getQueryStringParams();
         try {
+            // Überprüfung gültiger Session
             if (!$this->sessionCheck()) {
                 $strErrorDesc = "Nicht akzeptierte Session";
                 $strErrorHeader = $this->fehler(405);
-            }
-            if (!$this->userCheck('admin')) {
+
+                // Überprüfung erlaubter Rollen 
+            } elseif (!$this->userCheck('admin')) {
                 $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
                 $strErrorHeader = $this->fehler(401);
             } else {
+                // abfrage ob es eine GET_Methode ist
                 if (strtoupper($requestMethod) == 'GET') {
                     // Aufruf benötigter Klassen 
                     $usermodel = new ModelTeilnehmende();
                     $pwmodel = new ModelPw();
                     $saltmodel = new ModelSalt();
-                    // benötigte id's zu salt und PW abrufen 
-                    $ids = $usermodel->getUser($arrQueryStringParams['userId']);
+                    // Userinformationen holen
+                    $user = $usermodel->getUser($arrQueryStringParams['userId']);
                     // neuen salt generieren 
-                    $saltmodel->resetSaltbyID($ids['saltId']);
-                    $salt = $saltmodel->getSaltbyID($ids['saltId']);
-                    // passwort erstellen hash genieren mit salt und passwort zurückgeben
-                    $pw = $pwmodel->resetHashbyId($salt, $ids['pwId']);
+                    $saltmodel->resetSaltbyID($user['saltId']);
+                    // neuen salt holen
+                    $salt = $saltmodel->getSaltbyID($user['saltId']);
+                    // passwort erstellen hash genieren mit salt und neues passwort erhalten
+                    $pw = $pwmodel->resetHashbyId($salt, $user['pwId']);
+                    // Mail mit neuem PW an den User versenden;
+                    $this->sendMailWithNewPW($user['email'], $pw, $user['name'], $user['surname']);
                     $responseData = true;
                 } else {
+                    // Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde
                     $strErrorDesc = 'Method not supported';
                     $strErrorHeader = $this->fehler(422);
                 }
             }
         } catch (Error $e) {
+            // Fehlermeldung, falls ein serverseitiger Fehler entstanden ist
             $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
             $strErrorHeader = $this->fehler(500);
         }
+        // Falls kein Fehler enthalten ist wird die Antwort verpackt und versendet
         if (!$strErrorDesc && ($requestMethod == 'GET')) {
             $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
+
+            // Falls ein Fehler enthalten ist wird dieser verpackt und versendet
         } else {
             $this->sendOutput(
                 json_encode(array('error' => $strErrorDesc)),
@@ -49,17 +62,21 @@ class AdminController extends BaseController
         }
     }
 
-    // Funktion um Änderungen zu speichern die der Admin bei einem User macht
+    //API Funktion um Änderungen zu speichern die der Admin bei einem User macht
     public function saveAction()
     {
+        // Variablen setzen
         $strErrorDesc = '';
+        // Kommunikations-Methode entnehmen
         $requestMethod = $_SERVER["REQUEST_METHOD"];
         try {
+            // Überprüfung gültiger Session
             if (!$this->sessionCheck()) {
                 $strErrorDesc = "Nicht akzeptierte Session";
                 $strErrorHeader = $this->fehler(405);
-            }
-            if (!$this->userCheck('admin', 'teilnehmende')) {
+
+                // Überprüfung erlaubter Rollen 
+            } elseif (!$this->userCheck('admin', 'teilnehmende')) {
                 $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
                 $strErrorHeader = $this->fehler(401);
             } else {
@@ -69,38 +86,49 @@ class AdminController extends BaseController
                     $usermodel = new ModelTeilnehmende();
                     // Post Daten holen
                     $data = json_decode(file_get_contents('php://input'), true);
-                    // Check ob ein User oder Admin Action ausführen will    
+
+                    // Überprüfung ob der Admin die Aktion ausführt    
                     if ($_SESSION['user_role'] == 'admin') {
                         // Falls id 0 hinterlegt ist wird ein neuer User erstellt
                         if ($data['id'] == 0) {
                             $usermodel->createUser($data);
                             $responseData = 1;
+
                             // Andernfalls wird mit der Id der User gesucht und die Daten überschrieben
                         } else {
+                            // Änderung der Userdaten
                             $usermodel->changeUser($data);
                             $responseData = 1;
                         }
+
+                        // Falls die Rolle eines Users aktiv ist, wird eine Überprüfung der Session(user_id) mit der übergebenen Id durchgeführt (damit kein User dazu in der Lage ist Daten eines anderen zu ändern)
                     } else if ($_SESSION['user_role'] == 'teilnehmende' && $_SESSION['user_id'] == $data['id']) {
+                        // Änderung der Userdaten
                         $usermodel->changeUser($data);
                         $responseData = 1;
                     } else {
+                        // Fehlermeldung, falls keine entsprechenden Berechtigungen vorhanden sind
                         $strErrorDesc = 'Nicht autorisiert';
                         $strErrorHeader = $this->fehler(401);
                     }
 
                 } else {
+                    // Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde
                     $strErrorDesc = 'Method not supported';
                     $strErrorHeader = $this->fehler(422);
                 }
             }
         } catch (Error $e) {
-            echo "Error";
+            // Fehlermeldung, falls ein serverseitiger Fehler entstanden ist
             $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
             $strErrorHeader = $this->fehler(500);
         }
 
+        // Falls kein Fehler enthalten ist wird die Antwort verpackt und versendet
         if (!$strErrorDesc) {
             $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
+
+            // Falls ein Fehler enthalten ist wird dieser verpackt und versendet
         } else {
             $this->sendOutput(
                 json_encode(array('error' => $strErrorDesc)),
@@ -109,43 +137,57 @@ class AdminController extends BaseController
         }
     }
 
+    //API Funktion um ein Projekt inclusive User vollständig zu Löschen
     public function removeAction()
     {
+        // Variablen setzen
         $strErrorDesc = '';
+        // Kommunikations-Methode entnehmen
         $requestMethod = $_SERVER["REQUEST_METHOD"];
         try {
-            // abfrage ob es eine POST_Methode ist
-            if (strtoupper($requestMethod) == 'POST') {
-                if (!$this->sessionCheck()) {
-                    $strErrorDesc = "Nicht akzeptierte Session";
-                    $strErrorHeader = $this->fehler(405);
-                }
-                if (!$this->userCheck('admin')) {
-                    $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
-                    $strErrorHeader = $this->fehler(401);
+            // Überprüfung gültiger Session
+            if (!$this->sessionCheck()) {
+                $strErrorDesc = "Nicht akzeptierte Session";
+                $strErrorHeader = $this->fehler(405);
+
+                // Überprüfung erlaubter Rollen 
+            } elseif (!$this->userCheck('admin')) {
+                $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
+                $strErrorHeader = $this->fehler(401);
+
+                // Abfrage ob es eine POST_Methode ist
+            } elseif (strtoupper($requestMethod) == 'POST') {
+                // Aufruf benötigter Klassen 
+                $projectmodel = new ModelProject();
+                $usermodel = new ModelTeilnehmende();
+                // Post Daten holen
+                $data = json_decode(file_get_contents('php://input'), true);
+
+                // Überprüfung der mitgegeben 'userId'
+                if ($data['userId'] !== 0) {
+                    // Löschen des Projekts über UserID
+                    $projectmodel->deleteProjectWithUserId($data);
+                    // Löschen des Users (übergabe voller User)
+                    $responseData = $usermodel->deleteUser($data);
                 } else {
-                    // Aufruf benötigter Klassen 
-                    $projectmodel = new ModelProject();
-                    $usermodel = new ModelTeilnehmende();
-                    // Post Daten holen
-                    $data = json_decode(file_get_contents('php://input'), true);
-                    if ($data['userId'] !== 0) {
-                        $projectmodel->deleteProjectWithUserId($data);
-                        $responseData = $usermodel->deleteUser($data);
-                    } else {
-                        $responseData = false;
-                    }
+                    // Antwort, wenn 'userId' nicht hinterlegt ist oder auf 0 gesetzt
+                    $responseData = false;
                 }
             } else {
+                // Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde
                 $strErrorDesc = 'Method not supported';
                 $strErrorHeader = $this->fehler(422);
             }
         } catch (Error $e) {
+            // Fehlermeldung, falls ein serverseitiger Fehler entstanden ist
             $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
             $strErrorHeader = $this->fehler(500);
         }
+        // Falls kein Fehler enthalten ist wird die Antwort verpackt und versendet
         if (!$strErrorDesc) {
             $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
+
+            // Falls ein Fehler enthalten ist wird dieser verpackt und versendet
         } else {
             $this->sendOutput(
                 json_encode(array('error' => $strErrorDesc)),
@@ -153,17 +195,4 @@ class AdminController extends BaseController
             );
         }
     }
-
-// private function parseData($string)
-// {
-//     $data = null;
-//     try {
-//         $data = json_decode($string);
-//     } catch (Exception $e) {
-//         $data = false;
-//     }
-
-//     return $data;
-// }
-
 }

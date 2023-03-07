@@ -13,6 +13,7 @@ function login() {
     router.push("/login");
 }
 async function load() {
+    isLoading.value = true;
     await confirmStore.confirm(route.params.value);
     isLoading.value = false;
 }

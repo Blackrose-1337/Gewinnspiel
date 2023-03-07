@@ -1,18 +1,23 @@
 <?php
 
-// Sesssion 
+// Sesssion Initialisierung
 require_once __DIR__ . '/helpers/session_helper.php';
-
+// header setzen
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methodes: GET, POST, OPTIONS");
 header('Content-Type: application/json');
 header('Accept: application/json');
-require __DIR__ . "/inc/bootstrap.php";
-require __DIR__ . "/inc/config.php";
 
+// Dateien initialisieren
+require __DIR__ . "/inc/bootstrap.php";
+//require __DIR__ . "/inc/config.php";
+
+// URL-Pfad abrufen und auf Variable setzen
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+// URL auftrennen
 $uri = explode('/', $uri);
 
+// mit drittem Element der URL Controller nach SwitchCase Übereinstimmung initialisieren
 switch ($uri[3]) {
     case 'user':
         require __DIR__ . "/Controller/API/UserController.php";
@@ -42,11 +47,12 @@ switch ($uri[3]) {
         require __DIR__ . "/Controller/API/ConfirmController.php";
         $objFeedController = new ConfirmController();
         break;
-    default:
+    default: // Ausgabe bei nicht zutreffender URL
         header("Page can’t be found", true, 404);
 
 }
-
+// Variable wirt mit dem vierten Element der URL geführt mit dem Anhang 'Action'
 $strMethodName = $uri[4] . 'Action';
+// fügt dem initalisierten Controller das Argument hinzu strMethodeName
 $objFeedController->{$strMethodName}();
 ?>

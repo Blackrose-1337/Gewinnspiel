@@ -64,15 +64,12 @@ export const useUserStore = defineStore({
                 {
                     "userId": userId,
                 }
-                const res = await api.get<{ success: boolean; error: string; }>("admin/pwreset", param);
-                if (res?.success) {
-                    return res.success;
-                } else {
-                    const answer = {
-                        'success': "negative",
-                        'error': res?.error,
-                    }
-                    return answer;
+                const res = await api.get<boolean>("admin/pwreset", param);
+                console.log(res);
+                if (res == true) {
+                    return res;
+                } else {    
+                    return res;
                 }
             }catch (err) {
                 console.error(err);

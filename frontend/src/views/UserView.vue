@@ -1,21 +1,23 @@
 <script setup lang="ts">
-import { useRouter } from "vue-router";
-import { computed, onBeforeMount } from "vue";
 import Project from "@/components/Project.vue";
 import Formular from "@/components/Formular.vue";
+import { useRouter } from "vue-router";
+import { computed, onBeforeMount, ref } from "vue";
 import { useUserStore } from "@/stores/users";
 import { useAuthStore } from "@/stores/auth";
 import { useCompetitionStore } from "@/stores/competition";
+import Loading from "vue-loading-overlay";
 
 const router = useRouter();
 const authStore = useAuthStore();
 const userStore = useUserStore();
 const competitionstore = useCompetitionStore();
-
-competitionstore.getCompetitiondeclarations();
-
 const selectedUser = computed(() => userStore.user);
 const competitionDetails = computed(() => competitionstore.competitionDetails);
+competitionstore.getCompetitiondeclarations();
+
+// const childComponentRef = ref<any>(null);
+// const result = ref<string>("");
 
 async function check() {
     const answer: boolean = await authStore.check();
@@ -38,6 +40,7 @@ function datecheck() {
         return false;
     }
 }
+function callchildfunction() {}
 
 onBeforeMount(() => {
     check();
@@ -49,8 +52,10 @@ onBeforeMount(() => {
         <div class="q-gutter-lg col-6">
             <Project :user="selectedUser" :view="'User'" />
         </div>
+
         <div class="q-gutter-lg col-5">
             <Formular :user="selectedUser" :view="'User'" />
+            <q-btn class="genbtn" color="yellow" label="Bilder Speichern" icon="upload" @click="callchildfunction" />
         </div>
     </div>
     <div v-else>

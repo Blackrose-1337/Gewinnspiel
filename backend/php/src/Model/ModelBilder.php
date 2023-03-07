@@ -6,7 +6,7 @@ class ModelBilder extends ModelBase
     private string $bilderpfad;
     private int $projektId;
 
-
+    // Abspeichern des Pfades auf der DB inclusive Projekt-ID
     public function createImagePath($projectid, $path)
     {
         $this->db->query("INSERT INTO Image
@@ -17,6 +17,9 @@ class ModelBilder extends ModelBase
         $answer = $this->db->execute();
         return $answer;
     }
+
+    /* Funktion prüft, ob ein Bild für das angegebene Projekt existiert. Wenn ja,
+    gibt sie ein Array mit allen Datensätzen aus der DB zurück, die diesem Projekt zugeordnet sind */
     public function getPictureByProId($proid)
     {
         $this->db->query("SELECT EXISTS(SELECT * FROM Image
@@ -32,6 +35,7 @@ class ModelBilder extends ModelBase
         return $data;
     }
 
+    // Funktion löscht den DB Eintrag, bei dem Pfad und Projekt-Id jeweils übereinstimmen
     public function DeletePath($path, $id)
     {
         $this->db->query("DELETE FROM Image WHERE projectid = :id AND path = :path");
@@ -41,6 +45,8 @@ class ModelBilder extends ModelBase
         return $answer;
     }
 
+    /* Funktion gibt den Pfad des ersten Bildes zurück, das dem angegebenen Projekt zugeordnet
+    ist, oder 0, wenn kein Bild vorhanden ist. */
     public function getDeletePath($id)
     {
         $ans = $this->getPictureByProId($id);
@@ -52,6 +58,7 @@ class ModelBilder extends ModelBase
         }
     }
 
+    // gibt alle Datensätze aus der Tabelle Image aus
     public function getAllPaths()
     {
         $this->db->query("SELECT * FROM Image");
