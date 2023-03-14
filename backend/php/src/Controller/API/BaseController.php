@@ -74,6 +74,7 @@ class BaseController
             case 401:
                 return "HTTP/1.1 401 Unautorisiert";
         }
+        return false;
     }
 
     // Success abruf
@@ -83,6 +84,7 @@ class BaseController
             case 200:
                 return "HTTP/1.1 200 OK";
         }
+        return false;
     }
 
     // Funktion zum abspeichern von Bildern
@@ -172,7 +174,12 @@ class BaseController
             $mail->addAddress($empfaenger);
             $mail->Subject = $betreff;
             $mail->Body = $nachricht;
-            $mail->send();
+            if (getenv('ENVIRONMENT') === 'development'){
+                error_log($empfaenger);
+                error_log($pw);
+            } else {
+                $mail->send();
+            }
         } catch (Exception $e) {
             error_log('Die E-Mail konnte nicht gesendet werden. Fehlermeldung: ', $mail->ErrorInfo);
         }
@@ -211,7 +218,13 @@ class BaseController
             $mail->addAddress($empfaenger);
             $mail->Subject = $betreff;
             $mail->Body = $nachricht;
-            $mail->send();
+            if (getenv('ENVIRONMENT') === 'development'){
+                error_log($empfaenger);
+                error_log($pw);
+            } else {
+                $mail->send();
+            }
+
         } catch (Exception $e) {
             error_log('Die E-Mail konnte nicht gesendet werden. Fehlermeldung: ', $mail->ErrorInfo);
         }

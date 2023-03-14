@@ -14,15 +14,11 @@ class ProjectController extends BaseController
             if (!$this->sessionCheck()) {
                 $strErrorDesc = "Nicht akzeptierte Session";
                 $strErrorHeader = $this->fehler(405);
-            }
-
-            // Überprüfung erlaubter Rollen
+            } // Überprüfung erlaubter Rollen
             else if (!$this->userCheck('admin', 'teilnehmende')) {
                 $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
                 $strErrorHeader = $this->fehler(401);
-            }
-
-            // abfrage ob es eine GET_Methode ist
+            } // abfrage ob es eine GET_Methode ist
             else if (strtoupper($requestMethod) == 'GET') {
                 // Aufruf benötigter Klassen 
                 $projectmodel = new ModelProject();
@@ -38,7 +34,7 @@ class ProjectController extends BaseController
                     // Projekt wird geholt anhand mitgebener User-Id
                     $answer = $projectmodel->getProject($arrQueryStringParams['userId']);
                 }
-                if (isset($answer[$answer['id']])) {
+                if (isset($answer['id'])) {
                     // Bilder werden geholt mittels Projekt-ID
                     $imgs = $bildermodel->getPictureByProId($answer['id']);
                     // Array Vorbereitung
@@ -53,9 +49,8 @@ class ProjectController extends BaseController
                     // Antwort zu Json formatieren
                     $responseData = json_encode($answer);
                 } else {
-                    // Fehlermeldung, falls ein serverseitiger Fehler entstanden ist
-                    $strErrorDesc = 'Der Abruf der Projekt ID ist fehlgeschlagen';
-                    $strErrorHeader = $this->fehler(500);
+                    $answer['pics'] = null;
+                    $responseData = json_encode($answer);
                 }
             } else {
                 // Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde
@@ -137,8 +132,7 @@ class ProjectController extends BaseController
             if (!$this->sessionCheck()) {
                 $strErrorDesc = "Nicht akzeptierte Session";
                 $strErrorHeader = $this->fehler(405);
-            }
-            // Überprüfung erlaubter Rollen
+            } // Überprüfung erlaubter Rollen
             else if (!$this->userCheck('admin', 'teilnehmende')) {
                 $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
                 $strErrorHeader = $this->fehler(401);
@@ -190,9 +184,7 @@ class ProjectController extends BaseController
             if (!$this->sessionCheck()) {
                 $strErrorDesc = "Nicht akzeptierte Session";
                 $strErrorHeader = $this->fehler(405);
-            }
-
-            // Überprüfung erlaubter Rollen
+            } // Überprüfung erlaubter Rollen
             else if (!$this->userCheck('admin')) {
                 $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
                 $strErrorHeader = $this->fehler(401);
@@ -244,9 +236,7 @@ class ProjectController extends BaseController
             if (!$this->sessionCheck()) {
                 $strErrorDesc = "Nicht akzeptierte Session";
                 $strErrorHeader = $this->fehler(405);
-            }
-
-            // Überprüfung erlaubter Rollen
+            } // Überprüfung erlaubter Rollen
             else if (!$this->userCheck('admin', 'teilnehmende')) {
                 $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
                 $strErrorHeader = $this->fehler(401);
@@ -265,7 +255,7 @@ class ProjectController extends BaseController
                     // löschen aus der DB mittels Pfad und Projekt-ID
                     $picmodel->DeletePath($newpath, $data['projectId']);
                     // Bild in den Ordner 'trash' verschieben, falls es jemand nicht wollte noch zu retten ist Administrativ
-                    rename($newpath, './images/trash/' . $newdata[4] . '-' . $newdata[6] . '-' . count(scandir('./images/trash')));
+                    rename($newpath, getenv('F_PATH').'/trash/' . $newdata[4] . '-' . $newdata[6] . '-' . count(scandir(getenv('F_PATH').'/trash')));
                     $responseData = true;
                 } else {
                     $responseData = false;
@@ -299,15 +289,13 @@ class ProjectController extends BaseController
         $strErrorDesc = '';
         // Kommunikations-Methode entnehmen
         $requestMethod = $_SERVER["REQUEST_METHOD"];
-        $imagePath = getenv('ENVIRONMENT') === 'production' ? '../../data' : './images';
+        $imagePath = getenv('F_PATH');
         try {
             // Überprüfung gültiger Session
             if (!$this->sessionCheck()) {
                 $strErrorDesc = "Nicht akzeptierte Session";
                 $strErrorHeader = $this->fehler(405);
-            }
-
-            // Überprüfung erlaubter Rollen
+            } // Überprüfung erlaubter Rollen
             else if (!$this->userCheck('admin', 'teilnehmende')) {
                 $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
                 $strErrorHeader = $this->fehler(401);
@@ -320,8 +308,8 @@ class ProjectController extends BaseController
                 $data = json_decode(file_get_contents('php://input'), true);
                 // User-ID holen mittel Projekt-ID
                 $id = $projectmodel->getUserIdWithId($data[0]['projectId']);
-                // Überprüfung ob die aktive Rolle ein Admin ist oder ob die ID übereinstimmt mit der 'user_id' 
-                // der Session, damit 'teilnehmende' nur ihrem Projekt Bilder hinzufügen können
+                /* Überprüfung ob die aktive Rolle ein Admin ist oder ob die ID übereinstimmt mit der 'user_id'
+               der Session, damit 'teilnehmende' nur ihrem Projekt Bilder hinzufügen können */
                 if ($id[0]['userId'] == $_SESSION['user_id'] || $_SESSION['user_role'] == 'admin') {
                     if ($data[0]['projectId'] !== 0) {
                         // Pfad zum Elternordner bestimmen
@@ -348,7 +336,7 @@ class ProjectController extends BaseController
                             $ele = explode('e', $ele[4]);
                             $ele = explode('.', $ele[1]);
                             // Ziffer um 1 erhöhen
-                            $number = (int) $ele[0] + 1;
+                            $number = (int)$ele[0] + 1;
                             // Bildspeichern mit neuer Nummerierung
                             $this->saveImage($data, $newpath[0], $data[0]['projectId'], $number);
                         } else {
@@ -386,5 +374,12 @@ class ProjectController extends BaseController
                 array('Content-Type: application/json', $strErrorHeader)
             );
         }
+    }
+
+
+    public function testAction()
+    {
+        echo 'Hello World';
+
     }
 }

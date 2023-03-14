@@ -30,17 +30,17 @@ class CompetitionController extends BaseController
                     // Abfrage Betriebssystem
                     if (PHP_OS == "Linux") {
                         // BilderPfad auf dem Server
-                        $generalpath = "./images/project";
+                        $generalpath = getenv('F_PATH') . '/project';
                         // ProjectId auf Variable setzen
                         $number = $newproject->getId();
                         // Dem Pfad die Nummer anbinden
                         $newPath = $generalpath . strval($number);
                         // erstellen des Projektordners
-                        mkdir($newPath, 0777, false);
+                        mkdir($newPath, 0777, true);
                         // neuen Pfad mit GUID
                         $newPath = $newPath . '/' . $this->GUID();
                         // GUID Ordner erstellen (Sicherheitsvorkehrung)
-                        mkdir($newPath, 0777, false);
+                        mkdir($newPath, 0777, true);
                         // Bilder Speichern und auf DB Pfad speichern
                         $this->saveImage($picturebase64, $newPath, $newproject->getId());
                     } elseif (PHP_OS == "Windows") {

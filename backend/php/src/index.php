@@ -1,4 +1,29 @@
 <?php
+// env auslesen
+$CORS_ORIGIN_ALLOWED = "*";
+
+
+if(file_exists('.env')){
+$env = parse_ini_file('.env');
+}elseif (file_exists('../../../.env')){
+    $env = parse_ini_file('../../../.env');
+
+} else {
+    $env = false;
+}
+
+if ($env){
+
+    putenv("DB_HOST=".$env['DB_HOST']);
+    putenv("DB_USERNAME=".$env['DB_USERNAME']);
+    putenv("DB_PASSWORD=".$env['DB_PASSWORD']);
+    putenv("DB_DATABASE_NAME=".$env['DB_DATABASE_NAME']);
+    putenv("ENVIRONMENT=".$env['ENVIRONMENT']);
+    putenv("F_PATH=".$env['F_PATH']);
+    $allowedOrigins = $env["CORS_ALLOWED_ORIGINS"];
+    header("Access-Control-Allow-Origin: $allowedOrigins");
+}
+
 
 // Sesssion Initialisierung
 require_once __DIR__ . '/helpers/session_helper.php';
@@ -18,7 +43,7 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = explode('/', $uri);
 
 // mit drittem Element der URL Controller nach SwitchCase Übereinstimmung initialisieren
-switch ($uri[3]) {
+switch ($uri[2]) {
     case 'user':
         require __DIR__ . "/Controller/API/UserController.php";
         $objFeedController = new UserController();
@@ -51,8 +76,9 @@ switch ($uri[3]) {
         header("Page can’t be found", true, 404);
 
 }
+
 // Variable wirt mit dem vierten Element der URL geführt mit dem Anhang 'Action'
-$strMethodName = $uri[4] . 'Action';
+$strMethodName = $uri[3] . 'Action';
 // fügt dem initalisierten Controller das Argument hinzu strMethodeName
 $objFeedController->{$strMethodName}();
 ?>

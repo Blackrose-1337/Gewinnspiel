@@ -14,7 +14,7 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 // URL auftrennen
 $uri = explode('/', $uri);
 // mit drittem Element der URL Modele(Klassen) nach SwitchCase Übereinstimmung initialisieren
-switch ($uri[3]) {
+switch ($uri[2]) {
     case 'user':
         require_once PROJECT_ROOT_PATH . "Model/ModelTeilnehmende.php";
         break;
