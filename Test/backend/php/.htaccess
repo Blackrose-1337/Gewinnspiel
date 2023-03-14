@@ -1,4 +1,0 @@
-SetEnvIf Origin "^http(s)?://(.+\.)?(localhost:8000|localhost:3000)$" origin_is=$0 
-Header always set Access-Control-Allow-Origin %{origin_is}e env=origin_is
-php_value post_max_size 40M
-php_value upload_max_filesize 39M
