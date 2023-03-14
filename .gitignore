@@ -4,3 +4,5 @@ frontend/dist
 backend/php/src/.htaccess
 Test
 node_modules
+.env
+backend/php/src/image
