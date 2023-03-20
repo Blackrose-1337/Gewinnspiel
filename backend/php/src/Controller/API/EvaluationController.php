@@ -132,10 +132,22 @@ class EvaluationController extends BaseController
                 } else {
                     // Aufruf benötigter Klassen 
                     $bewertungmodel = new ModelBewertung();
+                    $projectmodel = new ModelProject();
                     // Abfrage Bewertungen mittels Projekt-Id und User-Id(Session)
                     $answer = $bewertungmodel->getBewertung($arrQueryStringParams);
-                    // Antwort als json verpacken
-                    $responseData = json_encode($answer);
+                    if (count($answer) == 0){
+                        $answer = $projectmodel->projectCheck($arrQueryStringParams);
+                        if ($answer == 0) {
+                            $message = [ 'exists' => $answer, 'meldung' => 'Es besteht kein Projekt mit dieser ID'];
+                            $responseData = json_encode($message);
+                        } else {
+                            $message = [ 'exists' => $answer, 'meldung' => 'Es besteht noch keine Bewertung für das Projekt'];
+                            $responseData = json_encode($message);
+                        }
+                    } else {
+                        // Antwort als json verpacken
+                        $responseData = json_encode($answer);
+                    }
                 }
             } else {
                 // Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde

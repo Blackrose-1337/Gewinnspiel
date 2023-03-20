@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref, watch } from "vue";
 import { toRefs } from "vue";
 import { storeToRefs } from "pinia";
@@ -37,9 +37,19 @@ const { view } = toRefs(props);
 
 const projectStore = useProjectStore();
 const userStore = useUserStore();
+const nameRef = ref(null);
+const surnameRef = ref(null);
+const emailRef = ref(null);
+
 
 const selectOptionsTyp = ["DE", "AU", "CH"];
 
+function myvalidate() {
+    nameRef.value.validate();
+    surnameRef.value.validate();
+    emailRef.value.validate();
+}
+defineExpose({ myvalidate });
 function isValidEmail(val: string) {
     const emailPattern =
         /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,7}$/;
@@ -79,7 +89,7 @@ async function savechange() {
         if (view?.value == "User") {
             answer1 = await projectStore.postProject();
         }
-        if (answer1 == true) {
+        if (answer1) {
             const answer = await userStore.saveUserChange(model.value);
             if (answer == true) {
                 $q.notify({
@@ -118,7 +128,7 @@ async function remove() {
 async function resetpw() {
     const answer = await userStore.resetPW(model.value.id);
     console.log(answer);
-    if (answer == true) {
+    if (answer) {
         $q.notify({
             type: "positive",
             message: "Passwort wurde zurückgesetzt",
@@ -143,6 +153,7 @@ watch(user, changeUser => {
             <div class="row q-gutter-sm col-12">
                 <q-input
                     v-model="model.surname"
+                    ref="surnameRef"
                     rounded
                     outlined
                     label="Nachname *"
@@ -154,6 +165,7 @@ watch(user, changeUser => {
                 />
                 <q-input
                     v-model="model.name"
+                    ref="nameRef"
                     rounded
                     outlined
                     label="Vorname *"
@@ -164,9 +176,10 @@ watch(user, changeUser => {
                     class="col-4"
                 />
             </div>
-            <div v-if="view != 'User'" class="row q-gutter-sm col-12">
+            <div v-if="view !== 'User'" class="row q-gutter-sm col-12">
                 <q-input
                     v-model="model.email"
+                    ref="emailRef"
                     rounded
                     outlined
                     label="E-Mail *"
@@ -266,10 +279,9 @@ watch(user, changeUser => {
                 />
             </div>
         </div>
-        <div v-if="view == 'User' || view == 'Project'">
+
+        <div v-if="view === 'Project'">
             <q-btn label="Änderungen Speichern" color="blue" @click="savechange" class="genbtn" />
-        </div>
-        <div v-if="view == 'Project'">
             <q-btn label="Passwort zurücksetzen" color="red" @click="resetpw" class="genbtn" />
             <q-btn label="User Löschen" color="red" @click="remove" class="genbtn" />
         </div>

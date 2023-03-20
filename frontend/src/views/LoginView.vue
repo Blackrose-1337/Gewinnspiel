@@ -1,18 +1,10 @@
 <script setup lang="ts">
-import { ref, toRefs } from "vue";
+import { ref } from "vue";
 import { useQuasar } from "quasar";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
-import { computed } from "@vue/reactivity";
 
-const props = defineProps({
-    redirectTo: {
-        type: String,
-        default: "/",
-    },
-});
-
-const { redirectTo } = toRefs(props);
+const redirectTo = ref();
 const $q = useQuasar();
 const authStore = useAuthStore();
 const router = useRouter();
@@ -26,7 +18,7 @@ function isValidEmail(val: string) {
     return emailPattern.test(val) || "Invalid email";
 }
 function isValidpw(val: string) {
-    const pwpattern = /^[a-zA-Z0-9\@\+\?\!]{12,20}$/;
+    const pwpattern = /^[a-zA-Z0-9@+?!]{12,20}$/;
     return pwpattern.test(val) || "Invalid password";
 }
 
@@ -44,15 +36,24 @@ async function login() {
     } else {
         try {
             const answer = await authStore.login(email.value, password.value);
-            if (answer === true) {
+            if (answer) {
                 $q.notify({
                     message: "Login aktzeptiert",
                     type: "positive",
                 });
-                if (authStore.role === "teilnehmende") {
-                    redirectTo.value = "/user";
-                } else if (authStore.role === "jury") {
-                    redirectTo.value = "/evaluation";
+                switch (authStore.role) {
+                    case "teilnehmende": {
+                        redirectTo.value = "/user";
+                        break;
+                    }
+                    case "jury": {
+                        redirectTo.value = "/evaluation";
+                        break;
+                    }
+                    case "admin": {
+                        redirectTo.value = "/verwaltung";
+                        break;
+                    }
                 }
                 await router.push(redirectTo.value);
             } else {

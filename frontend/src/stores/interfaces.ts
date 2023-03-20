@@ -7,9 +7,10 @@ export interface User {
     land: string;
     plz: number;
     ortschaft: string;
-    strasse: string;
+    str: string;
     strNr: number;
     tel: number;
+    vorwahl: number;
 }
 export interface Project {
     id: number;
@@ -17,6 +18,7 @@ export interface Project {
     text: string;
     title: string;
     pics: string[];
+    finish: number;
 }
 
 export interface Competition {
@@ -25,13 +27,11 @@ export interface Competition {
     pics: ProjectBild[];
 }
 
-
 export interface ProjectBild {
     id: number;
     projectId: number;
     bildbase: string;
 }
-
 
 export interface CompetitionDetails {
     id: number;
@@ -43,7 +43,7 @@ export interface CompetitionDetails {
     wettbewerbCloseText: string;
 }
 
-export interface Bewertung{
+export interface Bewertung {
     id: number;
     projectId: number;
     kriterienId: number;
@@ -51,12 +51,12 @@ export interface Bewertung{
     finish: number;
 }
 
-export interface Kriterien{
+export interface Kriterien {
     id: number;
     frage: string;
     value: number | null;
-} 
-export interface Auswertung{
+}
+export interface Auswertung {
     id: number;
     userId: number;
     name: string;
@@ -64,4 +64,8 @@ export interface Auswertung{
     mail: string;
     value: number;
     finish: boolean;
+}
+export interface Message {
+    exsits: number;
+    meldung: string;
 }

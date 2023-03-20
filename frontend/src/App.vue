@@ -93,9 +93,16 @@ onMounted(() => {
 </template>
 
 <style>
+
 /*noinspection CssUnknownTarget*/
 @import "@/assets/base.css";
 
+[for="qfileelements"] .q-chip.row.inline.no-wrap.items-center.q-chip--dense {
+    width: 100%;
+    height: 40px;
+    border-radius: 0;
+    margin-right: 10px;
+}
 .fullheight {
     height: 100%;
 }

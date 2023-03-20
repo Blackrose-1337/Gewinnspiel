@@ -18,8 +18,7 @@ class ModelProject extends ModelBase
     public function getAllProject()
     {
         $this->db->query("SELECT * FROM Project");
-        $data = $this->db->resultSet();
-        return $data;
+        return $this->db->resultSet();
     }
 
     // Projekt wird als Datensatz in die DB eingetragen
@@ -151,6 +150,15 @@ class ModelProject extends ModelBase
         $this->db->bind(":id", $projectId);
         $data = $this->db->resultSet();
         return $data;
+    }
+
+    // check ob Projekt existiert
+    public function projectCheck($id)
+    {
+        $this->db->query("SELECT COUNT(*) FROM Project WHERE id = :id");
+        $this->db->bind(":id", $id['projectId']);
+        $data = $this->db->resultSet();
+        return $data[0]['COUNT(*)'];
     }
 
     /**

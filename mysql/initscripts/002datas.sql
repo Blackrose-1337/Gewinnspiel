@@ -28,9 +28,9 @@ VALUES
         2,
         '<h1>Wettbewerb Stickstoff</h1>',
         '<font size=\"4\"><b><i>Lang</i> </b>oder über<i> <b>Kurz</b> </i>ergibt der <b><sup>Text</sup> nicht viel <sub>Sinn </sub><strike>asdadada</strike></b></font>',
-        '<ul><li><b>mindestens 18 Jahre alt.</b></li><li><b>Test</b></li><li><b>Testtext 13</b></li></ul>',
+        '<ul><li><b>mindestens 18 Jahre alt.</b></li><li><b>Krass sein</b></li><li><b>Hart sein<br></b></li><li><b>Nochmal krass sein<br></b></li></ul>',
         '2021-02-09',
-        '2023-03-07',
+        '2023-03-24',
         '<font size=\"7\">Der Wettbewerb ist geschlossen <b>seit dem 24 März</b>. Die Auswertung ist im Gange und wird am 12.Mai bekannt </font>'
     );
 
@@ -38,34 +38,9 @@ INSERT INTO
     `Image` (`id`, `projectid`, `path`)
 VALUES
     (
-        98,
+        385,
         95,
-        './images/project95/EAD40981-232C-4573-A56B-38141B4A70D0/image1.png'
-    ),
-    (
-        99,
-        95,
-        './images/project95/EAD40981-232C-4573-A56B-38141B4A70D0/image2.png'
-    ),
-    (
-        243,
-        96,
-        './images/project96/D5C46CB1-CC95-41F3-A822-FE8197AF13CA/image4.png'
-    ),
-    (
-        256,
-        96,
-        './images/project96/D5C46CB1-CC95-41F3-A822-FE8197AF13CA/image7.png'
-    ),
-    (
-        258,
-        96,
-        './images/project96/D5C46CB1-CC95-41F3-A822-FE8197AF13CA/image9.png'
-    ),
-    (
-        259,
-        96,
-        './images/project96/D5C46CB1-CC95-41F3-A822-FE8197AF13CA/image7.png'
+        './images/project95/EAD40981-232C-4573-A56B-38141B4A70D0/image6.png'
     );
 
 INSERT INTO
@@ -78,9 +53,13 @@ VALUES
 INSERT INTO
     `Project` (`id`, `userId`, `title`, `text`)
 VALUES
-    (2, 2, 'HexStick ', 'FF or something like that'),
-    (95, 105, 'BaslerTest', 'Testversuch'),
-    (96, 106, 'test', 'test');
+    (
+        2,
+        2,
+        'HexStick dasd',
+        'FF or something like that'
+    ),
+    (95, 105, 'Basler22', 'Test22');
 
 INSERT INTO
     `Pw` (`id`, `hash`)
@@ -507,11 +486,15 @@ VALUES
     ),
     (
         119,
-        'fdc100421e57e3662232d1a1fa36dc59ac1d4526296d9c0187df37fb207b075f00ad34daac3899d2263470a5b0b659eff97500d7498028ca27742afd3a4ab136'
+        'ff3aa3977fb9fc44b697cd7899e94c3565fad3428e9039b5f2cc31307e26b84df8547f3e52c012910963a0823130490ca9a74727ae1ca3916af3b6e4eb260bfb'
     ),
     (
         120,
         'd75259e8f0c04db5d39b1746a12d10aeec28a5b540223770c0a5d727a710468b3a1715887f5d557aa602f371ba4b10b358d7381601373fb3942cb91887811bc5'
+    ),
+    (
+        121,
+        '54c54d1d2a187b0037d3aa086d22ceabd4cd24a36edc49ec92ae19473f83e729eb1e2eb34062d05d076e22e29fb5a5ec9c1ed55d7b92193f859b4591509cac4f'
     );
 
 INSERT INTO
@@ -622,8 +605,9 @@ VALUES
     (116, 9261413014),
     (117, 3250421914),
     (118, 1525550184),
-    (119, 9665738673),
-    (120, 2471776959);
+    (119, 4098967963),
+    (120, 2471776959),
+    (121, 5663473134);
 
 INSERT INTO
     `User` (
@@ -741,33 +725,15 @@ VALUES
         'Basler',
         'teilnehmende',
         'Yannick-basler@gmx.ch',
-        '',
-        NULL,
-        '',
-        '',
-        NULL,
-        NULL,
-        '',
+        'CH',
+        5555,
+        'poppel',
+        'test2',
+        15,
+        7548394495,
+        '+45',
         119,
         119,
         1,
         '943d07eeccc6a296bc47cade90d5f5e4'
-    ),
-    (
-        106,
-        'test',
-        'test',
-        'teilnehmende',
-        'asda@ig.hg',
-        '',
-        NULL,
-        '',
-        '',
-        NULL,
-        NULL,
-        '',
-        120,
-        120,
-        NULL,
-        'e9b9f412507e18bf7336a91f474119a3'
     );

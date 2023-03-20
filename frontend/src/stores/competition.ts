@@ -28,7 +28,7 @@ export const useCompetitionStore = defineStore({
     actions: {
         async getCompetitiondeclarations() {
             try {
-                let competitionDetails = await api.get<CompetitionDetails>("competition/competitionDetails");
+                const competitionDetails = await api.get<CompetitionDetails>("competition/competitionDetails");
                 competitionDetails.wettbewerbbeginn = competitionDetails.wettbewerbbeginn.replaceAll("-", "/");
                 competitionDetails.wettbewerbende = competitionDetails.wettbewerbende.replaceAll("-", "/");
                 this.competitionDetails = competitionDetails;

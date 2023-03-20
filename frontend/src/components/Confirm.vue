@@ -25,7 +25,7 @@ onMounted(() => {
 </script>
 <template>
     <loading
-        :active.sync="isLoading"
+        v-model="isLoading"
         backgroundColor="rgba(0, 0, 0, 0.021)"
         :can-cancel="true"
         :is-full-page="fullPage"

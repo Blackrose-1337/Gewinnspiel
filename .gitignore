@@ -6,3 +6,4 @@ Test
 node_modules
 .env
 backend/php/src/image
+.idea

@@ -118,11 +118,20 @@ load();
                 </q-card-section>
                 <!-- Ein For-loop um jedes Projekt im Array durchzugehen-->
                 <div v-for="pro in projects" :key="pro.id">
-                    <div class="fullwidth">
+                    <div v-if="pro.finish === 0" class="fullwidth">
                         <q-btn
                             class="fullwitdh"
                             bordered
                             :style="[selected === pro.id ? { background: '#09deed' } : { background: '#37ed09' }]"
+                            @click="changeSelectProject(pro)"
+                            >{{ pro.id }}</q-btn
+                        >
+                    </div>
+                    <div v-else class="fullwidth">
+                        <q-btn
+                            class="fullwitdh"
+                            bordered
+                            :style="[selected === pro.id ? { background: '#09deed' } : { background: '#f0ff00' }]"
                             @click="changeSelectProject(pro)"
                             >{{ pro.id }}</q-btn
                         >
@@ -133,9 +142,12 @@ load();
     </q-drawer>
 </template>
 <style>
+.test {
+    background-color: #f0ff00;
+}
 .fullwitdh {
     width: 100%;
-    padding: 0%;
+    padding: 0;
 }
 .title {
     background-color: cornflowerblue;

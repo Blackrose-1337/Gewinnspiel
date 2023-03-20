@@ -39,7 +39,7 @@ onBeforeMount(() => {
 </script>
 <template>
     <main class="q-pa-md">
-        <Evaluation :project="selectedProject" />
+        <Evaluation :selectedproject="selectedProject" />
         <Sidebar @change:selectproject="projectChange" :view="view" />
     </main>
 </template>

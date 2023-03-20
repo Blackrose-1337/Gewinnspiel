@@ -249,7 +249,7 @@ class ProjectController extends BaseController
                 $data = json_decode(file_get_contents('php://input'), true);
                 if ($data['projectId'] !== 0) {
                     // auftrennung des Strings
-                    $newdata = explode('/', $data['imgpath']);
+                    $newdata = explode('/', $data['imgPath']);
                     // neuen Pfad definieren
                     $newpath = './' . $newdata[3] . '/' . $newdata[4] . '/' . $newdata[5] . '/' . $newdata[6];
                     // löschen aus der DB mittels Pfad und Projekt-ID
@@ -374,12 +374,5 @@ class ProjectController extends BaseController
                 array('Content-Type: application/json', $strErrorHeader)
             );
         }
-    }
-
-
-    public function testAction()
-    {
-        echo 'Hello World';
-
     }
 }
