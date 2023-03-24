@@ -3,7 +3,6 @@ import NetworkHelper from "@/utils/networkHelper";
 import { Notify } from "quasar";
 import { HTTPError } from "ky";
 import type { Project, User, ProjectBild } from "@/stores/interfaces";
-import {forEach} from "lodash";
 
 const api = new NetworkHelper();
 
@@ -11,10 +10,9 @@ export type State = {
     projects: Project[];
     project: Project;
     user: User;
-    newimage: ProjectBild[];
-    tempimage: object[];
+    newImage: ProjectBild[];
+    tempImage: object[];
     pics: object[];
-
 };
 
 export const useProjectStore = defineStore({
@@ -24,8 +22,8 @@ export const useProjectStore = defineStore({
             projects: [],
             project: {} as Project,
             user: {} as User,
-            newimage: [] as ProjectBild[],
-            tempimage: [],
+            newImage: [] as ProjectBild[],
+            tempImage: [],
             pics: [] as object[],
         } as State),
     actions: {
@@ -51,7 +49,7 @@ export const useProjectStore = defineStore({
                 this.project.pics.splice(0, 0);
             }
         },
-        async projectremove($id: number) {
+        async projectRemove($id: number) {
             const param = {
                 id: $id,
             };
@@ -76,9 +74,9 @@ export const useProjectStore = defineStore({
         async postProject() {
             return api.post<boolean>("project/update", this.project);
         },
-        async postPicupload() {
-            if (this.newimage.length > 0) {
-                return await api.post<boolean>("project/addPicture", this.newimage);
+        async postPicUpload() {
+            if (this.newImage.length > 0) {
+                return await api.post<boolean>("project/addPicture", this.newImage);
             } else {
                 return 2;
             }

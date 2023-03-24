@@ -35,11 +35,11 @@ const img = computed(() => evaluationstore.img);
 
 //---------------storeToRefs------------------------------
 const { pics } = storeToRefs(projectStore);
-const { tempimage } = storeToRefs(projectStore);
+const { tempImage } = storeToRefs(projectStore);
 
-competitionstore.getCompetitiondeclarations();
+competitionstore.getCompetitionDeclarations();
 
-//--------------- funcions ------------------------------
+//--------------- functions ------------------------------
 async function check() {
     const answer: boolean = await authStore.check();
     if (!answer) {
@@ -50,27 +50,23 @@ async function check() {
         await router.push("/");
     }
 }
-function datecheck() {
+function dateCheck() {
     const currentDateWithFormat = new Date().toJSON().slice(0, 10).replace(/-/g, "/");
-    if (
+    return (
         currentDateWithFormat > competitionDetails.value.wettbewerbbeginn &&
         currentDateWithFormat < competitionDetails.value.wettbewerbende
-    ) {
-        return true;
-    } else {
-        return false;
-    }
+    );
 }
-async function callchildfunction() {
+async function callChildFunction() {
     isLoading.value = true;
     const bool: boolean = await projectStore.postProject();
-    const ans = await projectStore.postPicupload();
+    const ans = await projectStore.postPicUpload();
     await evaluationstore.getImages(project.value.id);
     const answer = await userStore.saveUserChange();
     await projectStore.clearPics();
     project.value.pics = img;
-    tempimage.value.splice(0, tempimage.value.length);
-    await loadimage();
+    tempImage.value.splice(0, tempImage.value.length);
+    await loadImage();
     if (ans === 1) {
         $q.notify({
             type: "positive",
@@ -101,7 +97,7 @@ async function callchildfunction() {
         });
     }
 }
-async function loadimage() {
+async function loadImage() {
     pics.value = [];
     if (project.value.pics !== null && project.value.pics !== "undefined") {
         project.value.pics.forEach((e: { img: string }) => {
@@ -126,7 +122,7 @@ onBeforeMount(() => {
         :can-cancel="true"
         :is-full-page="fullPage"
     ></loading>
-    <div v-if="datecheck()" class="row q-gutter-lg">
+    <div v-if="dateCheck()" class="row q-gutter-lg">
         <div class="q-gutter-lg col-6">
             <Project :user="selectedUser" :view="'User'" />
         </div>
@@ -136,11 +132,11 @@ onBeforeMount(() => {
             <div class="row">
                 <q-space />
                 <q-btn
-                    class="genbtn"
+                    class="genBtn"
                     color="blue"
                     label="Änderungen Speichern"
                     icon="upload"
-                    @click="callchildfunction"
+                    @click="callChildFunction"
                 />
             </div>
         </div>
@@ -151,9 +147,4 @@ onBeforeMount(() => {
         </q-card>
     </div>
 </template>
-<style scoped>
-.own {
-    padding: 10px;
-    border: solid black;
-}
-</style>
+<style scoped></style>
