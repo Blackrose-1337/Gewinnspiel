@@ -8,6 +8,7 @@ const api = new NetworkHelper();
 export type State = {
     users: User[];
     user: User;
+    tempUser: User;
 };
 
 export const useUserStore = defineStore({
@@ -16,6 +17,7 @@ export const useUserStore = defineStore({
         ({
             users: [],
             user: {} as User,
+            tempUser: {} as User,
         } as State),
     actions: {
         async getUser(u: number) {
@@ -24,6 +26,9 @@ export const useUserStore = defineStore({
                     userId: u,
                 };
                 this.user = await api.get<User>("user/getUser", param);
+                this.tempUser = {
+                    ...this.user,
+                };
             } catch (err) {
                 console.error(err);
             }
@@ -38,11 +43,13 @@ export const useUserStore = defineStore({
                 u = this.user;
             }
             try {
-                const res = await api.post<boolean>("admin/save", u);
-                if (res == true) {
-                    return res;
+                if (JSON.stringify(u) === JSON.stringify(this.tempUser)) {
+                    return 2;
                 } else {
-                    return res;
+                    this.tempUser = {
+                        ...u,
+                    };
+                    return await api.post<boolean>("admin/save", u);
                 }
             } catch (err) {
                 console.log(err);

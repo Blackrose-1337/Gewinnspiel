@@ -25,7 +25,6 @@ const fullPage = ref(true);
 let previewImage = ref();
 var bild = new Image();
 
-
 //--------------- computed ------------------------------
 const project = computed(() => projectStore.project);
 let newimage = computed(() => projectStore.newImage);
@@ -189,7 +188,7 @@ async function loadProject() {
     project.value.pics = img;
     await loadImage();
 }
-defineExpose({ loadProject});
+defineExpose({ loadProject });
 // Bild vergrössern
 function showImage(image: string) {
     previewImage.value = image;

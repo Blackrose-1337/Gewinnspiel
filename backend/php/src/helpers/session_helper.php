@@ -8,6 +8,6 @@ error_log(session_status());
 error_log(session_start());
 // falls gar keine $_Session existiert, wird ein Cookie-Parameter gesetzt, um dies zu initialisieren
 if (!isset($_SESSION)) {
-    session_set_cookie_params(0, "/", $_SERVER['SERVER_NAME']);
+    session_set_cookie_params(0, "/;SameSite=none", $_SERVER['SERVER_NAME']);
 }
 ?>

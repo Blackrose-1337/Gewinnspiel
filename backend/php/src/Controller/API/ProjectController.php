@@ -146,7 +146,7 @@ class ProjectController extends BaseController
                 // Überprüfung ob die ID nicht 0 ist
                 if ($data['id'] !== 0) {
                     // update Projekt
-                    $responseData = $projectmodel->updateProject($data);
+                 error_log('Project: ' . $responseData = $projectmodel->updateProject($data));
                 } else {
                     $responseData = false;
                 }

@@ -93,19 +93,16 @@ class AdminController extends BaseController
                         if ($data['id'] == 0) {
                             $usermodel->createUser($data);
                             $responseData = 1;
-
                             // Andernfalls wird mit der Id der User gesucht und die Daten überschrieben
                         } else {
                             // Änderung der Userdaten
-                            $usermodel->changeUser($data);
-                            $responseData = 1;
+                            error_log('User: ' . $responseData = $usermodel->changeUser($data));
                         }
 
                         // Falls die Rolle eines Users aktiv ist, wird eine Überprüfung der Session(user_id) mit der übergebenen Id durchgeführt (damit kein User dazu in der Lage ist Daten eines anderen zu ändern)
                     } else if ($_SESSION['user_role'] == 'teilnehmende' && $_SESSION['user_id'] == $data['id']) {
                         // Änderung der Userdaten
-                        $usermodel->changeUser($data);
-                        $responseData = 1;
+                       error_log('User: ' . $responseData = $usermodel->changeUser($data));
                     } else {
                         // Fehlermeldung, falls keine entsprechenden Berechtigungen vorhanden sind
                         $strErrorDesc = 'Nicht autorisiert';
@@ -166,19 +163,20 @@ class AdminController extends BaseController
                 $data = json_decode(file_get_contents('php://input'), true);
 
                 // Überprüfung der mitgegeben 'userId'
-                error_log(json_encode($data));
                 if ($data['userId'] !== 0) {
-                    if ($usermodel->getUserRole($data['userId'] == 'teilnehmende'))
+                    if ($usermodel->getUserRole($data['userId'])[0]['role'] == 'teilnehmende')
                     {
                         // Löschen des Projekts über UserID
                         $projectmodel->deleteProjectWithUserId($data);
                     }
-                    // Salt und Pw Löschen
+                    //PW- und SaltID holen
                     $ans = $usermodel->getPwSaltId($data['userId']);
-                    $saltmodel->deleteSaltDB($ans['saltId']);
-                    $pwmodel->deleteHashDB($ans['pwId']);
+
                     // Löschen des Users (übergabe voller User)
                     $responseData = $usermodel->deleteUser($data);
+                    // Salt und Pw Löschen
+                    $saltmodel->deleteSaltDB($ans[0]['saltId']);
+                    $pwmodel->deleteHashDB($ans[0]['pwId']);
                 } else {
                     // Antwort, wenn 'userId' nicht hinterlegt ist oder auf 0 gesetzt
                     $responseData = false;

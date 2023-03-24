@@ -9,6 +9,7 @@ const api = new NetworkHelper();
 export type State = {
     projects: Project[];
     project: Project;
+    tempProject: Project;
     user: User;
     newImage: ProjectBild[];
     tempImage: object[];
@@ -21,6 +22,7 @@ export const useProjectStore = defineStore({
         ({
             projects: [],
             project: {} as Project,
+            tempProject: {} as Project,
             user: {} as User,
             newImage: [] as ProjectBild[],
             tempImage: [],
@@ -37,6 +39,9 @@ export const useProjectStore = defineStore({
                 this.project.pics.forEach(e => {
                     e.img = host + e.img;
                 });
+                this.tempProject = {
+                    ...this.project,
+                };
             } catch (err) {
                 console.error(err);
                 if (err instanceof HTTPError) {
@@ -69,10 +74,19 @@ export const useProjectStore = defineStore({
         },
         async setProject(p: Project) {
             this.project = p;
+            this.tempProject = p;
+            console.log("setproject");
             return 1;
         },
         async postProject() {
-            return api.post<boolean>("project/update", this.project);
+            if (JSON.stringify(this.project) === JSON.stringify(this.tempProject)) {
+                return 2;
+            } else {
+                this.tempProject = {
+                    ...this.project,
+                };
+                return api.post<boolean>("project/update", this.project);
+            }
         },
         async postPicUpload() {
             if (this.newImage.length > 0) {

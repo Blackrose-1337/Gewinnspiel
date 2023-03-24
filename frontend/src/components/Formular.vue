@@ -244,7 +244,7 @@ watch(user, changeUser => {
                     label="Strasse"
                     @change="changeValue(model)"
                     clearable
-                    class="col-3"
+                    class="col-5"
                 />
                 <q-input
                     v-model="model.strNr"

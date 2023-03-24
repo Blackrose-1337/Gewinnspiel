@@ -80,9 +80,9 @@ class Database
 
         //Überprüfung wurde ein Eintrag/Änderung gemacht?
         $count = $this->stmt->rowCount();
-
+        //error_log($this->stmt->);
         // Wenn der count 0 ergibt, weil nichts gemacht wurde wird false/0 zurückgesendet sonst true/1
-        if ($count == 0) {
+        if ($count == 0 ) {
             return 0;
         } else {
             return 1;

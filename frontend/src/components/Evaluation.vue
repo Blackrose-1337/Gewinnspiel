@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import {toRefs, watch, computed, ref} from "vue";
+import { toRefs, watch, computed, ref } from "vue";
 import Projectload from "@/components/Project.vue";
 import type { Project } from "@/stores/interfaces";
 import { useEvaluationStore } from "@/stores/evaluation.ts";
 import { useProjectStore } from "@/stores/projects";
 
 const props = defineProps<{
-  selectedproject?: Project;
+    selectedproject?: Project;
 }>();
 
 const evaluationstore = useEvaluationStore();
@@ -28,12 +28,12 @@ function send() {
 function load() {
     evaluationstore.getKriterien();
 }
-watch(selectedproject, changeProject => {
+watch(selectedproject, async changeProject => {
     evaluationstore.bewertung = evaluationstore.bewertung.splice(0, 0);
-    evaluationstore.clear();
-    evaluationstore.getall(selectedproject.value.id);
-    evaluationstore.getImages(selectedproject.value.id);
-    projectstore.setProject(selectedproject);
+    await evaluationstore.clear();
+    await evaluationstore.getall(selectedproject.value.id);
+    await evaluationstore.getImages(selectedproject.value.id);
+    await projectstore.setProject(selectedproject);
     iniProject.value.loadProject();
 });
 load();

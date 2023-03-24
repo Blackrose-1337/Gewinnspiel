@@ -3,7 +3,7 @@ import Project from "@/components/Project.vue";
 import Formular from "@/components/Formular.vue";
 import { useProjectStore } from "@/stores/projects";
 import { useRouter } from "vue-router";
-import { useQuasar } from "quasar";
+import {scroll, useQuasar} from "quasar";
 import { computed, onBeforeMount, ref } from "vue";
 import { useUserStore } from "@/stores/users";
 import { useAuthStore } from "@/stores/auth";
@@ -11,6 +11,7 @@ import { useCompetitionStore } from "@/stores/competition";
 import { useEvaluationStore } from "@/stores/evaluation.ts";
 import Loading from "vue-loading-overlay";
 import { storeToRefs } from "pinia";
+import animHorizontalScrollTo = scroll.animHorizontalScrollTo;
 
 //--------------- Storeload ------------------------------
 
@@ -59,10 +60,10 @@ function dateCheck() {
 }
 async function callChildFunction() {
     isLoading.value = true;
-    const bool: boolean = await projectStore.postProject();
+    const bool: number = await projectStore.postProject();
     const ans = await projectStore.postPicUpload();
     await evaluationstore.getImages(project.value.id);
-    const answer = await userStore.saveUserChange();
+    const answer: number = await userStore.saveUserChange();
     await projectStore.clearPics();
     project.value.pics = img;
     tempImage.value.splice(0, tempImage.value.length);
@@ -83,13 +84,13 @@ async function callChildFunction() {
             message: `Keine Bilder im Upload`,
         });
     }
-    if (bool && answer == true) {
+    if (bool === 1 || answer === 1) {
         $q.notify({
             type: "positive",
             message: "Änderung wurden gespeichert!",
             color: "green",
         });
-    } else {
+    } else if (bool === 0 || answer === 0) {
         $q.notify({
             type: "negative",
             message: "Der Speichervorgang ist gescheitert",
