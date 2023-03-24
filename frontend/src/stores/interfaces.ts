@@ -7,7 +7,7 @@ export interface User {
     land: string;
     plz: number;
     ortschaft: string;
-    str: string;
+    strasse: string;
     strNr: number;
     tel: number;
     vorwahl: number;

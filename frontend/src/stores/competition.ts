@@ -15,18 +15,18 @@ export const useCompetitionStore = defineStore({
     id: "competition",
     state: () =>
         ({
-        competitionDetails: {},
-        competition: {
-            project: {} as Project,
-            user: {} as User,
-            pics: [] as ProjectBild[],
-        },
+            competitionDetails: {},
+            competition: {
+                project: {} as Project,
+                user: {} as User,
+                pics: [] as ProjectBild[],
+            },
         } as State),
     getters: {
         // isAuthenticated: state => state._isAuthenticated,
     },
     actions: {
-        async getCompetitiondeclarations() {
+        async getCompetitionDeclarations() {
             try {
                 const competitionDetails = await api.get<CompetitionDetails>("competition/competitionDetails");
                 competitionDetails.wettbewerbbeginn = competitionDetails.wettbewerbbeginn.replaceAll("-", "/");
@@ -39,15 +39,12 @@ export const useCompetitionStore = defineStore({
                 }
             }
         },
-        async postCompetitiondeclatations() {
-            const ans = api.post<number>("competition/competitionDetails", this.competitionDetails);
-            return ans;
+        async postCompetitionDeclarations() {
+            return api.post<number>("competition/competitionDetails", this.competitionDetails);
         },
         async postCompetition(c: Competition) {
             c.user.role = "teilnehmende";
-            const bool = api.post<boolean>("competition/competition", c);   
-            return bool;
-        
-        }
+            return api.post<number>("competition/competition", c);
+        },
     },
 });

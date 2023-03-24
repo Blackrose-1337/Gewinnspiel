@@ -45,7 +45,7 @@ const toolbar = [
 ];
 
 async function save() {
-    const bool: boolean = await competitionstore.postCompetitiondeclatations();
+    const bool: boolean = await competitionstore.postCompetitionDeclarations();
     if (bool == true) {
         $q.notify({
             type: "positive",
@@ -62,7 +62,7 @@ async function save() {
 }
 
 async function load() {
-    await competitionstore.getCompetitiondeclarations();
+    await competitionstore.getCompetitionDeclarations();
 }
 
 load();
@@ -98,7 +98,7 @@ load();
 
         <div class="muh row q-gutter-md">
             <q-space />
-            <q-btn label="Änderungen Speichern" color="blue" @click="save" class="col-2 genbtn" />
+            <q-btn label="Änderungen Speichern" color="blue" @click="save" class="col-2 genBtn" />
         </div>
     </div>
 </template>

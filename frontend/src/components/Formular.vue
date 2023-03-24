@@ -16,7 +16,7 @@ const model: User = ref({
     land: "",
     plz: null,
     ortschaft: "",
-    str: "",
+    strasse: "",
     strNr: null,
     vorwahl: "",
     tel: null,
@@ -41,7 +41,6 @@ const nameRef = ref(null);
 const surnameRef = ref(null);
 const emailRef = ref(null);
 
-
 const selectOptionsTyp = ["DE", "AU", "CH"];
 
 function myvalidate() {
@@ -55,17 +54,17 @@ function isValidEmail(val: string) {
         /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,7}$/;
     return emailPattern.test(val) || "Invalid email";
 }
-function isValidname(val: string) {
+function isValidName(val: string) {
     const namepattern = /[a-zA-Z]{2,50}$/;
     return namepattern.test(val) || "Invalid name";
 }
-function changevalue(p: User) {
+function changeValue(p: User) {
     emit("change:declarations", p);
 }
-function updatemodel(u: User) {
+function updateModel(u: User) {
     model.value = u;
 }
-async function savechange() {
+async function saveChange() {
     if (model.value.surname == "") {
         $q.notify({
             type: "negative",
@@ -125,7 +124,7 @@ async function remove() {
         });
     }
 }
-async function resetpw() {
+async function resetPw() {
     const answer = await userStore.resetPW(model.value.id);
     console.log(answer);
     if (answer) {
@@ -143,7 +142,7 @@ async function resetpw() {
 }
 
 watch(user, changeUser => {
-    updatemodel(changeUser);
+    updateModel(changeUser);
 });
 </script>
 
@@ -157,9 +156,9 @@ watch(user, changeUser => {
                     rounded
                     outlined
                     label="Nachname *"
-                    @change="changevalue(model)"
+                    @change="changeValue(model)"
                     lazy-rules
-                    :rules="[val => !!val || 'Pflichtfeld *', isValidname]"
+                    :rules="[val => !!val || 'Pflichtfeld *', isValidName]"
                     clearable
                     class="col-4"
                 />
@@ -169,9 +168,9 @@ watch(user, changeUser => {
                     rounded
                     outlined
                     label="Vorname *"
-                    @change="changevalue(model)"
+                    @change="changeValue(model)"
                     lazy-rules
-                    :rules="[val => !!val || 'Pflichtfeld *', isValidname]"
+                    :rules="[val => !!val || 'Pflichtfeld *', isValidName]"
                     clearable
                     class="col-4"
                 />
@@ -183,7 +182,7 @@ watch(user, changeUser => {
                     rounded
                     outlined
                     label="E-Mail *"
-                    @change="changevalue(model)"
+                    @change="changeValue(model)"
                     lazy-rules
                     :rules="[val => !!val || 'Pflichtfeld *', isValidEmail]"
                     clearable
@@ -198,7 +197,7 @@ watch(user, changeUser => {
                     outlined
                     disable
                     label="E-Mail *"
-                    @change="changevalue(model)"
+                    @change="changeValue(model)"
                     lazy-rules
                     :rules="[val => !!val || 'Pflichtfeld *', isValidEmail]"
                     clearable
@@ -211,7 +210,7 @@ watch(user, changeUser => {
                     rounded
                     outlined
                     label="Land"
-                    @change="changevalue(model)"
+                    @change="changeValue(model)"
                     v-model="model.land"
                     :options="selectOptionsTyp"
                     class="col-2"
@@ -221,9 +220,9 @@ watch(user, changeUser => {
                     rounded
                     outlined
                     label="PLZ"
-                    @change="changevalue(model)"
+                    @change="changeValue(model)"
                     clearable
-                    class="col-2"
+                    class="col-3"
                     type="number"
                 />
                 <q-input
@@ -231,19 +230,19 @@ watch(user, changeUser => {
                     rounded
                     outlined
                     label="Ortschaft"
-                    @change="changevalue(model)"
+                    @change="changeValue(model)"
                     clearable
-                    class="col-3"
+                    class="col-4"
                 />
             </div>
 
             <div class="row q-gutter-sm col-12">
                 <q-input
-                    v-model="model.str"
+                    v-model="model.strasse"
                     rounded
                     outlined
                     label="Strasse"
-                    @change="changevalue(model)"
+                    @change="changeValue(model)"
                     clearable
                     class="col-3"
                 />
@@ -252,7 +251,7 @@ watch(user, changeUser => {
                     rounded
                     outlined
                     label="Nr."
-                    @change="changevalue(model)"
+                    @change="changeValue(model)"
                     class="col-2"
                     type="number"
                 />
@@ -263,7 +262,7 @@ watch(user, changeUser => {
                     outlined
                     v-model="model.vorwahl"
                     label="Vorwahl"
-                    @change="changevalue(model)"
+                    @change="changeValue(model)"
                     clearable
                     class="col-2"
                 />
@@ -272,7 +271,7 @@ watch(user, changeUser => {
                     rounded
                     outlined
                     label="Tel-Nummer"
-                    @change="changevalue(model)"
+                    @change="changeValue(model)"
                     clearable
                     class="col-3"
                     type="tel"
@@ -281,18 +280,15 @@ watch(user, changeUser => {
         </div>
 
         <div v-if="view === 'Project'">
-            <q-btn label="Änderungen Speichern" color="blue" @click="savechange" class="genbtn" />
-            <q-btn label="Passwort zurücksetzen" color="red" @click="resetpw" class="genbtn" />
-            <q-btn label="User Löschen" color="red" @click="remove" class="genbtn" />
+            <q-btn label="Änderungen Speichern" color="blue" @click="saveChange" class="genBtn" />
+            <q-btn label="Passwort zurücksetzen" color="red" @click="resetPw" class="genBtn" />
+            <q-btn label="User Löschen" color="red" @click="remove" class="genBtn" />
         </div>
     </div>
 </template>
 
 <style>
-.vorwahl {
-    text-align: center;
-}
-.genbtn {
+.genBtn {
     border-radius: 30px;
     max-height: 56px;
     min-height: 56px;

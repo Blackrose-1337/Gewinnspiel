@@ -107,6 +107,7 @@ class ModelProject extends ModelBase
     {
         // Projekt-ID von DB Holen
         $answer = $this->getProject($data['userId']);
+
         if ($answer != 0 ){
             // Löschprozess mit Projekt-ID initialisieren
             $answer = $this->deletePro($answer['id']);

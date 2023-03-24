@@ -28,12 +28,12 @@ var bild = new Image();
 
 //--------------- computed ------------------------------
 const project = computed(() => projectStore.project);
-let newimage = computed(() => projectStore.newimage);
+let newimage = computed(() => projectStore.newImage);
 const img = computed(() => evaluationstore.img);
 
 //--------------- storeToRefs ------------------------------
 const { pics } = storeToRefs(projectStore);
-const { tempimage } = storeToRefs(projectStore);
+const { tempImage } = storeToRefs(projectStore);
 
 //--------------- toRefs to props------------------------------
 const { user } = toRefs(props) as User;
@@ -60,7 +60,7 @@ async function save() {
 }
 // remove:  Löschen des Projektes per Post Initialisieren
 async function remove() {
-    const bool: boolean = await projectStore.projectremove(project.value.id);
+    const bool: boolean = await projectStore.projectRemove(project.value.id);
     if (bool) {
         $q.notify({
             type: "positive",
@@ -81,7 +81,7 @@ async function removepic(file: string) {
     await evaluationstore.getImages(project.value.id);
     await projectStore.clearPics();
     project.value.pics = img;
-    tempimage.value.splice(0, tempimage.value.length);
+    tempImage.value.splice(0, tempImage.value.length);
     if (ans === 1) {
         $q.notify({
             type: "positive",
@@ -102,10 +102,10 @@ async function loadIntoStore() {
         newimage.value.splice(0);
     }
     //abfrage ob Bilder hochgeladen wurden falls ja werden diese in Base64 konvertiert
-    if (tempimage.value) {
+    if (tempImage.value) {
         let promises = [];
-        for (let index = 0; index < tempimage.value.length; index++) {
-            let file = tempimage.value[index];
+        for (let index = 0; index < tempImage.value.length; index++) {
+            let file = tempImage.value[index];
             let reader = new FileReader();
             let promise = new Promise<void>(resolve => {
                 reader.onloadend = function () {
@@ -126,11 +126,11 @@ async function loadIntoStore() {
 }
 // Bilder werden per Post an das Backend gesendet zum speichern und die Bilder werden frisch abgefragt
 async function upload() {
-    const ans = await projectStore.postPicupload();
+    const ans = await projectStore.postPicUpload();
     await evaluationstore.getImages(project.value.id);
     await projectStore.clearPics();
     project.value.pics = img;
-    tempimage.value.splice(0, tempimage.value.length);
+    tempImage.value.splice(0, tempImage.value.length);
     if (ans === 1) {
         $q.notify({
             type: "positive",
@@ -237,7 +237,7 @@ watch(selectedproject, changeselectedproject => {
             <q-file
                 for="qfileelements"
                 class="picloader"
-                v-model="tempimage"
+                v-model="tempImage"
                 rounded
                 outlined
                 append
@@ -281,15 +281,15 @@ watch(selectedproject, changeselectedproject => {
             <div v-if="view === 'Project'">
                 <div class="row">
                     <q-space />
-                    <q-btn class="genbtn" color="blue" label="Bilder Speichern" icon="upload" @click="upload" />
+                    <q-btn class="genBtn" color="blue" label="Bilder Speichern" icon="upload" @click="upload" />
                 </div>
                 <div class="row">
                     <q-space />
-                    <q-btn label="Änderungen Speichern" color="blue" @click="save" class="genbtn" />
+                    <q-btn label="Änderungen Speichern" color="blue" @click="save" class="genBtn" />
                 </div>
                 <div class="row">
                     <q-space />
-                    <q-btn label="Projekt Löschen" color="red" @click="remove" class="genbtn" />
+                    <q-btn label="Projekt Löschen" color="red" @click="remove" class="genBtn" />
                 </div>
             </div>
         </div>

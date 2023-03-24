@@ -57,8 +57,8 @@ function changeUserModel(u: User) {
     usermodel.value = u;
 }
 
-async function sendcompetition() {
-    const errMessage = await validate1();
+async function sendCompetition() {
+    const errMessage = await fillValidate();
     //clear von übertragungs Bilder falls noch von versuch zuvor befüllt
     competition.value.pics.splice(0);
     //abfrage ob Bilder hochgeladen wurden falls ja werden diese in Base64 konvertiert
@@ -84,7 +84,7 @@ async function sendcompetition() {
             competition.value.user = usermodel.value;
             isLoading.value = true;
             const ans = await competitionstore.postCompetition(competition.value);
-            if (ans == 1) {
+            if (ans === 1) {
                 isLoading.value = false;
                 dialog.value = true;
                 $q.notify({
@@ -92,7 +92,7 @@ async function sendcompetition() {
                     message: "Ihr Wettbewerbsteilnahme wurde versendet",
                     color: "green",
                 });
-            } else if (ans == 2) {
+            } else if (ans === 2) {
                 isLoading.value = false;
                 $q.notify({
                     type: "negative",
@@ -108,7 +108,6 @@ async function sendcompetition() {
                 });
             }
         }, 500);
-
     } else if (errMessage.length === 1) {
         $q.notify({
             type: "negative",
@@ -124,7 +123,7 @@ async function sendcompetition() {
     }
 }
 
-async function validate1() {
+async function fillValidate() {
     fileRef.value.validate();
     textRef.value.validate();
     titleRef.value.validate();
@@ -178,7 +177,7 @@ async function validate1() {
     return errMessage;
 }
 
-function datecheck() {
+function dateCheck() {
     const currentDateWithFormat = new Date().toJSON().slice(0, 10).replace(/-/g, "/");
     return (
         currentDateWithFormat > competitionDetails.value.wettbewerbbeginn &&
@@ -204,7 +203,7 @@ function onRejected(rejectedEntries: object) {
 }
 
 async function load() {
-    await competitionstore.getCompetitiondeclarations();
+    await competitionstore.getCompetitionDeclarations();
 }
 
 load();
@@ -217,14 +216,14 @@ load();
         :can-cancel="true"
         :is-full-page="fullPage"
     ></loading>
-    <div v-if="datecheck()">
+    <div v-if="dateCheck()">
         <q-card flat>
             <q-card-section align="center" v-html="competitionDetails.title" />
         </q-card>
         <q-card flat>
             <q-card-section align="left" v-html="competitionDetails.text" />
         </q-card>
-        <form @submit.prevent.stop="sendcompetition" class="row q-pa-md">
+        <form @submit.prevent.stop="sendCompetition" class="row q-pa-md">
             <div class="col-4 textarea" style="max-width: 30%">
                 <q-input
                     v-model="projectmodel.title"
@@ -287,7 +286,7 @@ load();
                     />
                 </q-field>
                 <q-space />
-                <q-btn label="Senden" :loading="isLoading" color="green" @click="sendcompetition" class="col-3" />
+                <q-btn label="Senden" :loading="isLoading" color="green" @click="sendCompetition" class="col-3" />
             </div>
         </form>
         <div class="textarea">
