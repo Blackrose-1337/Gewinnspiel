@@ -68,6 +68,13 @@ class ModelPw extends ModelBase
         return $hash[0]['hash'];
     }
 
+    public function deleteHashDB($id)
+    {
+        $this->db->query("DELETE FROM Pw WHERE id = :id");
+        $this->db->bind(":id", $id);
+        return $this->db->execute();
+    }
+
     /**
      * Get the value of hash
      */

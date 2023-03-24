@@ -30,7 +30,8 @@ class CompetitionController extends BaseController
                     // Abfrage Betriebssystem
                     if (PHP_OS == "Linux") {
                         // BilderPfad auf dem Server
-                        $generalpath = getenv('F_PATH') . '/project';
+                        $generalpath =getenv('F_PATH') . '/project';
+                        error_log('competition: ' . $generalpath);
                         // ProjectId auf Variable setzen
                         $number = $newproject->getId();
                         // Dem Pfad die Nummer anbinden

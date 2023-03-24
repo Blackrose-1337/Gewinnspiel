@@ -273,7 +273,7 @@ load();
                     </template>
                 </q-file>
                 <q-field
-                    :value="teilnahmebedingungenbestaetigung"
+                    v-model="teilnahmebedingungenbestaetigung"
                     ref="checkRef"
                     :rules="[val => !!val || 'Pflichtfeld *']"
                     dense

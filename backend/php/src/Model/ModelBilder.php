@@ -50,7 +50,8 @@ class ModelBilder extends ModelBase
     public function getDeletePath($id)
     {
         $ans = $this->getPictureByProId($id);
-        if ($ans != 0) {
+        error_log('ans Modelbilder: '. json_encode($ans));
+        if ( count($ans) != 0) {
             $temp = explode('/', $ans[0]['path']);
             return $temp[0] . '/' . $temp[1] . '/' . $temp[2];
         } else {

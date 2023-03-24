@@ -78,30 +78,28 @@ class ModelProject extends ModelBase
     private function deletePro($id)
     {
         $picmodel = new ModelBilder;
-        // Aufruf Lösch Pfad mit entsprechender Projekt-ID
+        // Aufruf Löschpfad mit entsprechender Projekt-ID
         $picpath = $picmodel->getDeletePath($id);
-        // Löschen des Projektordners auf dem System
-        $this->rrmdir($picpath);
-
+        if ($picpath !== 0 && explode('/',$picpath)[1] == explode('/',getenv('F_PATH'))[1]) {
+            // Löschen des Projektordners auf dem System
+            $this->rrmdir($picpath);
+        }
         // Überprüfung ob Einträge existieren auf Image von der DB
         $this->db->query("SELECT id
-                        FROM Image
-                        WHERE projectid = :id");
+                    FROM Image
+                    WHERE projectid = :id");
         $this->db->bind(":id", $id);
         $check = $this->db->resultSet();
-
         if (isset($check[0])) {
             // Löschen der DB Einträge 'Image' die zum Projekt gehören
             $this->db->query("DELETE FROM Image WHERE projectid = :id");
             $this->db->bind(":id", $id);
             $this->db->execute();
         }
-
         // Löschen des Projektes selbst (erst möglich wenn alle Einträge unter 'Image' entfernt wurden)
         $this->db->query("DELETE FROM Project  WHERE id = :id");
         $this->db->bind(":id", $id);
         $answer = $this->db->execute();
-
         return $answer;
     }
     // holt die Projekt-ID von der DB und leitet die Projekt-ID an die Löschfunktion weiter
@@ -109,8 +107,10 @@ class ModelProject extends ModelBase
     {
         // Projekt-ID von DB Holen
         $answer = $this->getProject($data['userId']);
-        // Löschprozess mit Projekt-ID initialisieren
-        $answer = $this->deletePro($answer['id']);
+        if ($answer != 0 ){
+            // Löschprozess mit Projekt-ID initialisieren
+            $answer = $this->deletePro($answer['id']);
+        }
         return $answer;
     }
 
@@ -140,7 +140,7 @@ class ModelProject extends ModelBase
                 return $data;
             }
         }
-        return $datas;
+        return 0;
     }
 
     // holt die User-ID von der DB mittels Projekt-ID

@@ -2,7 +2,6 @@
 // env auslesen
 $CORS_ORIGIN_ALLOWED = "*";
 
-
 if(file_exists('.env')){
 $env = parse_ini_file('.env');
 }elseif (file_exists('../../../.env')){

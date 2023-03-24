@@ -201,6 +201,17 @@ class ModelTeilnehmende extends ModelBase
         return $data;
     }
 
+    public function getUserRole($id){
+        $this->db->query("SELECT role FROM User WHERE id= :id");
+        $this->db->bind(":id", $id);
+        return $this->db->resultSet();
+    }
+    public function getPwSaltId($id){
+        $this->db->query("SELECT pwId, saltId FROM User WHERE id= :id");
+        $this->db->bind(":id", $id);
+        return $this->db->resultSet();
+    }
+
     // Token überprüfung
     public function tokencheck($token)
     {

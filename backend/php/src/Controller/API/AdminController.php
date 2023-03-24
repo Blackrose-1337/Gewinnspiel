@@ -160,13 +160,23 @@ class AdminController extends BaseController
                 // Aufruf benötigter Klassen 
                 $projectmodel = new ModelProject();
                 $usermodel = new ModelTeilnehmende();
+                $saltmodel = new ModelSalt();
+                $pwmodel = new ModelPw();
                 // Post Daten holen
                 $data = json_decode(file_get_contents('php://input'), true);
 
                 // Überprüfung der mitgegeben 'userId'
+                error_log(json_encode($data));
                 if ($data['userId'] !== 0) {
-                    // Löschen des Projekts über UserID
-                    $projectmodel->deleteProjectWithUserId($data);
+                    if ($usermodel->getUserRole($data['userId'] == 'teilnehmende'))
+                    {
+                        // Löschen des Projekts über UserID
+                        $projectmodel->deleteProjectWithUserId($data);
+                    }
+                    // Salt und Pw Löschen
+                    $ans = $usermodel->getPwSaltId($data['userId']);
+                    $saltmodel->deleteSaltDB($ans['saltId']);
+                    $pwmodel->deleteHashDB($ans['pwId']);
                     // Löschen des Users (übergabe voller User)
                     $responseData = $usermodel->deleteUser($data);
                 } else {

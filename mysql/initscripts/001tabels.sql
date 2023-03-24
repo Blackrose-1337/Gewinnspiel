@@ -49,7 +49,7 @@ DROP TABLE IF EXISTS `Image`;
 CREATE TABLE `Image` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `projectid` int(11) NOT NULL,
-    `path` varchar(70) NOT NULL,
+    `path` varchar(1500) NOT NULL,
     PRIMARY KEY (`id`),
     KEY `projectid` (`projectid`),
     CONSTRAINT `Image_ibfk_1` FOREIGN KEY (`projectid`) REFERENCES `Project` (`id`)
