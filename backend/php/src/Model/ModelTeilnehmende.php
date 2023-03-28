@@ -211,6 +211,11 @@ class ModelTeilnehmende extends ModelBase
         $this->db->bind(":id", $id);
         return $this->db->resultSet();
     }
+    public function getJury()
+    {
+        $this->db->query("SELECT id, name, surname FROM User WHERE role=jury");
+        return $this->db->resultSet();
+    }
 
     // Token überprüfung
     public function tokencheck($token)

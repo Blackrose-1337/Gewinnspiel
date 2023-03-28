@@ -33,6 +33,12 @@ export interface ProjectBild {
     bildbase: string;
 }
 
+export interface Missing {
+    name: string;
+    project_ids: number[];
+    surname: string;
+}
+
 export interface CompetitionDetails {
     id: number;
     title: string;

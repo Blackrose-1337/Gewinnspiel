@@ -25,6 +25,15 @@ class ModelBewertung extends ModelBase
         $data = $this->db->resultSet();
         return $data;
     }
+    public function getMissingProject(){
+        $this->db->query("SELECT u.name, u.surname, GROUP_CONCAT(DISTINCT p.id) AS project_ids
+        FROM User u
+        JOIN Project p ON u.role IN ('jury','admin')
+        LEFT JOIN Bewertung b ON p.id = b.projectid AND b.administrativeId = u.id
+        WHERE b.id IS NULL OR b.finish = 0
+        GROUP BY u.id;");
+        return $this->db->resultSet();
+    }
 
     // gibt eine Summe der Bewertungspunkte für jedes Projekt in der Tabelle "Bewertung" berechnet, gruppiert nach Projekt-ID
     public function getAuswertung()

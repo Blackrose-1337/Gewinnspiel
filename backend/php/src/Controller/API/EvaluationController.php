@@ -317,6 +317,50 @@ class EvaluationController extends BaseController
             );
         }
     }
+
+    public function bewertungsCheckAction()
+    {
+        $strErrorDesc = '';
+        // Kommunikations-Methode entnehmen
+        $requestMethod = $_SERVER["REQUEST_METHOD"];
+        try {
+            // Überprüfung gültiger Session
+            if (!$this->sessionCheck()) {
+                $strErrorDesc = "Nicht akzeptierte Session";
+                $strErrorHeader = $this->fehler(405);
+
+            // Überprüfung erlaubter Rollen
+            } else if (!$this->userCheck('admin')) {
+                $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
+                $strErrorHeader = $this->fehler(401);
+            }
+            // abfrage ob es eine GET_Methode ist
+            if (strtoupper($requestMethod) == 'GET') {
+                    // Aufruf benötigter Klassen
+                    $bewertungmodel = new ModelBewertung();
+                    $responseData = json_encode($bewertungmodel->getMissingProject());
+            } else {
+                // Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde
+                $strErrorDesc = 'Method not supported';
+                $strErrorHeader = $this->fehler(422);
+            }
+        } catch (Error $e) {
+            // Fehlermeldung, falls ein serverseitiger Fehler entstanden ist
+            $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+            $strErrorHeader = $this->fehler(500);
+        }
+        // Falls kein Fehler enthalten ist wird die Antwort verpackt und versendet
+        if (!$strErrorDesc) {
+            $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
+
+            // Falls ein Fehler enthalten ist wird dieser verpackt und versendet
+        } else {
+            $this->sendOutput(
+                json_encode(array('error' => $strErrorDesc)),
+                array('Content-Type: application/json', $strErrorHeader)
+            );
+        }
+    }
 }
 
 ?>

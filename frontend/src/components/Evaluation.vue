@@ -22,6 +22,7 @@ function update() {
 }
 function send() {
     evaluationstore.postBewertung();
+    projectstore.getProjectsEva();
 }
 
 function load() {

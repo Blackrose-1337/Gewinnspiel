@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import NetworkHelper from "@/utils/networkHelper";
 import { Notify } from "quasar";
-import type { Bewertung, Kriterien, Auswertung, Message } from "@/stores/interfaces";
+import type { Bewertung, Kriterien, Auswertung, Message, Missing } from "@/stores/interfaces";
 
 const api = new NetworkHelper();
 
@@ -10,6 +10,7 @@ export type State = {
     kriterien: Kriterien[];
     img: string[];
     auswertung: Auswertung[];
+    missing: Missing[];
 };
 
 export const useEvaluationStore = defineStore({
@@ -20,6 +21,7 @@ export const useEvaluationStore = defineStore({
             kriterien: [] as Kriterien[],
             img: [] as string[],
             auswertung: [] as Auswertung[],
+            missing: [] as Missing[],
         } as State),
     getters: {},
     actions: {
@@ -77,6 +79,9 @@ export const useEvaluationStore = defineStore({
                     });
                 });
             }
+        },
+        async getmissing() {
+            this.missing = await api.get("evaluation/bewertungsCheck");
         },
         async getImages(id: number) {
             const param = {

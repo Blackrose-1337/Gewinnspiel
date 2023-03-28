@@ -5,6 +5,7 @@ import { useEvaluationStore } from "@/stores/evaluation.ts";
 
 const evaluationstore = useEvaluationStore();
 const auswertung = computed(() => evaluationstore.auswertung) as Auswertung;
+const missing = computed(() => evaluationstore.missing);
 
 const columns = [
     {
@@ -20,13 +21,27 @@ const columns = [
     { name: "mail", label: "E-mail", field: "mail", sortable: true },
     { name: "value", label: "Gesamtpunkte", field: "value", sortable: true },
 ];
+function getmissing() {
+    evaluationstore.getmissing();
+}
 onMounted(() => {
     evaluationstore.getAnalysis();
 });
 </script>
 <template>
-    <div class="q-pa-md">
-        <q-table title="Punkteliste" :rows="auswertung" :columns="columns" row-key="name" />
+    <div class="row q-ma-md">
+        <q-table class="col-7 q-ma-md" title="Punkteliste" :rows="auswertung" :columns="columns" row-key="name" />
+        <div class="q-ma-xl col-2">
+            <q-btn @click="getmissing" class="genBtn" label="Fehlende Bewertungen anzeigen"/>
+            <q-card>
+                <div class="q-mt-md" v-for="m in missing">
+                    <q-card-section class="bg-amber-1">
+                        <h6>{{ m.name }} {{ m.surname }}</h6>
+                        <p>{{ m.project_ids }}</p>
+                    </q-card-section>
+                </div>
+            </q-card>
+        </div>
     </div>
 </template>
 <style scoped></style>
