@@ -72,10 +72,23 @@ export const useProjectStore = defineStore({
                 }
             }
         },
+        async getProjectsEva() {
+            try {
+                const projects = await api.get<Project[]>("project/takeprojects");
+                this.projects.splice(0);
+                projects.forEach(p => this.projects.push(p));
+            } catch (err) {
+                console.error(err);
+                if (err instanceof HTTPError) {
+                    Notify.create({ message: `HTTP Error: ${err.message}`, type: "negative" });
+                }
+            }
+        },
         async setProject(p: Project) {
             this.project = p;
-            this.tempProject = p;
-            console.log("setproject");
+            this.tempProject = {
+                ...p,
+            };
             return 1;
         },
         async postProject() {

@@ -17,7 +17,6 @@ const kriterien = computed(() => evaluationstore.kriterien);
 
 let { selectedproject } = toRefs(props) as Project;
 const view = "evaluation";
-console.log(selectedproject.value);
 function update() {
     evaluationstore.update(selectedproject.value.id);
 }
@@ -31,9 +30,11 @@ function load() {
 watch(selectedproject, async changeProject => {
     evaluationstore.bewertung = evaluationstore.bewertung.splice(0, 0);
     await evaluationstore.clear();
-    await evaluationstore.getall(selectedproject.value.id);
-    await evaluationstore.getImages(selectedproject.value.id);
-    await projectstore.setProject(selectedproject);
+    await Promise.all([
+        evaluationstore.getall(selectedproject.value.id),
+        evaluationstore.getImages(selectedproject.value.id),
+        projectstore.setProject(selectedproject.value),
+    ]);
     iniProject.value.loadProject();
 });
 load();
@@ -63,7 +64,7 @@ load();
         </div>
 
         <div v-else>
-            <h2>Das Projekt ist noch nicht zur Bewertung frei gegeben</h2>
+            <h2>Wählen Sie ein Projekt zur Bewertung aus</h2>
         </div>
     </div>
 </template>

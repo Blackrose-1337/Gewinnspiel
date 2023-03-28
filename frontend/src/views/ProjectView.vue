@@ -20,7 +20,7 @@ async function onProjectChanged(p: Project) {
 
 async function check() {
     const answer: boolean = await authStore.check();
-    if (answer === false) {
+    if (!answer) {
         router.push("/login");
     } else if (authStore.role != "admin") {
         $q.notify({

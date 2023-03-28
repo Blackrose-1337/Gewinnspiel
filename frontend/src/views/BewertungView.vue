@@ -12,7 +12,7 @@ const router = useRouter();
 const authStore = useAuthStore();
 
 const selectedProject = ref(null as unknown) as Ref<Project>;
-const view = "Project";
+const view = "Evaluation";
 async function projectChange(p: Project) {
     selectedProject.value = p;
 }
@@ -20,7 +20,7 @@ async function projectChange(p: Project) {
 const $q = useQuasar();
 async function check() {
     const answer: boolean = await authStore.check();
-    if (answer === false) {
+    if (!answer) {
         router.push("/login");
     } else if (authStore.role == "jury" || authStore.role == "admin") {
     } else {

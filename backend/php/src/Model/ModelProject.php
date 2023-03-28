@@ -20,6 +20,40 @@ class ModelProject extends ModelBase
         $this->db->query("SELECT * FROM Project");
         return $this->db->resultSet();
     }
+    public function getAllProjectwithfinish()
+    {
+        $this->db->query("SELECT * FROM Project");
+        $datas =  $this->db->resultSet();
+        $newdatas=[];
+        foreach ($datas as $data) {
+            $this->db->query("SELECT * FROM Bewertung WHERE administrativeId= :administrativeId AND projectId= :projectId AND finish=0 LIMIT 1");
+            $this->db->bind(":administrativeId", $_SESSION["user_id"]);
+            $this->db->bind(":projectId", $data['id']);
+            $ans = $this->db->resultSet();
+            error_log('______________________________');
+            error_log(json_encode($ans));
+            error_log('______________________________');
+            if (empty($ans))
+            {
+                $this->db->query("SELECT * FROM Bewertung WHERE administrativeId= :administrativeId AND projectId= :projectId AND finish=1");
+                $this->db->bind(":administrativeId", $_SESSION["user_id"]);
+                $this->db->bind(":projectId", $data['id']);
+                $ans = $this->db->resultSet();
+                $this->db->query("SELECT * FROM Kriterien");
+                $answer = $this->db->resultSet();
+                if (count($ans) == count($answer)){
+                    $data['finish'] = 1;
+                } else {
+                    $data['finish'] = 0;
+                }
+
+            } else {
+                $data['finish'] = 0;
+            }
+            array_push($newdatas, $data);
+        }
+        return $newdatas;
+    }
 
     // Projekt wird als Datensatz in die DB eingetragen
     public function createProject($data)

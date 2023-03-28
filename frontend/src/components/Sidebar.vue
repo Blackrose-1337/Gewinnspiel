@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/users";
 import { useProjectStore } from "@/stores/projects";
+import { useEvaluationStore } from "@/stores/evaluation";
 import { storeToRefs } from "pinia";
 import { toRefs, computed, ref } from "vue";
 import type { User, Project } from "@/stores/interfaces";
@@ -12,6 +13,7 @@ const { view } = toRefs(props);
 //---------------Storeload------------------------------
 const userStore = useUserStore();
 const projectStore = useProjectStore();
+const evaluationStore = useEvaluationStore();
 
 //---------------storeToRefs------------------------------
 const { users } = storeToRefs(userStore);
@@ -55,15 +57,20 @@ function addJury() {
 }
 
 async function loadUsers() {
-    userStore.getUsers();
+    await userStore.getUsers();
 }
 async function loadProject() {
-    projectStore.getProjects();
+    await projectStore.getProjects();
+}
+async function loadProjectEva() {
+    await projectStore.getProjectsEva();
 }
 
 function load() {
     if (view?.value == "User") {
         loadUsers();
+    } else if (view?.value == "Evaluation") {
+        loadProjectEva();
     } else {
         loadProject();
     }
@@ -87,7 +94,7 @@ load();
                         <q-btn
                             :id="p.id"
                             class="fullwitdh"
-                            :style="[selected === p.id ? { background: '#09deed' } : { background: '#37ed09' }]"
+                            :style="[selected === p.id ? { background: '#09deed' } : { background: '#D9D9D9FF' }]"
                             bordered
                             @click="changeSelection(p)"
                             >{{ p.surname + " " + p.name }}</q-btn
@@ -103,7 +110,7 @@ load();
                     <div v-if="p.role === 'teilnehmende'">
                         <q-btn
                             class="fullwitdh"
-                            :style="[selected === p.id ? { background: '#09deed' } : { background: '#37ed09' }]"
+                            :style="[selected === p.id ? { background: '#09deed' } : { background: '#D9D9D9FF' }]"
                             @click="changeSelection(p)"
                             >{{ p.surname + " " + p.name }}</q-btn
                         >
@@ -118,7 +125,7 @@ load();
                 </q-card-section>
                 <!-- Ein For-loop um jedes Projekt im Array durchzugehen-->
                 <div v-for="pro in projects" :key="pro.id">
-                    <div v-if="pro.finish === 0" class="fullwidth">
+                    <div v-if="pro.finish === 1" class="fullwidth">
                         <q-btn
                             class="fullwitdh"
                             bordered
@@ -131,7 +138,33 @@ load();
                         <q-btn
                             class="fullwitdh"
                             bordered
-                            :style="[selected === pro.id ? { background: '#09deed' } : { background: '#f0ff00' }]"
+                            :style="[selected === pro.id ? { background: '#09deed' } : { background: '#D9D9D9FF' }]"
+                            @click="changeSelectProject(pro)"
+                            >{{ pro.id }}</q-btn
+                        >
+                    </div>
+                </div>
+            </q-card>
+            <q-card v-if="view === 'Evaluation'" bordered>
+                <q-card-section color="q-primary" class="fullwitdh">
+                    <h4 class="title">Project</h4>
+                </q-card-section>
+                <!-- Ein For-loop um jedes Projekt im Array durchzugehen-->
+                <div v-for="pro in projects" :key="pro.id">
+                    <div v-if="pro.finish === 1" class="fullwidth">
+                        <q-btn
+                            class="fullwitdh"
+                            bordered
+                            :style="[selected === pro.id ? { background: '#09deed' } : { background: '#37ed09' }]"
+                            @click="changeSelectProject(pro)"
+                            >{{ pro.id }}</q-btn
+                        >
+                    </div>
+                    <div v-else class="fullwidth">
+                        <q-btn
+                            class="fullwitdh"
+                            bordered
+                            :style="[selected === pro.id ? { background: '#09deed' } : { background: '#D9D9D9FF' }]"
                             @click="changeSelectProject(pro)"
                             >{{ pro.id }}</q-btn
                         >
@@ -143,7 +176,7 @@ load();
 </template>
 <style>
 .test {
-    background-color: #f0ff00;
+    background-color: #aab9b6;
 }
 .fullwitdh {
     width: 100%;

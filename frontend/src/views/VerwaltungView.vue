@@ -24,7 +24,7 @@ async function onUserChanged(u: User) {
 }
 async function check() {
     const answer: boolean = await authStore.check();
-    if (answer === false) {
+    if (!answer) {
         router.push("/login");
     } else if (authStore.role != "admin") {
         $q.notify({
@@ -44,7 +44,7 @@ onBeforeMount(() => {
     <main>
         <Sidebar @change:selection="onUserChanged" :view="view" />
         <div class="row">
-            <div v-if="selectedUser.role == 'teilnehmende'" class="col 6">
+            <div v-if="selectedUser.role === 'teilnehmende'" class="col 6">
                 <Project :user="selectedUser" />
             </div>
             <div class="col 4 q-gutter-md q-pa-md">

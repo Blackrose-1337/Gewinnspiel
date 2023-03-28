@@ -34,9 +34,19 @@ export const useEvaluationStore = defineStore({
             krieterin.forEach(k => this.kriterien.push(k));
         },
         async postBewertung() {
-            this.bewertung.forEach(b => {
-                b.finish = 1;
+            this.kriterien.forEach(k => {
+                this.bewertung.forEach(b => {
+                    if (b.kriterienId == k.id) {
+                        b.bewertung = k.value;
+                        if (b.bewertung === 0 || b.bewertung === null) {
+                            b.finish = 0;
+                        } else {
+                            b.finish = 1;
+                        }
+                    }
+                });
             });
+
             return api.post<boolean>("evaluation/createBewertung", this.bewertung);
         },
         async getall(projectId: number) {
@@ -109,7 +119,7 @@ export const useEvaluationStore = defineStore({
                 });
             }
             const ans = await api.post<boolean>("evaluation/createBewertung", this.bewertung);
-            this.getall(idProject);
+            await this.getall(idProject);
         },
     },
 });

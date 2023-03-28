@@ -182,8 +182,12 @@ async function load() {
 async function loadProject() {
     pics.value = [];
     isLoading.value = true;
-    await projectStore.setProject(selectedproject.value);
-    await evaluationstore.getImages(selectedproject.value.id);
+    console.log("loadProject");
+
+    if (selectedproject.value) {
+        await projectStore.setProject(selectedproject.value);
+    }
+    await evaluationstore.getImages(project.value.id);
     await projectStore.clearPics();
     project.value.pics = img;
     await loadImage();
@@ -201,7 +205,6 @@ function hideImage() {
 watch(user, changeuser => {
     load();
 });
-
 // Bevor die Seite geladen wird load() initialisiert, wenn prop View nicht Project oder evaluation entspricht
 onMounted(() => {
     if (view?.value !== "Project" && view?.value !== "evaluation") {
@@ -248,14 +251,6 @@ watch(selectedproject, changeselectedproject => {
                 @rejected="onRejected"
                 @update:model-value="loadIntoStore"
             >
-                <!--                <template #file="{ file }">
-                    <q-chip class="fileele full-width q-my-xs" square>
-                        <q-avatar size="50px" icon="description" text-color="blue" color="white"> </q-avatar>
-                        {{ file.name }}
-                        <q-space />
-                        <q-btn class="fileele q-pa-sm" flat icon="delete" @click.stop @click="removeImage(file)" />
-                    </q-chip>
-                </template>-->
             </q-file>
         </div>
         <div class="row justify-between">
