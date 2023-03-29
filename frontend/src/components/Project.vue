@@ -22,6 +22,7 @@ const $q = useQuasar();
 //--------------- variables ------------------------------
 let isLoading = ref(false);
 const fullPage = ref(true);
+const answer = ref(false);
 let previewImage = ref();
 var bild = new Image();
 
@@ -59,21 +60,41 @@ async function save() {
 }
 // remove:  Löschen des Projektes per Post Initialisieren
 async function remove() {
-    const bool: boolean = await projectStore.projectRemove(project.value.id);
-    if (bool) {
-        $q.notify({
-            type: "positive",
-            message: "Bilder und Projekt wurden gelöscht",
-            color: "green",
-        });
-    } else {
-        $q.notify({
-            type: "negative",
-            message: "Der Speichervorgang ist gescheitert",
-            color: "red",
-        });
+    const ans = await startDialog();
+    if (ans) {
+        const bool: boolean = await projectStore.projectRemove(project.value.id);
+        if (bool) {
+            $q.notify({
+                type: "positive",
+                message: "Bilder und Projekt wurden gelöscht",
+                color: "green",
+            });
+        } else {
+            $q.notify({
+                type: "negative",
+                message: "Der Speichervorgang ist gescheitert",
+                color: "red",
+            });
+        }
     }
 }
+//Initialisierung vom Pop-up
+async function startDialog() {
+    $q.dialog({
+        dark: true,
+        title: "Confirm",
+        message: "Möchten Sie wirklich das Projekt vollständig Löschen?",
+        cancel: true,
+        persistent: true,
+    })
+        .onOk(() => {
+            return true;
+        })
+        .onCancel(() => {
+            return false;
+        });
+}
+
 // removepic:  Löschen des Bildes per Post Initialisieren
 async function removepic(file: string) {
     const ans = await projectStore.deletePic(file.toString());
@@ -201,6 +222,10 @@ function showImage(image: string) {
 function hideImage() {
     previewImage.value = null;
 }
+function approval() {
+    projectStore.approvalPost();
+    projectStore.getProjects();
+}
 // Wird initialisiert wenn sich user prop ändert
 watch(user, changeuser => {
     load();
@@ -284,6 +309,10 @@ watch(selectedproject, changeselectedproject => {
                 <div class="row">
                     <q-space />
                     <q-btn label="Projekt Löschen" color="red" @click="remove" class="genBtn" />
+                </div>
+                <div class="row">
+                    <q-space />
+                    <q-btn label="Projekt Freigeben" color="green" @click="approval" class="genBtn" />
                 </div>
             </div>
         </div>

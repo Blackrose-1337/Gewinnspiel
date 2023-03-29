@@ -30,9 +30,6 @@ class ModelProject extends ModelBase
             $this->db->bind(":administrativeId", $_SESSION["user_id"]);
             $this->db->bind(":projectId", $data['id']);
             $ans = $this->db->resultSet();
-            error_log('______________________________');
-            error_log(json_encode($ans));
-            error_log('______________________________');
             if (empty($ans))
             {
                 $this->db->query("SELECT * FROM Bewertung WHERE administrativeId= :administrativeId AND projectId= :projectId AND finish=1");
@@ -194,6 +191,12 @@ class ModelProject extends ModelBase
         $this->db->bind(":id", $id['projectId']);
         $data = $this->db->resultSet();
         return $data[0]['COUNT(*)'];
+    }
+
+    public function approvalProject($id){
+        $this->db->query("UPDATE Project SET finish=1 WHERE id= :id");
+        $this->db->bind(":id", $id );
+        return $this->db->execute();
     }
 
     /**

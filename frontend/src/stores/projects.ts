@@ -123,5 +123,8 @@ export const useProjectStore = defineStore({
             }
             return bool;
         },
+        async approvalPost() {
+            return api.post<boolean>("project/approval", this.project.id);
+        },
     },
 });

@@ -419,4 +419,50 @@ class ProjectController extends BaseController
             );
         }
     }
+    public function approvalAction()
+    {
+        $strErrorDesc = '';
+        // Kommunikations-Methode entnehmen
+        $requestMethod = $_SERVER["REQUEST_METHOD"];
+        try {
+            // Überprüfung gültiger Session
+            if (!$this->sessionCheck()) {
+                $strErrorDesc = "Nicht akzeptierte Session";
+                $strErrorHeader = $this->fehler(405);
+
+                // Überprüfung erlaubter Rollen
+            } else if (!$this->userCheck('admin', 'jury')) {
+                $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
+                $strErrorHeader = $this->fehler(401);
+            }
+            // abfrage ob es eine GET_Methode ist
+            if (strtoupper($requestMethod) == 'POST') {
+                // Aufruf benötigter Klassen
+                $projectmodel = new ModelProject();
+                // Post Daten holen
+                $data = json_decode(file_get_contents('php://input'), true);
+                // Aufruf der Funktion um das Project Frei zu geben
+                $responseData = $projectmodel->approvalProject($data);
+            } else {
+                // Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde
+                $strErrorDesc = 'Method not supported';
+                $strErrorHeader = $this->fehler(422);
+            }
+        } catch (Error $e) {
+            // Fehlermeldung, falls ein serverseitiger Fehler entstanden ist
+            $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+            $strErrorHeader = $this->fehler(500);
+        }
+        // Falls kein Fehler enthalten ist wird die Antwort verpackt und versendet
+        if (!$strErrorDesc) {
+            $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
+
+            // Falls ein Fehler enthalten ist wird dieser verpackt und versendet
+        } else {
+            $this->sendOutput(
+                json_encode(array('error' => $strErrorDesc)),
+                array('Content-Type: application/json', $strErrorHeader)
+            );
+        }
+    }
 }
