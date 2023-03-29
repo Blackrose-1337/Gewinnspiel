@@ -32,7 +32,7 @@ onMounted(() => {
     <div class="row q-ma-md">
         <q-table class="col-7 q-ma-md" title="Punkteliste" :rows="auswertung" :columns="columns" row-key="name" />
         <div class="q-ma-xl col-2">
-            <q-btn @click="getmissing" class="genBtn" label="Fehlende Bewertungen anzeigen"/>
+            <q-btn @click="getmissing" class="full-width genBtn" label="Fehlende Bewertungen anzeigen"/>
             <q-card>
                 <div class="q-mt-md" v-for="m in missing">
                     <q-card-section class="bg-amber-1">

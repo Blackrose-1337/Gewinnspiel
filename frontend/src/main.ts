@@ -1,6 +1,6 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
-import { Quasar, Notify } from "quasar";
+import {Quasar, Notify, Dialog} from "quasar";
 import Loading from 'vue-loading-overlay';
 import "vue-loading-overlay/dist/css/index.css";
 // import { QuasarTiptapPlugin, RecommendedExtensions } from 'quasar-tiptap'
@@ -26,7 +26,8 @@ app.use(Loading);
 // })
 
 app.use(Quasar, {
-    plugins: { Notify }, // import Quasar plugins and add here
+    plugins: { Notify, Dialog },
+    // import Quasar plugins and add here
     /*
   config: {
     brand: {

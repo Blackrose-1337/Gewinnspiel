@@ -11,7 +11,7 @@ const authStore = useAuthStore();
 const $q = useQuasar();
 async function check() {
     const answer: boolean = await authStore.check();
-    if (answer === false) {
+    if (!answer) {
         router.push("/login");
     } else if (authStore.role != "admin") {
         $q.notify({

@@ -22,9 +22,9 @@ const $q = useQuasar();
 //--------------- variables ------------------------------
 let isLoading = ref(false);
 const fullPage = ref(true);
-const answer = ref(false);
 let previewImage = ref();
 var bild = new Image();
+const dialog = ref(false);
 
 //--------------- computed ------------------------------
 const project = computed(() => projectStore.project);
@@ -60,38 +60,43 @@ async function save() {
 }
 // remove:  Löschen des Projektes per Post Initialisieren
 async function remove() {
-    const ans = await startDialog();
-    if (ans) {
-        const bool: boolean = await projectStore.projectRemove(project.value.id);
-        if (bool) {
-            $q.notify({
-                type: "positive",
-                message: "Bilder und Projekt wurden gelöscht",
-                color: "green",
-            });
-        } else {
-            $q.notify({
-                type: "negative",
-                message: "Der Speichervorgang ist gescheitert",
-                color: "red",
-            });
-        }
+    const bool: boolean = await projectStore.projectRemove(project.value.id);
+    if (bool) {
+        $q.notify({
+            type: "positive",
+            message: "Bilder und Projekt wurden gelöscht",
+            color: "green",
+        });
+        await projectStore.getProjects();
+    } else {
+        $q.notify({
+            type: "negative",
+            message: "Der Speichervorgang ist gescheitert",
+            color: "red",
+        });
     }
 }
 //Initialisierung vom Pop-up
 async function startDialog() {
     $q.dialog({
-        dark: true,
-        title: "Confirm",
+        background: "negative",
+        title: "Löschen?",
         message: "Möchten Sie wirklich das Projekt vollständig Löschen?",
-        cancel: true,
+        ok: {
+            label: "Löschen",
+            push: true,
+            color: "info",
+        },
+        cancel: {
+            label: "Abbrechen",
+            push: true,
+            color: "negative",
+        },
         persistent: true,
     })
+        .onCancel(() => {})
         .onOk(() => {
-            return true;
-        })
-        .onCancel(() => {
-            return false;
+            remove();
         });
 }
 
@@ -308,11 +313,36 @@ watch(selectedproject, changeselectedproject => {
                 </div>
                 <div class="row">
                     <q-space />
-                    <q-btn label="Projekt Löschen" color="red" @click="remove" class="genBtn" />
+                    <q-btn label="Projekt Freigeben" color="green" @click="approval" class="genBtn" />
                 </div>
                 <div class="row">
                     <q-space />
-                    <q-btn label="Projekt Freigeben" color="green" @click="approval" class="genBtn" />
+                    <q-btn label="Projekt Löschen" color="red" @click="dialog = true" class="genBtn" />
+                </div>
+                <div>
+                    <q-dialog v-model="dialog" persistent transition-show="scale" transition-hide="scale">
+                        <q-card class="bg-grey-3 text-black" style="width: 300px">
+                            <q-card-section class="bg-red-6">
+                                <div class="text-h6">Löschen?!?</div>
+                            </q-card-section>
+
+                            <q-card-section class="q-pt-none">
+                                Möchten Sie wirklich das Projekt vollständig Löschen?
+                            </q-card-section>
+
+                            <q-card-actions align="right" class="bg-white text-teal">
+                                <q-btn
+                                    flat
+                                    color="black"
+                                    class="bg-red-6"
+                                    label="Löschen"
+                                    @click="remove"
+                                    v-close-popup
+                                />
+                                <q-btn flat color="black" class="bg-grey-6" label="Abbrechen" v-close-popup />
+                            </q-card-actions>
+                        </q-card>
+                    </q-dialog>
                 </div>
             </div>
         </div>
