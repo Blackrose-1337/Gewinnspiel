@@ -57,9 +57,13 @@ load();
                     <q-radio dense v-model="k.value" :val="5" label="5" class="q-pb-md q-px-md" />
                 </q-card>
                 <div class="row">
-                    <q-btn label="Speichern" @click="update" />
+                    <q-btn label="Speichern" @click="update">
+                      <q-tooltip class="bg-accent">Die Werte werden auf dem Server zwischen gespeichert</q-tooltip>
+                    </q-btn>
                     <q-space />
-                    <q-btn label="Bewertung Beenden" @click="send" />
+                    <q-btn label="Bewertung Beenden" @click="send">
+                      <q-tooltip class="bg-accent">Ausgefühlte Werte werden als Abgeschlossen auf dem Server gespeichert</q-tooltip>
+                    </q-btn>
                 </div>
             </div>
         </div>

@@ -123,6 +123,7 @@ async function remove() {
             message: answer.error,
         });
     }
+    await userStore.getUsers();
 }
 async function resetPw() {
     const answer = await userStore.resetPW(model.value.id);

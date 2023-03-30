@@ -356,6 +356,7 @@ watch(selectedproject, changeselectedproject => {
             <img
                 alt="Bilddarstellung eines Verlinkten Bildes des Projektes"
                 v-for="pic in pics"
+                :key="pic"
                 :src="pic"
                 @click="showImage(pic)"
             />

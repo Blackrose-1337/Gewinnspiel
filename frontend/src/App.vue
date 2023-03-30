@@ -22,7 +22,7 @@ function swap() {
 }
 async function logout() {
     const answer = await authStore.logout();
-    if (answer === true) {
+    if (answer) {
         settitle("Admin");
         await router.push("/login");
     }
@@ -39,13 +39,13 @@ onMounted(() => {
 </script>
 
 <template>
-    <q-layout view="hHh lpR fFf">
-        <q-header elevated class="text-white float-right" height-hint="98">
+    <q-layout class="bg-primary" view="hHh lpR fFf">
+        <q-header elevated class="bg-secondary text-black float-right" height-hint="98">
             <q-toolbar>
-                <q-toolbar-title>
-                    <!-- <q-avatar> <img src=src/assets/Blackrose.png alt="Blackrose"/> </q-avatar> -->
-                    Stickstoff
-                    <q-btn class="text-right" round @click="swap" push outline icon="light_mode" />
+                <q-toolbar-title class="row">
+                    <img src="src/assets/Stickstoff.png" />
+                    <q-space />
+                    <q-btn class="text-right" rounded @click="swap" flat push icon="light_mode" />
                 </q-toolbar-title>
             </q-toolbar>
             <q-tabs align="left">
@@ -86,14 +86,13 @@ onMounted(() => {
                 </div>
             </q-tabs>
         </q-header>
-        <q-page-container class="wrapper">
+        <q-page-container class="bg-primary wrapper">
             <router-view />
         </q-page-container>
     </q-layout>
 </template>
 
 <style>
-
 /*noinspection CssUnknownTarget*/
 @import "@/assets/base.css";
 
@@ -113,7 +112,7 @@ onMounted(() => {
 header {
     line-height: 1.5;
     max-height: 100vh;
-    background-color: #067213 !important;
+    /*background-color: #067213 !important;*/
 }
 
 .logo {

@@ -217,10 +217,10 @@ load();
         :is-full-page="fullPage"
     ></loading>
     <div v-if="dateCheck()">
-        <q-card flat>
+        <q-card class="bg-primary" flat>
             <q-card-section align="center" v-html="competitionDetails.title" />
         </q-card>
-        <q-card flat>
+        <q-card class="bg-primary" flat>
             <q-card-section align="left" v-html="competitionDetails.text" />
         </q-card>
         <form @submit.prevent.stop="sendCompetition" class="row q-pa-md">
@@ -286,12 +286,12 @@ load();
                     />
                 </q-field>
                 <q-space />
-                <q-btn label="Senden" :loading="isLoading" color="green" @click="sendCompetition" class="col-3" />
+                <q-btn label="Senden" :loading="isLoading" @click="sendCompetition" class="bg-accent col-3" />
             </div>
         </form>
         <div class="textarea">
             <h5>Teilnahmebedingungen</h5>
-            <q-card flat>
+            <q-card class="bg-primary" flat>
                 <q-card-section v-html="competitionDetails.teilnehmerbedingung" />
             </q-card>
         </div>

@@ -30,11 +30,12 @@ onMounted(() => {
 </script>
 <template>
     <div class="row q-ma-md">
-        <q-table class="col-7 q-ma-md" title="Punkteliste" :rows="auswertung" :columns="columns" row-key="name" />
+        <q-table class="col-8 q-ma-md" title="Punkteliste" :rows="auswertung" :columns="columns" row-key="name" />
+        <q-space />
         <div class="q-ma-xl col-2">
             <q-btn @click="getmissing" class="full-width genBtn" label="Fehlende Bewertungen anzeigen"/>
             <q-card>
-                <div class="q-mt-md" v-for="m in missing">
+                <div class="q-mt-md" v-for="m in missing" :key="m">
                     <q-card-section class="bg-amber-1">
                         <h6>{{ m.name }} {{ m.surname }}</h6>
                         <p>{{ m.project_ids }}</p>
