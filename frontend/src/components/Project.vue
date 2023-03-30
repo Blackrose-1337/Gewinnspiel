@@ -322,7 +322,7 @@ watch(selectedproject, changeselectedproject => {
         </div>
     </div>
     <div v-else>
-        <div class="texts q-pa-lg">
+        <div class="texts q-pa-lg bg-secondary">
             <h3>{{ project.title }}</h3>
             <p>{{ project.text }}</p>
         </div>
@@ -393,7 +393,6 @@ watch(selectedproject, changeselectedproject => {
 }
 
 .texts {
-    background-color: rgb(168, 153, 85);
     border-radius: 15px;
     margin: 10px;
 }

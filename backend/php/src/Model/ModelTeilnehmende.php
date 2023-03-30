@@ -87,7 +87,7 @@ class ModelTeilnehmende extends ModelBase
             $this->db->bind(":land", $data["land"]);
             $this->db->bind(":plz", $data["plz"]);
             $this->db->bind(":ortschaft", $data["ortschaft"]);
-            $this->db->bind(":strasse", $data["str"]);
+            $this->db->bind(":strasse", $data["strasse"]);
             $this->db->bind(":strNr", $data["strNr"]);
             $this->db->bind(":tel", $data["tel"]);
             $this->db->bind(":vorwahl", $data["vorwahl"]);

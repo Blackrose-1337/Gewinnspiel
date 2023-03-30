@@ -317,11 +317,5 @@ watch(user, changeUser => {
 </template>
 
 <style>
-.genBtn {
-    border-radius: 30px;
-    max-height: 56px;
-    min-height: 56px;
-    margin-top: 20px;
-    margin-left: 24px;
-}
+
 </style>

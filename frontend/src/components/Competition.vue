@@ -287,10 +287,10 @@ load();
                     />
                 </q-field>
                 <q-space />
-                <q-btn label="Senden" :loading="isLoading" @click="sendCompetition" class="bg-accent col-3" />
+                <q-btn label="Senden" :loading="isLoading" @click="sendCompetition" class="genBtn bg-accent col-3" />
             </div>
         </form>
-        <div class="textarea">
+        <div class="q-pa-md">
             <h5>Teilnahmebedingungen</h5>
             <q-card class="bg-primary" flat>
                 <q-card-section v-html="competitionDetails.teilnehmerbedingung" />
@@ -307,7 +307,7 @@ load();
                         </span>
                     </q-card-section>
                     <q-card-actions align="right">
-                        <q-btn flat label="OK" color="primary" v-close-popup />
+                        <q-btn flat label="OK" class="bg-accent" v-close-popup />
                     </q-card-actions>
                 </q-card>
             </q-dialog>
@@ -336,9 +336,8 @@ load();
 .textarea {
     padding: 15px;
     padding-left: 30px;
-    border: 3px solid black;
-    border-radius: 15px;
-    margin: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
 }
 
 h3 {

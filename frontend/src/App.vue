@@ -1,25 +1,14 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { RouterView } from "vue-router";
-import { useQuasar } from "quasar";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
 
 const authStore = useAuthStore();
 const router = useRouter();
 const role = computed(() => authStore.role);
-const $q = useQuasar();
 const title = ref("Admin");
-let change = ref();
-// darkmode toggle
-function swap() {
-    if (!change.value) {
-        change.value = true;
-    } else {
-        change.value = false;
-    }
-    $q.dark.set(change.value);
-}
+
 async function logout() {
     const answer = await authStore.logout();
     if (answer) {
@@ -43,9 +32,8 @@ onMounted(() => {
         <q-header elevated class="bg-secondary text-black float-right" height-hint="98">
             <q-toolbar>
                 <q-toolbar-title class="row">
-                    <img src="src/assets/Stickstoff.png" />
+                    <img src="src/assets/Stickstoff.png" alt="Logo Stickstoffmagazin" />
                     <q-space />
-                    <q-btn class="text-right" rounded @click="swap" flat push icon="light_mode" />
                 </q-toolbar-title>
             </q-toolbar>
             <q-tabs align="left">
@@ -114,17 +102,12 @@ header {
     max-height: 100vh;
     /*background-color: #067213 !important;*/
 }
-
-.logo {
-    display: block;
-    margin: 0 auto 2rem;
-}
-
-a,
-.green {
-    text-decoration: none;
-    color: hsla(160, 100%, 37%, 1);
-    transition: 0.4s;
+.genBtn {
+    border-radius: 5px;
+    max-height: 56px;
+    min-height: 56px;
+    margin-top: 20px;
+    margin-left: 24px;
 }
 
 @media (hover: hover) {
