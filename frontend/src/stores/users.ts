@@ -1,8 +1,8 @@
-import { defineStore } from "pinia";
+import {defineStore} from "pinia";
 import NetworkHelper from "@/utils/networkHelper";
-import { HTTPError } from "ky";
-import { Notify } from "quasar";
-import type { User } from "@/stores/interfaces";
+import {HTTPError} from "ky";
+import {Notify} from "quasar";
+import type {User} from "@/stores/interfaces";
 
 const api = new NetworkHelper();
 export type State = {

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue";
 import { toRefs } from "vue";
-import { storeToRefs } from "pinia";
 import { useQuasar } from "quasar";
 import type { User } from "@/stores/interfaces";
 import { useProjectStore } from "@/stores/projects";
@@ -40,6 +39,7 @@ const userStore = useUserStore();
 const nameRef = ref(null);
 const surnameRef = ref(null);
 const emailRef = ref(null);
+const dialog = ref(false);
 
 const selectOptionsTyp = ["DE", "AU", "CH"];
 
@@ -111,7 +111,7 @@ async function saveChange() {
 }
 async function remove() {
     const answer = await userStore.remove(model.value.id);
-    if (answer == true) {
+    if (answer["answer"] == true) {
         $q.notify({
             type: "positive",
             message: "User wurde gelöscht",
@@ -119,8 +119,8 @@ async function remove() {
         });
     } else {
         $q.notify({
-            type: answer.success,
-            message: answer.error,
+            type: answer["type"],
+            message: answer["message"],
         });
     }
     await userStore.getUsers();
@@ -153,6 +153,7 @@ watch(user, changeUser => {
             <div class="row q-gutter-sm col-12">
                 <q-input
                     v-model="model.surname"
+                    label-color="accent"
                     ref="surnameRef"
                     rounded
                     outlined
@@ -165,6 +166,7 @@ watch(user, changeUser => {
                 />
                 <q-input
                     v-model="model.name"
+                    label-color="accent"
                     ref="nameRef"
                     rounded
                     outlined
@@ -179,6 +181,7 @@ watch(user, changeUser => {
             <div v-if="view !== 'User'" class="row q-gutter-sm col-12">
                 <q-input
                     v-model="model.email"
+                    label-color="accent"
                     ref="emailRef"
                     rounded
                     outlined
@@ -194,6 +197,7 @@ watch(user, changeUser => {
             <div v-else class="row q-gutter-sm col-12">
                 <q-input
                     v-model="model.email"
+                    label-color="accent"
                     rounded
                     outlined
                     disable
@@ -218,6 +222,7 @@ watch(user, changeUser => {
                 />
                 <q-input
                     v-model="model.plz"
+                    label-color="accent"
                     rounded
                     outlined
                     label="PLZ"
@@ -228,6 +233,7 @@ watch(user, changeUser => {
                 />
                 <q-input
                     v-model="model.ortschaft"
+                    label-color="accent"
                     rounded
                     outlined
                     label="Ortschaft"
@@ -240,6 +246,7 @@ watch(user, changeUser => {
             <div class="row q-gutter-sm col-12">
                 <q-input
                     v-model="model.strasse"
+                    label-color="accent"
                     rounded
                     outlined
                     label="Strasse"
@@ -249,6 +256,7 @@ watch(user, changeUser => {
                 />
                 <q-input
                     v-model="model.strNr"
+                    label-color="accent"
                     rounded
                     outlined
                     label="Nr."
@@ -260,6 +268,7 @@ watch(user, changeUser => {
             <div class="row q-gutter-sm col-12">
                 <q-input
                     rounded
+                    label-color="accent"
                     outlined
                     v-model="model.vorwahl"
                     label="Vorwahl"
@@ -269,6 +278,7 @@ watch(user, changeUser => {
                 />
                 <q-input
                     v-model="model.tel"
+                    label-color="accent"
                     rounded
                     outlined
                     label="Tel-Nummer"
@@ -281,9 +291,27 @@ watch(user, changeUser => {
         </div>
 
         <div v-if="view === 'Project'">
-            <q-btn label="Änderungen Speichern" color="blue" @click="saveChange" class="genBtn" />
-            <q-btn label="Passwort zurücksetzen" color="red" @click="resetPw" class="genBtn" />
-            <q-btn label="User Löschen" color="red" @click="remove" class="genBtn" />
+            <q-btn label="Änderungen Speichern" color="blue-5" @click="saveChange" class="genBtn" />
+            <q-btn label="Passwort zurücksetzen" color="red-5" @click="resetPw" class="genBtn" />
+            <q-btn label="User Löschen" color="red-5" @click="dialog = true" class="genBtn" />
+            <div>
+                <q-dialog v-model="dialog" persistent transition-show="scale" transition-hide="scale">
+                    <q-card class="bg-grey-3 text-black" style="width: 300px">
+                        <q-card-section class="bg-red-5">
+                            <div class="text-h6">Löschen?!?</div>
+                        </q-card-section>
+
+                        <q-card-section class="q-pt-none bg-secondary">
+                            Möchten Sie wirklich den User vollständig Löschen?
+                        </q-card-section>
+
+                        <q-card-actions align="right" class="bg-secondary text-teal">
+                            <q-btn flat color="black" class="bg-red-6" label="Löschen" @click="remove" v-close-popup />
+                            <q-btn flat color="black" class="bg-grey-6" label="Abbrechen" v-close-popup />
+                        </q-card-actions>
+                    </q-card>
+                </q-dialog>
+            </div>
         </div>
     </div>
 </template>

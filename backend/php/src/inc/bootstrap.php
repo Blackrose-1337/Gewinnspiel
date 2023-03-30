@@ -15,7 +15,9 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = explode('/', $uri);
 // mit drittem Element der URL Modele(Klassen) nach SwitchCase Übereinstimmung initialisieren
 switch ($uri[2]) {
-    case 'user':
+	case 'auth':
+	case 'confirm':
+	case 'user':
         require_once PROJECT_ROOT_PATH . "Model/ModelTeilnehmende.php";
         break;
     case 'competition':
@@ -27,6 +29,7 @@ switch ($uri[2]) {
     case 'project':
         require_once PROJECT_ROOT_PATH . "Model/ModelProject.php";
         require_once PROJECT_ROOT_PATH . "Model/ModelBilder.php";
+		require_once PROJECT_ROOT_PATH . "Model/ModelBewertung.php";
         break;
     case 'evaluation':
         require_once PROJECT_ROOT_PATH . "Model/ModelBewertung.php";
@@ -40,14 +43,9 @@ switch ($uri[2]) {
         require_once PROJECT_ROOT_PATH . "Model/ModelPw.php";
         require_once PROJECT_ROOT_PATH . "Model/ModelSalt.php";
         require_once PROJECT_ROOT_PATH . "Model/ModelProject.php";
+	    require_once PROJECT_ROOT_PATH . "Model/ModelBewertung.php";
         break;
-    case 'auth':
-        require_once PROJECT_ROOT_PATH . "Model/ModelTeilnehmende.php";
-        break;
-    case 'confirm':
-        require_once PROJECT_ROOT_PATH . "Model/ModelTeilnehmende.php";
-        break;
-    default: // Ausgabe bei nicht zutreffender URL
+	default: // Ausgabe bei nicht zutreffender URL
         header("Page can’t be found", true, 404);
 }
 ?>

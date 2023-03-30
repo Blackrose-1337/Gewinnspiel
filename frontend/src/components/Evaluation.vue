@@ -50,18 +50,18 @@ load();
             <div class="col-5 q-gutter-lg">
                 <q-card v-for="k in kriterien" class="q-gutter-lg">
                     <q-card-section>{{ k.frage }}</q-card-section>
-                    <q-radio dense v-model="k.value" :val="1" label="1" class="q-pb-md q-px-md" />
-                    <q-radio dense v-model="k.value" :val="2" label="2" class="q-pb-md q-px-md" />
-                    <q-radio dense v-model="k.value" :val="3" label="3" class="q-pb-md q-px-md" />
-                    <q-radio dense v-model="k.value" :val="4" label="4" class="q-pb-md q-px-md" />
-                    <q-radio dense v-model="k.value" :val="5" label="5" class="q-pb-md q-px-md" />
+                    <q-radio dense color="accent" v-model="k.value" :val="1" label="1" class="q-pb-md q-px-md" />
+                    <q-radio dense color="accent" v-model="k.value" :val="2" label="2" class="q-pb-md q-px-md" />
+                    <q-radio dense color="accent" v-model="k.value" :val="3" label="3" class="q-pb-md q-px-md" />
+                    <q-radio dense color="accent" v-model="k.value" :val="4" label="4" class="q-pb-md q-px-md" />
+                    <q-radio dense color="accent" v-model="k.value" :val="5" label="5" class="q-pb-md q-px-md" />
                 </q-card>
                 <div class="row">
-                    <q-btn label="Speichern" @click="update">
+                    <q-btn color="green-5" label="Speichern" @click="update">
                       <q-tooltip class="bg-accent">Die Werte werden auf dem Server zwischen gespeichert</q-tooltip>
                     </q-btn>
                     <q-space />
-                    <q-btn label="Bewertung Beenden" @click="send">
+                    <q-btn color="green-5" label="Bewertung Beenden" @click="send">
                       <q-tooltip class="bg-accent">Ausgefühlte Werte werden als Abgeschlossen auf dem Server gespeichert</q-tooltip>
                     </q-btn>
                 </div>

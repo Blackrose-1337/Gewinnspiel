@@ -82,6 +82,7 @@ async function login() {
         <q-form ref="form">
             <q-input
                 label="E-Mail"
+                label-color="accent"
                 v-model="email"
                 type="email"
                 autofocus
@@ -90,6 +91,7 @@ async function login() {
             />
             <q-input
                 label="Password"
+                label-color="accent"
                 v-model="password"
                 :type="!showPassword ? 'password' : 'text'"
                 :rules="[val => (val && val.length > 0) || 'Password is required']"
@@ -102,7 +104,7 @@ async function login() {
                     />
                 </template>
             </q-input>
-            <q-btn label="Login" class="q-mt-auto" color="primary" icon="login" @click="login" />
+            <q-btn label="Login" class="q-mt-auto" color="accent" icon="login" @click="login" />
         </q-form>
     </q-page>
 </template>

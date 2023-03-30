@@ -46,7 +46,7 @@ const toolbar = [
 
 async function save() {
     const bool: boolean = await competitionstore.postCompetitionDeclarations();
-    if (bool == true) {
+    if (bool) {
         $q.notify({
             type: "positive",
             message: "Änderung wurden gespeichert!",
@@ -84,11 +84,11 @@ load();
         <div bordered elevated class="bg-grey-8k q-pa-md row">
             <div class="q-pa-md col-3">
                 <h5>Wettbewerbbeginn</h5>
-                <q-date v-model="competitionDetails.wettbewerbbeginn" />
+                <q-date color="accent" v-model="competitionDetails.wettbewerbbeginn" />
             </div>
             <div class="q-pa-md col-3">
                 <h5>Wettbewerbende</h5>
-                <q-date v-model="competitionDetails.wettbewerbende" />
+                <q-date color="accent" v-model="competitionDetails.wettbewerbende" />
             </div>
             <div bordered elevated class="bg-grey-8k q-pa-md col-5">
                 <h5>Text wenn Wettbewerb geschlossen ist</h5>

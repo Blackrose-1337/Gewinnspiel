@@ -6,6 +6,7 @@ import { computed, onMounted, ref, toRefs, watch } from "vue";
 import { useEvaluationStore } from "@/stores/evaluation.ts";
 import Loading from "vue-loading-overlay";
 import { storeToRefs } from "pinia";
+import { isArray } from "lodash";
 
 //--------------- Props ------------------------------
 const props = defineProps<{
@@ -23,7 +24,7 @@ const $q = useQuasar();
 let isLoading = ref(false);
 const fullPage = ref(true);
 let previewImage = ref();
-var bild = new Image();
+let bild = new Image();
 const dialog = ref(false);
 
 //--------------- computed ------------------------------
@@ -60,44 +61,20 @@ async function save() {
 }
 // remove:  Löschen des Projektes per Post Initialisieren
 async function remove() {
-    const bool: boolean = await projectStore.projectRemove(project.value.id);
-    if (bool) {
+    const answer = await projectStore.projectRemove(project.value.id);
+    if (answer["answer"] == true) {
         $q.notify({
             type: "positive",
-            message: "Bilder und Projekt wurden gelöscht",
+            message: "Projekt wurde gelöscht",
             color: "green",
         });
         await projectStore.getProjects();
     } else {
         $q.notify({
-            type: "negative",
-            message: "Der Speichervorgang ist gescheitert",
-            color: "red",
+            type: answer["type"],
+            message: answer["message"],
         });
     }
-}
-//Initialisierung vom Pop-up
-async function startDialog() {
-    $q.dialog({
-        background: "negative",
-        title: "Löschen?",
-        message: "Möchten Sie wirklich das Projekt vollständig Löschen?",
-        ok: {
-            label: "Löschen",
-            push: true,
-            color: "info",
-        },
-        cancel: {
-            label: "Abbrechen",
-            push: true,
-            color: "negative",
-        },
-        persistent: true,
-    })
-        .onCancel(() => {})
-        .onOk(() => {
-            remove();
-        });
 }
 
 // removepic:  Löschen des Bildes per Post Initialisieren
@@ -161,7 +138,7 @@ async function upload() {
             type: "positive",
             message: `Das Bild wurde erfolgreich hochgeladen`,
         });
-        loadImage();
+        await loadImage();
     } else {
         $q.notify({
             type: "negative",
@@ -185,7 +162,7 @@ function onRejected(rejectedEntries: object) {
 async function loadImage() {
     isLoading.value = true;
     pics.value = [];
-    if (project.value.pics !== null || project.value.pics !== "undefined") {
+    if (isArray(project.value.pics)) {
         project.value.pics.forEach((e: { img: string }) => {
             bild.src = e.img;
             pics.value.push(bild.src);
@@ -208,8 +185,6 @@ async function load() {
 async function loadProject() {
     pics.value = [];
     isLoading.value = true;
-    console.log("loadProject");
-
     if (selectedproject.value) {
         await projectStore.setProject(selectedproject.value);
     }
@@ -246,7 +221,6 @@ onMounted(() => {
 
 // Wird initialisiert wenn sich selectedproject prop ändert
 watch(selectedproject, changeselectedproject => {
-    console.log(selectedproject.value);
     loadProject();
 });
 </script>
@@ -285,7 +259,7 @@ watch(selectedproject, changeselectedproject => {
         </div>
         <div class="row justify-between">
             <div class="column content-center image-container q-pa-sm">
-                <div v-for="pic in pics" class="row">
+                <div v-for="pic in pics" :key="pic" class="row">
                     <img
                         alt="Bilddarstellung eines Verlinkten Bildes des Projektes"
                         :src="pic"
@@ -305,41 +279,41 @@ watch(selectedproject, changeselectedproject => {
             <div v-if="view === 'Project'">
                 <div class="row">
                     <q-space />
-                    <q-btn class="genBtn" color="blue" label="Bilder Speichern" icon="upload" @click="upload" />
+                    <q-btn class="genBtn" color="blue-5" label="Bilder Speichern" icon="upload" @click="upload" />
                 </div>
                 <div class="row">
                     <q-space />
-                    <q-btn label="Änderungen Speichern" color="blue" @click="save" class="genBtn" />
+                    <q-btn label="Änderungen Speichern" color="blue-5" @click="save" class="genBtn" />
                 </div>
                 <div class="row">
                     <q-space />
-                    <q-btn label="Projekt Freigeben" color="green" @click="approval" class="genBtn" />
+                    <q-btn label="Projekt Freigeben" color="green-5" @click="approval" class="genBtn" />
                 </div>
                 <div class="row">
                     <q-space />
-                    <q-btn label="Projekt Löschen" color="red" @click="dialog = true" class="genBtn" />
+                    <q-btn label="Projekt Löschen" color="red-5" @click="dialog = true" class="genBtn" />
                 </div>
                 <div>
                     <q-dialog v-model="dialog" persistent transition-show="scale" transition-hide="scale">
                         <q-card class="bg-grey-3 text-black" style="width: 300px">
-                            <q-card-section class="bg-red-6">
+                            <q-card-section class="bg-red-5">
                                 <div class="text-h6">Löschen?!?</div>
                             </q-card-section>
 
-                            <q-card-section class="q-pt-none">
+                            <q-card-section class="q-pt-none bg-secondary">
                                 Möchten Sie wirklich das Projekt vollständig Löschen?
                             </q-card-section>
 
-                            <q-card-actions align="right" class="bg-white text-teal">
+                            <q-card-actions align="right" class="bg-secondary text-teal">
                                 <q-btn
                                     flat
                                     color="black"
-                                    class="bg-red-6"
+                                    class="bg-red-5"
                                     label="Löschen"
                                     @click="remove"
                                     v-close-popup
                                 />
-                                <q-btn flat color="black" class="bg-grey-6" label="Abbrechen" v-close-popup />
+                                <q-btn flat color="black" class="bg-grey-5" label="Abbrechen" v-close-popup />
                             </q-card-actions>
                         </q-card>
                     </q-dialog>

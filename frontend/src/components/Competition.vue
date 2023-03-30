@@ -168,12 +168,9 @@ async function fillValidate() {
     if (fileRef.value.hasError) {
         errMessage.push("Es fehlen Bilder!");
     }
-    console.log(mailcheck.value);
-    console.log(isValidEmail(usermodel.value.email));
     if (mailcheck.value == true && !isValidEmail(usermodel.value.email)) {
         errMessage.push("Ungültige Mailadresse");
     }
-    console.log(errMessage);
     return errMessage;
 }
 
@@ -226,6 +223,7 @@ load();
         <form @submit.prevent.stop="sendCompetition" class="row q-pa-md">
             <div class="col-4 textarea" style="max-width: 30%">
                 <q-input
+                    label-color="accent"
                     v-model="projectmodel.title"
                     ref="titleRef"
                     lazy-rules
@@ -233,6 +231,7 @@ load();
                     label="Titel zum Projekt *"
                 />
                 <q-input
+                    label-color="accent"
                     v-model="projectmodel.text"
                     ref="textRef"
                     lazy-rules
@@ -273,12 +272,14 @@ load();
                 </q-file>
                 <q-field
                     v-model="teilnahmebedingungenbestaetigung"
+                    color="accent"
                     ref="checkRef"
                     :rules="[val => !!val || 'Pflichtfeld *']"
                     dense
                     borderless
                 >
                     <q-checkbox
+                        color="accent"
                         right-label
                         v-model="teilnahmebedingungenbestaetigung"
                         label="Teilnahmebedingungen annehmen"

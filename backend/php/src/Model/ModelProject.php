@@ -200,6 +200,21 @@ class ModelProject extends ModelBase
     }
 
     /**
+     * Checks if a project exists in the Projects Table
+     * @param $id int Project ID
+     * @return bool true if project exists, false if not
+     */
+    public function checkProject($id){
+        $this->db->query("SELECT COUNT(*) FROM Project WHERE userId = :id");
+        $this->db->bind(":id", $id);
+        $data = $this->db->resultSet();
+		error_log('check: ' . $data);
+        return $data[0]['COUNT(*)'] == 1;
+    }
+
+
+
+    /**
      * Get the value of userId
      */
     public function getUserId()

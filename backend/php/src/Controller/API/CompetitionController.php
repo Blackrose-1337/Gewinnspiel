@@ -63,7 +63,13 @@ class CompetitionController extends BaseController
                     // Information Wettbewerb holen
                     $ans = $competitionmodel->getCompetition();
                     // Mail versenden (param: Mail, Token, PW, Name, Surname, Wettbewerbende)
-                    $this->sendmail($data['user']['email'], $usermodel->getToken(), $usermodel->getPw(), $data['user']['name'], $data['user']['surname'], $ans['wettbewerbende']);
+                    if (getenv('SENDMAILCUSTOMERBOOLEAN')) {
+                        $this->sendmail($data['user']['email'], $usermodel->getToken(), $usermodel->getPw(), $data['user']['name'], $data['user']['surname'], $ans['wettbewerbende']);
+                    } else {
+						error_log('Usermail:'.$data['user']['email']);
+                        error_log('Token: ' . $usermodel->getToken());
+	                    error_log('PW: ' . $usermodel->getPw());
+                    }
                     // Überprüfung ob erstellung von Projekt und User erfolgreich waren
                     if ($answerProject == 1 & $answerUser == 1) {
                         $responseData = true;

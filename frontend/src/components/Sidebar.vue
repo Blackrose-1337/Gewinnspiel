@@ -85,7 +85,7 @@ load();
             <!-- Hier wird überprüft ob das Obere Element 'User' in das view-Element gepackt hat-->
             <q-card v-if="view === 'User'" bordered>
                 <q-card-section color="q-primary" class="fullwitdh">
-                    <h4 class="title">Jury</h4>
+                    <h4 class="title bg-accent">Jury</h4>
                 </q-card-section>
                 <!-- Ein For-loop um jede Person im Array durchzugehen-->
                 <div v-for="p in users" :key="p.id">
@@ -102,8 +102,8 @@ load();
                     </div>
                 </div>
                 <!-- Button um ein Jurymitglied hinzufügen (noch nicht gespeichert)-->
-                <q-btn class="fullwitdh btn" color="primary" @click="addJury">Jurymitglied hinzufügen</q-btn>
-                <h4 class="title">Teilnehmende</h4>
+                <q-btn class="fullwitdh btn" color="accent" @click="addJury">Jurymitglied hinzufügen</q-btn>
+                <h4 class="title bg-accent">Teilnehmende</h4>
                 <!-- Ein For-loop um jede Person im Array durchzugehen-->
                 <div v-for="p in users" :key="p.id" class="fullwidth">
                     <!-- Hier wird überprüft ob das ob das Element bei der Rolle 'teilnehmende' hinterlegt ist'-->
@@ -121,7 +121,7 @@ load();
             <!-- Hier wird überprüft ob das Obere Element 'Project' in das view-Element gepackt hat-->
             <q-card v-if="view === 'Project'" bordered>
                 <q-card-section color="q-primary" class="fullwitdh">
-                    <h4 class="title">Project</h4>
+                    <h4 class="title bg-accent">Project</h4>
                 </q-card-section>
                 <!-- Ein For-loop um jedes Projekt im Array durchzugehen-->
                 <div v-for="pro in projects" :key="pro.id">
@@ -147,7 +147,7 @@ load();
             </q-card>
             <q-card v-if="view === 'Evaluation'" bordered>
                 <q-card-section color="q-primary" class="fullwitdh">
-                    <h4 class="title">Project</h4>
+                    <h4 class="title bg-accent">Project</h4>
                 </q-card-section>
                 <!-- Ein For-loop um jedes Projekt im Array durchzugehen-->
                 <div v-for="pro in projects" :key="pro.id">
@@ -175,9 +175,6 @@ load();
     </q-drawer>
 </template>
 <style>
-.test {
-    background-color: #aab9b6;
-}
 .fullwitdh {
     width: 100%;
     padding: 0;

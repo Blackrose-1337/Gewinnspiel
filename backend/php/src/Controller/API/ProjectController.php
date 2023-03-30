@@ -26,13 +26,22 @@ class ProjectController extends BaseController
 
                 // Abruf des eigenen Projektes als 'teilnehmende' Rolle
                 if ($_SESSION['user_role'] == 'teilnehmende') {
-                    // Projekt wird geholt mit 'user_id' der Session
-                    $answer = $projectmodel->getProject($_SESSION['user_id']);
-
+					if ($projectmodel->checkProject($_SESSION['user_id'])){
+						// Projekt wird geholt mit 'user_id' der Session
+						$answer = $projectmodel->getProject($_SESSION['user_id']);
+					} else {
+						$answer = null;
+					}
                     // Abruf eines pezifischen Projektes als Admin
                 } else if ($_SESSION['user_role'] == 'admin') {
-                    // Projekt wird geholt anhand mitgebener User-Id
-                    $answer = $projectmodel->getProject($arrQueryStringParams['userId']);
+					error_log('User: ' . $arrQueryStringParams['userId']);
+					error_log('Projecttest: ' . json_encode($projectmodel->checkProject($arrQueryStringParams['userId'])));
+					if ($projectmodel->checkProject($arrQueryStringParams['userId'])) {
+						// Projekt wird geholt anhand mitgebener User-Id
+						$answer = $projectmodel->getProject($arrQueryStringParams['userId']);
+					} else {
+						$answer = null;
+					}
                 }
                 if (isset($answer['id'])) {
                     // Bilder werden geholt mittels Projekt-ID
@@ -47,11 +56,10 @@ class ProjectController extends BaseController
                     // Array noch verpacken
                     $answer['pics'] = $base64;
                     // Antwort zu Json formatieren
-                    $responseData = json_encode($answer);
                 } else {
                     $answer['pics'] = null;
-                    $responseData = json_encode($answer);
                 }
+	            $responseData = json_encode($answer);
             } else {
                 // Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde
                 $strErrorDesc = 'Method not supported';
@@ -193,15 +201,35 @@ class ProjectController extends BaseController
             if (strtoupper($requestMethod) == 'POST') {
                 // Aufruf benötigter Klassen 
                 $projectmodel = new ModelProject();
+				$bewertungmodel = new ModelBewertung();
                 // Post Daten holen
                 $data = json_decode(file_get_contents('php://input'), true);
-                // Überprüfung ob die ID nicht 0 ist
-                if ($data['id'] !== 0) {
-                    // löschen des Projektes
-                    $responseData = $projectmodel->deleteProject($data);
-                } else {
-                    $responseData = false;
-                }
+				error_log('Project: ' . json_encode($data));
+	            $message = new stdClass();
+	            if ($bewertungmodel->checkBewertung($data['id'])) {
+		            $message->answer = false;
+		            $message->message = 'Bewertung vorhanden - Projekt kann nicht gelöscht werden';
+		            $message->type = 'negative';
+	            } else {
+		            // Überprüfung ob die ID nicht 0 ist
+		            if ($data['id'] !== 0) {
+			            // löschen des Projektes
+			            if($projectmodel->deleteProject($data)){
+				            $message->answer = true;
+				            $message->message = 'Projekt erfolgreich gelöscht';
+				            $message->type = 'positive';
+			            } else {
+				            $message->answer = false;
+				            $message->message = 'Projekt konnte nicht gelöscht werden';
+				            $message->type = 'negative';
+			            }
+		            } else {
+			            $message->answer = false;
+			            $message->message = 'Projekt konnte nicht gelöscht werden';
+			            $message->type = 'negative';
+		            }
+	            }
+	            $responseData = json_encode($message);
             } else {
                 // Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde
                 $strErrorDesc = 'Method not supported';

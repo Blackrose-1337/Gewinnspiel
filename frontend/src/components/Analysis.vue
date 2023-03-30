@@ -21,9 +21,11 @@ const columns = [
     { name: "mail", label: "E-mail", field: "mail", sortable: true },
     { name: "value", label: "Gesamtpunkte", field: "value", sortable: true },
 ];
+
 function getmissing() {
     evaluationstore.getmissing();
 }
+
 onMounted(() => {
     evaluationstore.getAnalysis();
 });
@@ -32,8 +34,8 @@ onMounted(() => {
     <div class="row q-ma-md">
         <q-table class="col-8 q-ma-md" title="Punkteliste" :rows="auswertung" :columns="columns" row-key="name" />
         <q-space />
-        <div class="q-ma-xl col-2">
-            <q-btn @click="getmissing" class="full-width genBtn" label="Fehlende Bewertungen anzeigen"/>
+        <div class="m-list q-ma-lg col-2">
+            <q-btn @click="getmissing" class="full-width genBtn" label="Fehlende Bewertungen anzeigen" />
             <q-card>
                 <div class="q-mt-md" v-for="m in missing" :key="m">
                     <q-card-section class="bg-amber-1">
@@ -45,4 +47,8 @@ onMounted(() => {
         </div>
     </div>
 </template>
-<style scoped></style>
+<style scoped>
+.m-list {
+    min-width: 300px;
+}
+</style>

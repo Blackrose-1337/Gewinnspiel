@@ -1,11 +1,10 @@
 import { defineStore } from "pinia";
 import NetworkHelper from "@/utils/networkHelper";
-import { Notify } from "quasar";
+import { useQuasar, Notify } from "quasar";
 import { HTTPError } from "ky";
 import type { Project, User, ProjectBild } from "@/stores/interfaces";
 
 const api = new NetworkHelper();
-
 export type State = {
     projects: Project[];
     project: Project;
@@ -36,12 +35,19 @@ export const useProjectStore = defineStore({
                     userId: userId,
                 };
                 this.project = await api.get<Project>("project/take", param);
-                this.project.pics.forEach(e => {
-                    e.img = host + e.img;
-                });
-                this.tempProject = {
-                    ...this.project,
-                };
+                if (this.project.pics) {
+                    this.project.pics.forEach(e => {
+                        e.img = host + e.img;
+                    });
+                    this.tempProject = {
+                        ...this.project,
+                    };
+                } else {
+                    Notify.create({
+                        message: "Kein Projekt vorhanden",
+                        type: "info",
+                    });
+                }
             } catch (err) {
                 console.error(err);
                 if (err instanceof HTTPError) {
