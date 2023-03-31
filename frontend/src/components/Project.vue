@@ -26,6 +26,7 @@ const fullPage = ref(true);
 let previewImage = ref();
 let bild = new Image();
 const dialog = ref(false);
+const maxfilecount = ref();
 
 //--------------- computed ------------------------------
 const project = computed(() => projectStore.project);
@@ -174,6 +175,8 @@ async function loadImage() {
             bild.src = e.img;
             pics.value.push(bild.src);
         });
+		maxfilecount.value = 10 - pics.value.length;
+		console.log(maxfilecount.value);
     }
     setTimeout(() => {
         isLoading.value = false;
@@ -258,6 +261,8 @@ watch(selectedproject, changeselectedproject => {
                 multiple
                 label="Filtered (png,jpeg only) *"
                 counter
+                :max-files="maxfilecount"
+                max-file-size="5242880"
                 :filter="checkFileType"
                 @rejected="onRejected"
                 @update:model-value="loadIntoStore"

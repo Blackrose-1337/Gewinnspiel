@@ -354,7 +354,11 @@ class ProjectController extends BaseController
                             $number = (int)$ele[0] + 1;
                             // Bildspeichern mit neuer Nummerierung
                             $this->saveImage($data, $newpath[0], $data[0]['projectId'], $number);
-                        } else {
+                        } elseif (count(scandir($newpath[0])) > 12 ){
+							// Fehlermeldung, falls der Ordner schon 10 Bilder enthält
+							$strErrorDesc = "Zu viele Bilder in diesem Projekt";
+							$strErrorHeader = $this->fehler(422);
+						} else {
                             // Bildspeichern ohne zusätzliche die Nummerierung zu beeinflussen
                             $this->saveImage($data, $newpath[0], $data[0]['projectId']);
                         }
