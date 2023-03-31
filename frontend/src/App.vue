@@ -8,6 +8,7 @@ const authStore = useAuthStore();
 const router = useRouter();
 const role = computed(() => authStore.role);
 const title = ref("Admin");
+let menuHover = ref(false);
 
 async function logout() {
     const answer = await authStore.logout();
@@ -18,6 +19,12 @@ async function logout() {
 }
 function settitle(val: string) {
     title.value = val;
+}
+function menuShow() {
+    menuHover.value = true;
+}
+function menuHide() {
+    menuHover.value = false;
 }
 onMounted(() => {
     const answer = authStore.check();
@@ -52,8 +59,8 @@ onMounted(() => {
                     v-if="role === 'jury' || role === 'admin'"
                 />
                 <q-route-tab to="/analysis" label="Auswertung" v-if="role === 'admin'" />
-                <q-btn flat v-bind:label="title" class="fullheight" v-if="role === 'admin'">
-                    <q-menu>
+                <q-btn @mouseover="menuShow" flat v-bind:label="title" class="fullheight" v-if="role === 'admin'">
+                    <q-menu v-model="menuHover" @mouseleave="menuHide">
                         <q-list style="min-width: 100px">
                             <q-route-tab
                                 @click="settitle('Userverwaltung')"
