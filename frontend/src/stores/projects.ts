@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import NetworkHelper from "@/utils/networkHelper";
-import { useQuasar, Notify } from "quasar";
+import { Notify } from "quasar";
 import { HTTPError } from "ky";
 import type { Project, User, ProjectBild } from "@/stores/interfaces";
 

@@ -59,6 +59,7 @@ function changeUserModel(u: User) {
 
 async function sendCompetition() {
     const errMessage = await fillValidate();
+    console.log(filesPng.value.length);
     //clear von übertragungs Bilder falls noch von versuch zuvor befüllt
     competition.value.pics.splice(0);
     //abfrage ob Bilder hochgeladen wurden falls ja werden diese in Base64 konvertiert
@@ -244,6 +245,7 @@ load();
             <div class="place row col-7 q-gutter-md">
                 <Formular ref="addressFormRef" @change:declarations="changeUserModel" />
                 <q-file
+                    for="qfileelements"
                     class="picloader"
                     ref="fileRef"
                     v-model="filesPng"
@@ -251,25 +253,42 @@ load();
                     outlined
                     append
                     use-chips
+                    multiple
                     :rules="[val => !!val || 'Pflichtfeld *']"
                     label="Filtered (png,jpeg only) *"
-                    multiple
+                    counter
                     :filter="checkFileType"
                     @rejected="onRejected"
-                    counter
                 >
-                    <template #prepend>
-                        <q-icon name="attach_file" />
-                    </template>
-                    <template #file="{ file }">
-                        <q-chip class="fileele full-width q-my-xs" square>
-                            <q-avatar size="50px" icon="description" text-color="blue" color="white"></q-avatar>
-                            {{ file.name }}
-                            <q-space />
-                            <q-btn class="fileele q-pa-sm" flat icon="delete" @click="remove(file)" />
-                        </q-chip>
-                    </template>
                 </q-file>
+                <!--	            old-->
+                <!--                <q-file-->
+                <!--                    class="picloader"-->
+                <!--                    ref="fileRef"-->
+                <!--                    v-model="filesPng"-->
+                <!--                    rounded-->
+                <!--                    outlined-->
+                <!--                    append-->
+                <!--                    use-chips-->
+                <!--                    :rules="[val => !!val || 'Pflichtfeld *']"-->
+                <!--                    label="Filtered (png,jpeg only) *"-->
+                <!--                    multiple-->
+                <!--                    :filter="checkFileType"-->
+                <!--                    @rejected="onRejected"-->
+                <!--                    counter-->
+                <!--                >-->
+                <!--                    <template #prepend>-->
+                <!--                        <q-icon name="attach_file" />-->
+                <!--                    </template>-->
+                <!--                    <template #file="{ file }">-->
+                <!--                        <q-chip class="fileele full-width q-my-xs" square>-->
+                <!--                            <q-avatar size="50px" icon="description" text-color="blue" color="white"></q-avatar>-->
+                <!--                            {{ file.name }}-->
+                <!--                            <q-space />-->
+                <!--                            <q-btn class="fileele q-pa-sm" flat icon="delete" @click="remove(file)" />-->
+                <!--                        </q-chip>-->
+                <!--                    </template>-->
+                <!--                </q-file>-->
                 <q-field
                     v-model="teilnahmebedingungenbestaetigung"
                     color="accent"
@@ -323,10 +342,6 @@ load();
 <style scoped>
 .picloader {
     padding-left: 8px;
-}
-
-.fileele {
-    min-height: 50px;
 }
 
 .place {

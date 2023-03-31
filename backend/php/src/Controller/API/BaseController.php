@@ -100,8 +100,12 @@ class BaseController
         foreach ($picturebase64 as $base64) {
             // Base64 Code trennen von nicht benötigten informationen
             $picture = explode(',', $base64['bildbase']);
+			// ändern der Nummerierungsart
+	        $newcount = sprintf("%02d", $count);
             // Pfadbestimmung zum abspeichern der Bilder auf dem Server
-            $newpath = $path . "/image" . $count . ".png";
+            $newpath = $path . "/image" . $newcount . ".png";
+//			error_log("newpath");
+//			error_log($newpath) ;
             // Auf neuem Pfad Datei öffnen zum bearbeiten
             $ifp = fopen($newpath, 'w');
             // Base64code in die geöffnete Datei schreiben

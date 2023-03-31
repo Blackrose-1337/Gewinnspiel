@@ -83,7 +83,6 @@ async function removepic(file: string) {
     await evaluationstore.getImages(project.value.id);
     await projectStore.clearPics();
     project.value.pics = img;
-    tempImage.value.splice(0, tempImage.value.length);
     if (ans === 1) {
         $q.notify({
             type: "positive",
@@ -128,22 +127,30 @@ async function loadIntoStore() {
 }
 // Bilder werden per Post an das Backend gesendet zum speichern und die Bilder werden frisch abgefragt
 async function upload() {
-    const ans = await projectStore.postPicUpload();
-    await evaluationstore.getImages(project.value.id);
-    await projectStore.clearPics();
-    project.value.pics = img;
-    tempImage.value.splice(0, tempImage.value.length);
-    if (ans === 1) {
-        $q.notify({
-            type: "positive",
-            message: `Das Bild wurde erfolgreich hochgeladen`,
-        });
-        await loadImage();
-    } else {
+    if (projectStore.newImage.length < 1) {
         $q.notify({
             type: "negative",
-            message: `Das Bild wurde nicht hochgeladen`,
+            message: `Es sind keine Bilder zum hochgeladen bereitgestellt`,
         });
+    } else {
+        const ans = await projectStore.postPicUpload();
+        await evaluationstore.getImages(project.value.id);
+        await projectStore.clearPics();
+        project.value.pics = img;
+        tempImage.value.splice(0, tempImage.value.length);
+        if (ans === 1) {
+            $q.notify({
+                type: "positive",
+                message: `Das Bild wurde erfolgreich hochgeladen`,
+            });
+            projectStore.newImage.splice(0);
+            await loadImage();
+        } else {
+            $q.notify({
+                type: "negative",
+                message: `Das Bild wurde nicht hochgeladen`,
+            });
+        }
     }
 }
 // Validierung ob die Files als PNG oder JPEG Format hochgeladen wurden

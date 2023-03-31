@@ -344,24 +344,11 @@ class ProjectController extends BaseController
                         $parent_dir = $imagePath . '/project' . $data[0]['projectId'] . '/*';
                         // holt alle Datein und Ordner in dem Verzeichnis
                         $newpath = glob($parent_dir);
-                        // Variablen vordefinieren
-                        $maxTsFile = 0;
-                        $nFileName = "";
-
                         // Überprüfung ob in dem Ordner schon Dateien enthalten sind
                         if (count(scandir($newpath[0])) > 2) {
-                            $test = glob($newpath[0] . '/*.*');
-                            // Loop um den Pfad der neusten Datei zu erhalten
-                            foreach ($test as $fileName) {
-                                $ts = filemtime($fileName);
-                                if ($ts > $maxTsFile) {
-                                    $maxTsFile = $ts;
-                                    $nFileName = $fileName;
-                                }
-                            }
+	                        $filenames = scandir($newpath[0], 1);
                             // Trennung des Pfadestrings um die Ziffer zu erhalten
-                            $ele = explode('/', $nFileName);
-                            $ele = explode('e', $ele[4]);
+                            $ele = explode('e', $filenames[0]);
                             $ele = explode('.', $ele[1]);
                             // Ziffer um 1 erhöhen
                             $number = (int)$ele[0] + 1;
