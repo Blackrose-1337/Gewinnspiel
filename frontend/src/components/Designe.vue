@@ -69,11 +69,11 @@ load();
 <template>
     <div>
         <div class="q-pa-md">
-            <h5>Titel vom Projekt</h5>
+            <h5>Titel vom Gewinnspiel</h5>
             <q-editor v-model="competitionDetails.title" ref="editorRef" :toolbar="toolbar" />
         </div>
         <div class="q-pa-md">
-            <h5>Beschreibung Wettbewerb</h5>
+            <h5>Beschreibung Gewinnspiel</h5>
             <q-editor v-model="competitionDetails.text" ref="editorRef" :toolbar="toolbar" />
         </div>
         <div class="bg-grey-8k q-pa-md">
@@ -82,22 +82,22 @@ load();
         </div>
         <div class="bg-grey-8k q-pa-md row">
             <div class="q-pa-md col-3">
-                <h5>Wettbewerbbeginn</h5>
+                <h5>Gewinnspielbeginn</h5>
                 <q-date color="accent" v-model="competitionDetails.wettbewerbbeginn" />
             </div>
             <div class="q-pa-md col-3">
-                <h5>Wettbewerbende</h5>
+                <h5>Gewinnspielende</h5>
                 <q-date color="accent" v-model="competitionDetails.wettbewerbende" />
             </div>
             <div class="bg-grey-8k q-pa-md col-5">
-                <h5>Text wenn Wettbewerb geschlossen ist</h5>
+                <h5>Text wenn Gewinnspiel geschlossen ist</h5>
                 <q-editor v-model="competitionDetails.wettbewerbCloseText" ref="editorRef" :toolbar="toolbar" />
             </div>
         </div>
 
-        <div class="muh row q-gutter-md">
+        <div class="muh row q-gutter-md q-pb-xl q-pa-md">
             <q-space />
-            <q-btn label="Änderungen Speichern" color="blue" @click="save" class="col-2 genBtn" />
+            <q-btn label="Änderungen Speichern" color="accent" @click="save" class="col-2 genBtn" />
         </div>
     </div>
 </template>

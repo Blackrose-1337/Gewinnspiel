@@ -41,9 +41,17 @@ onMounted(() => {
                     to="/customer"
                     v-if="role !== 'jury' && role !== 'teilnehmende'"
                     @click="settitle('Admin')"
-                    label="Wettbewerb"
+                    label="Gewinnspiel"
                 />
                 <q-route-tab to="/user" label="User" v-if="role === 'teilnehmende'" />
+
+                <q-route-tab
+                    @click="settitle('Admin')"
+                    to="/evaluation"
+                    label="Bewertung"
+                    v-if="role === 'jury' || role === 'admin'"
+                />
+                <q-route-tab to="/analysis" label="Auswertung" v-if="role === 'admin'" />
                 <q-btn flat v-bind:label="title" class="fullheight" v-if="role === 'admin'">
                     <q-menu>
                         <q-list style="min-width: 100px">
@@ -54,17 +62,15 @@ onMounted(() => {
                                 icon="dynamic_form"
                             />
                             <q-route-tab @click="settitle('Projekte')" to="/project" label="Projekte" icon="settings" />
-                            <q-route-tab @click="settitle('Desgine')" to="/designe" label="Desgine" icon="settings" />
+                            <q-route-tab
+                                @click="settitle('Konfiguration')"
+                                to="/designe"
+                                label="Konfiguration"
+                                icon="settings"
+                            />
                         </q-list>
                     </q-menu>
                 </q-btn>
-                <q-route-tab
-                    @click="settitle('Admin')"
-                    to="/evaluation"
-                    label="Bewertung"
-                    v-if="role === 'jury' || role === 'admin'"
-                />
-                <q-route-tab to="/analysis" label="Auswertung" v-if="role === 'admin'" />
                 <q-space />
                 <div v-if="role !== 'admin' && role !== 'jury' && role !== 'teilnehmende'">
                     <q-route-tab to="/login" label="Login" />
@@ -93,10 +99,6 @@ onMounted(() => {
 .fullheight {
     height: 100%;
 }
-.body--dark {
-    background-color: #343232;
-}
-
 header {
     line-height: 1.5;
     max-height: 100vh;

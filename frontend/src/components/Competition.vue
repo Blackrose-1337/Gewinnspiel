@@ -90,14 +90,14 @@ async function sendCompetition() {
                 dialog.value = true;
                 $q.notify({
                     type: "positiv",
-                    message: "Ihr Wettbewerbsteilnahme wurde versendet",
+                    message: "Ihr Gewinnspielsteilnahme wurde versendet",
                     color: "green",
                 });
             } else if (ans === 2) {
                 isLoading.value = false;
                 $q.notify({
                     type: "negative",
-                    message: "Sie haben bereits am Wettbewerb teilgenommen",
+                    message: "Sie haben bereits am Gewinnspiel teilgenommen",
                     color: "red",
                 });
             } else {
@@ -222,65 +222,80 @@ load();
             <q-card-section align="left" v-html="competitionDetails.text" />
         </q-card>
         <form @submit.prevent.stop="sendCompetition" class="row q-pa-md">
-            <div class="col-4 textarea" style="max-width: 30%">
-                <q-input
-                    label-color="accent"
-                    v-model="projectmodel.title"
-                    ref="titleRef"
-                    lazy-rules
-                    :rules="[val => !!val || 'Pflichtfeld *']"
-                    label="Titel zum Projekt *"
-                />
-                <q-input
-                    label-color="accent"
-                    v-model="projectmodel.text"
-                    ref="textRef"
-                    lazy-rules
-                    :rules="[val => !!val || 'Pflichtfeld *']"
-                    label="Beschreibung zum Projekt *"
-                    autogrow
-                />
+            <div class="col-4" style="max-width: 30%">
+                <div class="textarea full-width">
+                    <q-input
+                        v-model="projectmodel.title"
+                        ref="titleRef"
+                        standout="bg-secondary"
+                        label-color="accent"
+                        label="Titel zum Projekt *"
+                        outlined
+                        lazy-rules
+                        :rules="[val => !!val || 'Pflichtfeld *']"
+                    />
+                    <q-input
+                        v-model="projectmodel.text"
+                        ref="textRef"
+                        standout="bg-secondary"
+                        label-color="accent"
+                        label="Beschreibung zum Projekt *"
+                        outlined
+                        autogrow
+                        lazy-rules
+                        :rules="[val => !!val || 'Pflichtfeld *']"
+                    />
+                </div>
             </div>
             <div class="col-1"></div>
-            <div class="place row col-7 q-gutter-md">
-                <Formular ref="addressFormRef" @change:declarations="changeUserModel" />
-                <q-file
-                    for="qfileelements"
-                    class="picloader"
-                    ref="fileRef"
-                    v-model="filesPng"
-                    rounded
-                    outlined
-                    append
-                    use-chips
-                    multiple
-                    :rules="[val => !!val || 'Pflichtfeld *']"
-                    label="Filtered (png,jpeg only) *"
-                    counter
-                    :filter="checkFileType"
-                    @rejected="onRejected"
-                    max-files="10"
-                    max-file-size="5242880"
-                >
-                </q-file>
-                <q-field
-                    v-model="teilnahmebedingungenbestaetigung"
-                    color="accent"
-                    ref="checkRef"
-                    :rules="[val => !!val || 'Pflichtfeld *']"
-                    dense
-                    borderless
-                >
-                    <q-checkbox
-                        color="accent"
-                        right-label
+            <div class="col-6">
+                <div class="place row full-width q-gutter-md">
+                    <Formular ref="addressFormRef" @change:declarations="changeUserModel" />
+                    <q-file
+                        for="qfileelements"
+                        class="picloader"
+                        ref="fileRef"
+                        v-model="filesPng"
+                        standout="bg-secondary"
+                        label-color="accent"
+                        outlined
+                        append
+                        use-chips
+                        multiple
+                        :rules="[val => !!val || 'Pflichtfeld *']"
+                        label="Filtered (png,jpeg only) *"
+                        counter
+                        :filter="checkFileType"
+                        @rejected="onRejected"
+                        max-files="10"
+                        max-file-size="5242880"
+                    >
+                    </q-file>
+                    <q-field
                         v-model="teilnahmebedingungenbestaetigung"
-                        label="Teilnahmebedingungen annehmen"
-                        class="col-4"
+                        color="accent"
+                        ref="checkRef"
+                        :rules="[val => !!val || 'Pflichtfeld *']"
+                        dense
+                        borderless
+                    >
+                        <q-checkbox
+                            standout="bg-secondary"
+                            color="accent"
+                            right-label
+                            v-model="teilnahmebedingungenbestaetigung"
+                            label="Teilnahmebedingungen annehmen"
+                            class="col-4"
+                        />
+                    </q-field>
+                    <q-space />
+                    <q-btn
+                        label="Senden"
+                        :loading="isLoading"
+                        @click="sendCompetition"
+                        class="genBtn bg-accent col-3"
                     />
-                </q-field>
-                <q-space />
-                <q-btn label="Senden" :loading="isLoading" @click="sendCompetition" class="genBtn bg-accent col-3" />
+                </div>
             </div>
         </form>
         <div class="q-pa-md">
@@ -329,10 +344,10 @@ load();
     border-radius: 5px;
 }
 
-h3 {
-    text-shadow: 1px 1px 1px black, 1px -1px 1px black, -1px 1px 1px black, -1px -1px 1px black;
-    color: #4967de46;
-    font-weight: bold;
-    text-align: center;
-}
+/*h3 {*/
+/*    text-shadow: 1px 1px 1px black, 1px -1px 1px black, -1px 1px 1px black, -1px -1px 1px black;*/
+/*    color: #4967de46;*/
+/*    font-weight: bold;*/
+/*    text-align: center;*/
+/*}*/
 </style>

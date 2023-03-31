@@ -31,7 +31,7 @@ onMounted(() => {
 });
 </script>
 <template>
-    <div class="row q-ma-md">
+    <div class="row q-ma-md q-pb-xl">
         <div class="col-8 q-ma-md">
             <q-table title="Punkteliste" :rows="auswertung" :columns="columns" row-key="name" />
         </div>

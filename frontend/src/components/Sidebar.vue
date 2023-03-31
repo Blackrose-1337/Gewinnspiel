@@ -155,7 +155,7 @@ load();
                         <q-btn
                             class="fullwitdh"
                             bordered
-                            :style="[selected === pro.id ? { background: '#09deed' } : { background: '#37ed09' }]"
+                            :style="[selected === pro.id ? { background: '#53b6b2' } : { background: '#37ed09' }]"
                             @click="changeSelectProject(pro)"
                             >{{ pro.id }}</q-btn
                         >
@@ -164,7 +164,7 @@ load();
                         <q-btn
                             class="fullwitdh"
                             bordered
-                            :style="[selected === pro.id ? { background: '#09deed' } : { background: '#D9D9D9FF' }]"
+                            :style="[selected === pro.id ? { background: '#53b6b2' } : { background: '#D9D9D9FF' }]"
                             @click="changeSelectProject(pro)"
                             >{{ pro.id }}</q-btn
                         >
@@ -182,8 +182,6 @@ load();
 .title {
     background-color: cornflowerblue;
     text-align: center;
-    border-top: solid;
-    border-color: blue;
     color: black;
     margin-top: -1px;
 }

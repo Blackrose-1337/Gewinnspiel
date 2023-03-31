@@ -245,16 +245,15 @@ watch(selectedproject, changeselectedproject => {
     <div v-if="view === 'Project' || view === 'User'">
         <div>
             <h4 class="q-ma-md">Projekttitle</h4>
-            <q-input v-model="project.title" outlined class="q-ma-md" />
+            <q-input standout="bg-secondary" v-model="project.title" outlined class="q-ma-md" />
             <h4 class="q-ma-md">Projekttext</h4>
-            <q-input v-model="project.text" outlined class="q-ma-md" autogrow />
+            <q-input standout="bg-secondary" v-model="project.text" outlined class="q-ma-md" autogrow />
         </div>
         <div class="q-pa-sm">
             <q-file
                 for="qfileelements"
                 class="picloader"
                 v-model="tempImage"
-                rounded
                 outlined
                 append
                 use-chips
@@ -291,11 +290,11 @@ watch(selectedproject, changeselectedproject => {
             <div v-if="view === 'Project'">
                 <div class="row">
                     <q-space />
-                    <q-btn class="genBtn" color="blue-5" label="Bilder Speichern" icon="upload" @click="upload" />
+                    <q-btn class="genBtn" color="accent" label="Bilder Speichern" icon="upload" @click="upload" />
                 </div>
                 <div class="row">
                     <q-space />
-                    <q-btn label="Änderungen Speichern" color="blue-5" @click="save" class="genBtn" />
+                    <q-btn label="Änderungen Speichern" color="accent" @click="save" class="genBtn" />
                 </div>
                 <div class="row">
                     <q-space />
@@ -405,7 +404,7 @@ watch(selectedproject, changeselectedproject => {
 }
 
 .texts {
-    border-radius: 15px;
+    border-radius: 5px;
     margin: 10px;
 }
 .fileele {

@@ -153,145 +153,147 @@ watch(user, changeUser => {
             <div class="row q-gutter-sm col-12">
                 <q-input
                     v-model="model.surname"
-                    label-color="accent"
                     ref="surnameRef"
-                    rounded
-                    outlined
+                    standout="bg-secondary"
+                    label-color="accent"
                     label="Nachname *"
-                    @change="changeValue(model)"
-                    lazy-rules
-                    :rules="[val => !!val || 'Pflichtfeld *', isValidName]"
+                    outlined
                     clearable
                     class="col-4"
+                    lazy-rules
+                    @change="changeValue(model)"
+                    :rules="[val => !!val || 'Pflichtfeld *', isValidName]"
                 />
                 <q-input
                     v-model="model.name"
-                    label-color="accent"
                     ref="nameRef"
-                    rounded
-                    outlined
+                    standout="bg-secondary"
+                    label-color="accent"
                     label="Vorname *"
-                    @change="changeValue(model)"
-                    lazy-rules
-                    :rules="[val => !!val || 'Pflichtfeld *', isValidName]"
+                    outlined
                     clearable
                     class="col-4"
+                    lazy-rules
+                    @change="changeValue(model)"
+                    :rules="[val => !!val || 'Pflichtfeld *', isValidName]"
                 />
             </div>
             <div v-if="view !== 'User'" class="row q-gutter-sm col-12">
                 <q-input
                     v-model="model.email"
-                    label-color="accent"
                     ref="emailRef"
-                    rounded
-                    outlined
+                    standout="bg-secondary"
+                    label-color="accent"
                     label="E-Mail *"
-                    @change="changeValue(model)"
-                    lazy-rules
-                    :rules="[val => !!val || 'Pflichtfeld *', isValidEmail]"
+                    outlined
                     clearable
                     class="col-5"
                     type="email"
+                    lazy-rules
+                    @change="changeValue(model)"
+                    :rules="[val => !!val || 'Pflichtfeld *', isValidEmail]"
                 />
             </div>
             <div v-else class="row q-gutter-sm col-12">
                 <q-input
                     v-model="model.email"
+                    standout="bg-secondary"
                     label-color="accent"
-                    rounded
+                    label="E-Mail *"
                     outlined
                     disable
-                    label="E-Mail *"
-                    @change="changeValue(model)"
-                    lazy-rules
-                    :rules="[val => !!val || 'Pflichtfeld *', isValidEmail]"
                     clearable
                     class="col-5"
                     type="email"
+                    lazy-rules
+                    @change="changeValue(model)"
+                    :rules="[val => !!val || 'Pflichtfeld *', isValidEmail]"
                 />
             </div>
             <div class="row q-gutter-sm col-12">
                 <q-select
-                    rounded
-                    outlined
-                    label="Land"
-                    @change="changeValue(model)"
                     v-model="model.land"
-                    :options="selectOptionsTyp"
+                    standout="bg-secondary"
+                    label-color="accent"
+                    label="Land"
+                    outlined
+                    popup-content-style="bg-secondary"
                     class="col-2"
+                    @change="changeValue(model)"
+                    :options="selectOptionsTyp"
                 />
                 <q-input
                     v-model="model.plz"
+                    standout="bg-secondary"
                     label-color="accent"
-                    rounded
-                    outlined
                     label="PLZ"
-                    @change="changeValue(model)"
+                    outlined
                     clearable
                     class="col-3"
                     type="number"
+                    @change="changeValue(model)"
                 />
                 <q-input
                     v-model="model.ortschaft"
+                    standout="bg-secondary"
                     label-color="accent"
-                    rounded
-                    outlined
                     label="Ortschaft"
-                    @change="changeValue(model)"
+                    outlined
                     clearable
                     class="col-4"
+                    @change="changeValue(model)"
                 />
             </div>
 
             <div class="row q-gutter-sm col-12">
                 <q-input
                     v-model="model.strasse"
+                    standout="bg-secondary"
                     label-color="accent"
-                    rounded
-                    outlined
                     label="Strasse"
-                    @change="changeValue(model)"
+                    outlined
                     clearable
                     class="col-5"
+                    @change="changeValue(model)"
                 />
                 <q-input
                     v-model="model.strNr"
+                    standout="bg-secondary"
                     label-color="accent"
-                    rounded
-                    outlined
                     label="Nr."
-                    @change="changeValue(model)"
+                    outlined
                     class="col-2"
                     type="number"
+                    @change="changeValue(model)"
                 />
             </div>
             <div class="row q-gutter-sm col-12">
                 <q-input
-                    rounded
-                    label-color="accent"
-                    outlined
                     v-model="model.vorwahl"
+                    standout="bg-secondary"
+                    label-color="accent"
                     label="Vorwahl"
-                    @change="changeValue(model)"
+                    outlined
                     clearable
                     class="col-2"
+                    @change="changeValue(model)"
                 />
                 <q-input
                     v-model="model.tel"
+                    standout="bg-secondary"
                     label-color="accent"
-                    rounded
-                    outlined
                     label="Tel-Nummer"
-                    @change="changeValue(model)"
+                    outlined
                     clearable
                     class="col-3"
                     type="tel"
+                    @change="changeValue(model)"
                 />
             </div>
         </div>
 
         <div v-if="view === 'Project'">
-            <q-btn label="Änderungen Speichern" color="blue-5" @click="saveChange" class="genBtn" />
+            <q-btn label="Änderungen Speichern" color="accent" @click="saveChange" class="genBtn" />
             <q-btn label="Passwort zurücksetzen" color="red-5" @click="resetPw" class="genBtn" />
             <q-btn label="User Löschen" color="red-5" @click="dialog = true" class="genBtn" />
             <div>
@@ -316,6 +318,4 @@ watch(user, changeUser => {
     </div>
 </template>
 
-<style>
-
-</style>
+<style></style>
