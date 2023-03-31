@@ -32,7 +32,7 @@ onMounted(() => {
         <q-header elevated class="bg-secondary text-black float-right" height-hint="98">
             <q-toolbar>
                 <q-toolbar-title class="row">
-                    <img src="src/assets/Stickstoff.png" alt="Logo Stickstoffmagazin" />
+                    <img src="@/assets/Stickstoff.png" alt="Logo Stickstoffmagazin" />
                     <q-space />
                 </q-toolbar-title>
             </q-toolbar>
