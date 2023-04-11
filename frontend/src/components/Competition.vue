@@ -207,11 +207,7 @@ function isValidEmail(val: string) {
     return emailPattern.test(val) || false;
 }
 function validatefilesPng() {
-    if (filesPng.value.length > 0) {
-        return true;
-    } else {
-        return false;
-    }
+    return filesPng.value.length > 0;
 }
 
 function checkFileType(files: object) {
