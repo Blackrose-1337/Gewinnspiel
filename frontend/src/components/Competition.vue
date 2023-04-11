@@ -21,7 +21,7 @@ const usermodel = ref({
     land: "",
     plz: null,
     ortschaft: "",
-    str: "",
+    strasse: "",
     strNr: null,
     vorwahl: "",
     tel: null,
@@ -59,7 +59,6 @@ function changeUserModel(u: User) {
 
 async function sendCompetition() {
     const errMessage = await fillValidate();
-    console.log(filesPng.value.length);
     //clear von übertragungs Bilder falls noch von versuch zuvor befüllt
     competition.value.pics.splice(0);
     //abfrage ob Bilder hochgeladen wurden falls ja werden diese in Base64 konvertiert
@@ -148,6 +147,21 @@ async function fillValidate() {
                     errMessage.push("Die E-Mail fehlt!");
                     mailcheck.value = false;
                     break;
+                case "land":
+                    errMessage.push("Das Land fehlt!");
+                    break;
+                case "plz":
+                    errMessage.push("Die Postleitzahl fehlt!");
+                    break;
+                case "ortschaft":
+                    errMessage.push("Die Ortschaft fehlt!");
+                    break;
+                case "strasse":
+                    errMessage.push("Die Strasse fehlt!");
+                    break;
+                case "strNr":
+                    errMessage.push("Die Strassennummer fehlt!");
+                    break;
             }
         }
     });
@@ -168,6 +182,10 @@ async function fillValidate() {
     }
     if (fileRef.value.hasError) {
         errMessage.push("Es fehlen Bilder!");
+    } else if (filesPng.value.length === 0) {
+        errMessage.push("Es fehlen Bilder!");
+        console.log(fileRef.value);
+        fileRef.value.validate();
     }
     if (mailcheck.value == true && !isValidEmail(usermodel.value.email)) {
         errMessage.push("Ungültige Mailadresse");
@@ -187,6 +205,13 @@ function isValidEmail(val: string) {
     const emailPattern =
         /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,7}$/;
     return emailPattern.test(val) || false;
+}
+function validatefilesPng() {
+    if (filesPng.value.length > 0) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function checkFileType(files: object) {
@@ -222,9 +247,10 @@ load();
             <q-card-section align="left" v-html="competitionDetails.text" />
         </q-card>
         <form @submit.prevent.stop="sendCompetition" class="row q-pa-md">
-            <div class="col-4" style="max-width: 30%">
+            <div id="comp" class="col-4 comp-proj q-ma-sm">
                 <div class="textarea full-width">
                     <q-input
+                        class="q-ma-sm"
                         v-model="projectmodel.title"
                         ref="titleRef"
                         standout="bg-secondary"
@@ -235,6 +261,7 @@ load();
                         :rules="[val => !!val || 'Pflichtfeld *']"
                     />
                     <q-input
+                        class="q-ma-sm"
                         v-model="projectmodel.text"
                         ref="textRef"
                         standout="bg-secondary"
@@ -247,13 +274,12 @@ load();
                     />
                 </div>
             </div>
-            <div class="col-1"></div>
-            <div class="col-6">
-                <div class="place row full-width q-gutter-md">
-                    <Formular ref="addressFormRef" @change:declarations="changeUserModel" />
+            <div id="comp" class="col-6">
+                <div class="place row q-ma-md">
+                    <Formular id="comp" ref="addressFormRef" @change:declarations="changeUserModel" />
                     <q-file
                         for="qfileelements"
-                        class="picloader"
+                        class="picloader col-11 q-mt-md"
                         ref="fileRef"
                         v-model="filesPng"
                         standout="bg-secondary"
@@ -262,14 +288,15 @@ load();
                         append
                         use-chips
                         multiple
-                        :rules="[val => !!val || 'Pflichtfeld *']"
-                        label="Filtered (png,jpeg only) *"
+                        :rules="[val => !!val || 'Pflichtfeld *', validatefilesPng]"
+                        label="Bilder-upload (jpeg + png only) *"
                         counter
-                        :filter="checkFileType"
-                        @rejected="onRejected"
                         max-files="10"
                         max-file-size="5242880"
+                        :filter="checkFileType"
+                        @rejected="onRejected"
                     >
+                        <q-tooltip class="bg-accent">Zum Hochladen von Bildern einfach in das Feld klicken.</q-tooltip>
                     </q-file>
                     <q-field
                         v-model="teilnahmebedingungenbestaetigung"
@@ -343,7 +370,18 @@ load();
     border: 1px solid black;
     border-radius: 5px;
 }
-
+.comp-proj {
+    min-width: 400px;
+}
+@media (max-width: 1100px) {
+    #comp {
+        min-width: 400px;
+        max-width: 800px;
+        width: 100%;
+        margin: 0 auto;
+        padding-right: -24px;
+    }
+}
 /*h3 {*/
 /*    text-shadow: 1px 1px 1px black, 1px -1px 1px black, -1px 1px 1px black, -1px -1px 1px black;*/
 /*    color: #4967de46;*/
