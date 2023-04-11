@@ -39,8 +39,12 @@ onBeforeMount(() => {
 </script>
 <template>
     <main class="q-pa-md">
-        <Evaluation :selectedproject="selectedProject" />
+        <Evaluation :selectedproject="selectedProject" class="spacing" />
         <Sidebar @change:selectproject="projectChange" :view="view" />
     </main>
 </template>
-<style></style>
+<style scoped>
+.spacing {
+    margin-right: 24px;
+}
+</style>

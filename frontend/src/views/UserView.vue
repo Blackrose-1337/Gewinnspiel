@@ -123,12 +123,12 @@ onBeforeMount(() => {
         :can-cancel="true"
         :is-full-page="fullPage"
     ></loading>
-    <div v-if="dateCheck()" class="row q-gutter-lg">
-        <div class="q-gutter-lg col-6">
+    <div v-if="dateCheck()" class="row q-ma-md">
+        <div class="q-ma-md col user-E">
             <Project :user="selectedUser" :view="'User'" />
         </div>
 
-        <div class="q-gutter-lg col-5">
+        <div class="q-ma-md col user-E">
             <Formular :user="selectedUser" :view="'User'" />
             <div class="row">
                 <q-space />
@@ -148,4 +148,8 @@ onBeforeMount(() => {
         </q-card>
     </div>
 </template>
-<style scoped></style>
+<style scoped>
+.user-E {
+	min-width: 500px;
+}
+</style>

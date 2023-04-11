@@ -37,26 +37,56 @@ const { view } = toRefs(props);
 const projectStore = useProjectStore();
 const userStore = useUserStore();
 const nameRef = ref(null);
+const plzRef = ref(null);
+const ortschaftRef = ref(null);
+const strasseRef = ref(null);
+const strNrRef = ref(null);
+const landRef = ref(null);
 const surnameRef = ref(null);
 const emailRef = ref(null);
 const dialog = ref(false);
 
-const selectOptionsTyp = ["DE", "AU", "CH"];
+const selectOptionsTyp = ["DE", "AU", "CH", "Sonstiges"];
 
 function myvalidate() {
     nameRef.value.validate();
     surnameRef.value.validate();
     emailRef.value.validate();
+    landRef.value.validate();
+    plzRef.value.validate();
+    ortschaftRef.value.validate();
+	strasseRef.value.validate();
+    strNrRef.value.validate();
 }
 defineExpose({ myvalidate });
 function isValidEmail(val: string) {
     const emailPattern =
         /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,7}$/;
-    return emailPattern.test(val) || "Invalid email";
+    return emailPattern.test(val) || "Invalide E-mail";
 }
 function isValidName(val: string) {
-    const namepattern = /[a-zA-Z]{2,50}$/;
-    return namepattern.test(val) || "Invalid name";
+    const namepattern = /^[a-zA-Z]{2,50}$/;
+    return namepattern.test(val) || "Invalider Name";
+}
+function isValidOrt(val: string) {
+    const ortpattern = /^[a-zA-Z ]{2,50}$/;
+    return ortpattern.test(val) || "Invalider Ort";
+}
+function isValidStrasse(val: string) {
+    const strassepattern = /^[a-zA-Z ]{2,50}$/;
+    return strassepattern.test(val) || "Invalide Strasse";
+}
+function isValidPlz(val: number) {
+    if (model.value.land == "DE") {
+        const plzpattern = /^[0-9]{5}$/;
+        return plzpattern.test(val) || "Invalide PLZ";
+    } else if (model.value.land == "CH" || model.value.land == "AU") {
+        const plzpattern = /^[0-9]{4}$/;
+        return plzpattern.test(val) || "Invalide PLZ";
+    } else {
+        const plzpattern = /^[0-9]{4,7}$/;
+        return plzpattern.test(val) || "Invalide PLZ";
+    }
 }
 function changeValue(p: User) {
     emit("change:declarations", p);
@@ -160,7 +190,6 @@ watch(user, changeUser => {
                     outlined
                     clearable
                     class="col-4"
-                    lazy-rules
                     @change="changeValue(model)"
                     :rules="[val => !!val || 'Pflichtfeld *', isValidName]"
                 />
@@ -173,7 +202,6 @@ watch(user, changeUser => {
                     outlined
                     clearable
                     class="col-4"
-                    lazy-rules
                     @change="changeValue(model)"
                     :rules="[val => !!val || 'Pflichtfeld *', isValidName]"
                 />
@@ -205,7 +233,6 @@ watch(user, changeUser => {
                     clearable
                     class="col-5"
                     type="email"
-                    lazy-rules
                     @change="changeValue(model)"
                     :rules="[val => !!val || 'Pflichtfeld *', isValidEmail]"
                 />
@@ -213,58 +240,68 @@ watch(user, changeUser => {
             <div class="row q-gutter-sm col-12">
                 <q-select
                     v-model="model.land"
+                    ref="landRef"
                     standout="bg-secondary"
                     label-color="accent"
-                    label="Land"
+                    label="Land *"
                     outlined
                     popup-content-style="bg-secondary"
                     class="col-2"
                     @change="changeValue(model)"
                     :options="selectOptionsTyp"
+                    :rules="[val => !!val || 'Pflichtfeld *']"
                 />
                 <q-input
                     v-model="model.plz"
+                    ref="plzRef"
                     standout="bg-secondary"
                     label-color="accent"
-                    label="PLZ"
+                    label="PLZ *"
                     outlined
                     clearable
                     class="col-3"
                     type="number"
                     @change="changeValue(model)"
+                    :rules="[val => !!val || 'Pflichtfeld *', isValidPlz]"
                 />
                 <q-input
                     v-model="model.ortschaft"
+                    ref="ortschaftRef"
                     standout="bg-secondary"
                     label-color="accent"
-                    label="Ortschaft"
+                    label="Ortschaft *"
                     outlined
                     clearable
                     class="col-4"
                     @change="changeValue(model)"
+                    :rules="[val => !!val || 'Pflichtfeld *', isValidOrt]"
                 />
             </div>
 
             <div class="row q-gutter-sm col-12">
                 <q-input
                     v-model="model.strasse"
+                    ref="strasseRef"
                     standout="bg-secondary"
                     label-color="accent"
-                    label="Strasse"
+                    label="Strasse *"
                     outlined
                     clearable
                     class="col-5"
                     @change="changeValue(model)"
+                    :rules="[val => !!val || 'Pflichtfeld *', isValidStrasse]"
                 />
                 <q-input
                     v-model="model.strNr"
+                    ref="strNrRef"
                     standout="bg-secondary"
                     label-color="accent"
-                    label="Nr."
+                    label="Nr. *"
                     outlined
                     class="col-2"
                     type="number"
                     @change="changeValue(model)"
+                    :rules="[val => !!val || 'Pflichtfeld *']"
                 />
             </div>
             <div class="row q-gutter-sm col-12">

@@ -175,8 +175,7 @@ async function loadImage() {
             bild.src = e.img;
             pics.value.push(bild.src);
         });
-		maxfilecount.value = 10 - pics.value.length;
-		console.log(maxfilecount.value);
+        maxfilecount.value = 10 - pics.value.length;
     }
     setTimeout(() => {
         isLoading.value = false;
@@ -243,22 +242,24 @@ watch(selectedproject, changeselectedproject => {
         :is-full-page="fullPage"
     ></loading>
     <div v-if="view === 'Project' || view === 'User'">
-        <div>
-            <h4 class="q-ma-md">Projekttitle</h4>
-            <q-input standout="bg-secondary" v-model="project.title" outlined class="q-ma-md" />
-            <h4 class="q-ma-md">Projekttext</h4>
-            <q-input standout="bg-secondary" v-model="project.text" outlined class="q-ma-md" autogrow />
+        <div class="q-ma-sm">
+            <h4 class="q-mt-sm">Projekttitle</h4>
+            <q-input standout="bg-secondary" v-model="project.title" outlined class="q-mt-sm" />
+            <h4 class="q-mt-sm">Projekttext</h4>
+            <q-input standout="bg-secondary" v-model="project.text" outlined class="q-mt-sm" autogrow />
         </div>
         <div class="q-pa-sm">
             <q-file
                 for="qfileelements"
                 class="picloader"
                 v-model="tempImage"
+                standout="bg-secondary"
+                label-color="accent"
                 outlined
                 append
                 use-chips
                 multiple
-                label="Filtered (png,jpeg only) *"
+                label="Bilder-upload (jpeg + png only) *"
                 counter
                 :max-files="maxfilecount"
                 max-file-size="5242880"

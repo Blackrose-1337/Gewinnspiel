@@ -44,13 +44,26 @@ onBeforeMount(() => {
     <main>
         <Sidebar @change:selection="onUserChanged" :view="view" />
         <div class="row">
-            <div v-if="selectedUser.role === 'teilnehmende'" class="col 6">
+            <div v-if="selectedUser.role === 'teilnehmende'" class="col verw">
                 <Project :user="selectedUser" />
             </div>
-            <div class="col 4 q-gutter-md q-pa-md">
+            <div class="col q-gutter-md q-pa-md verw">
                 <Formular :user="selectedUser" :view="'Project'" />
             </div>
         </div>
     </main>
 </template>
-<style></style>
+<style scoped>
+.verw {
+    min-width: 500px;
+    max-width: 800px;
+}
+
+@media (max-width: 1300px) {
+    .verw {
+        min-width: 500px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+}
+</style>

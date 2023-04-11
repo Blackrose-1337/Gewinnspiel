@@ -80,7 +80,7 @@ load();
 //---------------Executions------------------------------
 </script>
 <template>
-    <q-drawer show-if-above :width="300" :breakpoint="700" elevated bordered>
+    <q-drawer show-if-above :breakpoint="700" elevated bordered>
         <q-scroll-area class="fit">
             <!-- Hier wird überprüft ob das Obere Element 'User' in das view-Element gepackt hat-->
             <q-card v-if="view === 'User'" bordered>
@@ -189,4 +189,5 @@ load();
     margin-bottom: 10px;
     margin-top: 5px;
 }
+
 </style>
