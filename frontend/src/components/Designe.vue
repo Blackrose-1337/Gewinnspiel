@@ -2,6 +2,7 @@
 import { storeToRefs } from "pinia";
 import { useQuasar, QEditor } from "quasar";
 import { useCompetitionStore } from "@/stores/competition";
+import { onBeforeMount } from "vue";
 
 const $q = useQuasar();
 const competitionstore = useCompetitionStore();
@@ -64,7 +65,9 @@ async function load() {
     await competitionstore.getCompetitionDeclarations();
 }
 
-load();
+onBeforeMount(() => {
+    load();
+});
 </script>
 <template>
     <div>
@@ -81,15 +84,15 @@ load();
             <q-editor v-model="competitionDetails.teilnehmerbedingung" ref="editorRef" :toolbar="toolbar" />
         </div>
         <div class="bg-grey-8k q-pa-md row">
-            <div class="q-pa-md col-3">
+            <div class="q-pa-md col-3 kalender">
                 <h5>Gewinnspielbeginn</h5>
                 <q-date color="accent" v-model="competitionDetails.wettbewerbbeginn" />
             </div>
-            <div class="q-pa-md col-3">
+            <div class="q-pa-md col-3 kalender">
                 <h5>Gewinnspielende</h5>
                 <q-date color="accent" v-model="competitionDetails.wettbewerbende" />
             </div>
-            <div class="bg-grey-8k q-pa-md col-5">
+            <div class="bg-grey-8k q-pa-md col-5 closetext">
                 <h5>Text wenn Gewinnspiel geschlossen ist</h5>
                 <q-editor v-model="competitionDetails.wettbewerbCloseText" ref="editorRef" :toolbar="toolbar" />
             </div>
@@ -102,13 +105,23 @@ load();
     </div>
 </template>
 <style scoped>
-
+.kalender {
+    min-width: 300px;
+}
+.closetext {
+    min-width: 600px;
+}
 @media (max-width: 1300px) {
-
+    .kalender {
+        margin: 0 auto;
+    }
+    .closetext {
+        margin: 0 auto;
+        width: 100%;
+    }
 }
 
 #editorjs > div {
     padding: 0 !important;
 }
-
 </style>
