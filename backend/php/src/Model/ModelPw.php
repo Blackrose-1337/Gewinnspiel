@@ -21,6 +21,15 @@ class ModelPw extends ModelBase
         // das neue Passwort wird zurückgegeben
         return $pw;
     }
+	public function setNewHashbyId(int $salt, int $id, string $pw)
+	{
+		$hash = $this->mySha512($pw, $salt, 10000);
+
+		$this->db->query("UPDATE Pw SET hash = :hash WHERE id = :id");
+		$this->db->bind(":hash", $hash);
+		$this->db->bind(":id", $id);
+		return $this->db->execute();
+	}
 
     // Hash generierung
     private function mySha512($str, $salt, $iterations)
