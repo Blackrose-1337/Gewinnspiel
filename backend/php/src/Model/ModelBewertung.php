@@ -66,8 +66,7 @@ GROUP BY u.id;
     // Speichert Bewertung auf der DB
     public function createOrUpdateBewertung($data)
     {
-
-        if ($data["id"] == 0) {
+		if ($data["id"] == 0) {
 
             $this->db->query("INSERT INTO Bewertung
             (`administrativeId`,`projectId`,`kriterienId`,`bewertung`,`finish`)
@@ -77,8 +76,7 @@ GROUP BY u.id;
             $this->db->bind(":kriterienId", $data["kriterienId"]);
             $this->db->bind(":bewertung", $data["bewertung"]);
             $this->db->bind(":finish", $data["finish"]);
-
-        } else if ($data["id"] != 0) {
+        } else {
             $this->db->query("UPDATE Bewertung SET
             bewertung = :bewertung, finish = :finish 
             WHERE id= :id");

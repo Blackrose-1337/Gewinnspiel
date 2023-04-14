@@ -35,19 +35,31 @@ export const useEvaluationStore = defineStore({
             const krieterin = await api.get<Kriterien[]>("evaluation/getKriterien");
             krieterin.forEach(k => this.kriterien.push(k));
         },
-        async postBewertung() {
-            this.kriterien.forEach(k => {
-                this.bewertung.forEach(b => {
-                    if (b.kriterienId == k.id) {
-                        b.bewertung = k.value;
-                        if (b.bewertung === 0 || b.bewertung === null) {
-                            b.finish = 0;
-                        } else {
-                            b.finish = 1;
-                        }
-                    }
+        async postBewertung(idProject: number) {
+            if (this.bewertung.length === 0) {
+                this.kriterien.forEach(k => {
+                    this.bewertung.push({
+                        id: 0,
+                        projectId: idProject,
+                        kriterienId: k.id,
+                        bewertung: k.value,
+                        finish: 1,
+                    });
                 });
-            });
+            } else {
+                this.kriterien.forEach(k => {
+                    this.bewertung.forEach(b => {
+                        if (b.kriterienId == k.id) {
+                            b.bewertung = k.value;
+                            if (b.bewertung === 0 || b.bewertung === null) {
+                                b.finish = 0;
+                            } else {
+                                b.finish = 1;
+                            }
+                        }
+                    });
+                });
+            }
 
             return api.post<boolean>("evaluation/createBewertung", this.bewertung);
         },
@@ -125,6 +137,7 @@ export const useEvaluationStore = defineStore({
             }
             const ans = await api.post<boolean>("evaluation/createBewertung", this.bewertung);
             await this.getall(idProject);
+            return ans;
         },
     },
 });

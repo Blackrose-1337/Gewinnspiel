@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { toRefs, watch, computed, ref } from "vue";
 import Projectload from "@/components/Project.vue";
+import { useQuasar } from "quasar";
 import type { Project } from "@/stores/interfaces";
 import { useEvaluationStore } from "@/stores/evaluation.ts";
 import { useProjectStore } from "@/stores/projects";
@@ -10,34 +11,63 @@ const props = defineProps<{
     selectedproject?: Project;
 }>();
 
+const $q = useQuasar();
 const authStore = useAuthStore();
-const evaluationstore = useEvaluationStore();
-const projectstore = useProjectStore();
+const evaluationStore = useEvaluationStore();
+const projectStore = useProjectStore();
 const iniProject = ref(null);
 
-const kriterien = computed(() => evaluationstore.kriterien);
+const kriterien = computed(() => evaluationStore.kriterien);
 const role = computed(() => authStore.role);
 
 let { selectedproject } = toRefs(props) as Project;
 const view = "evaluation";
-function update() {
-    evaluationstore.update(selectedproject.value.id);
+async function update() {
+    const ans = await evaluationStore.update(selectedproject.value.id);
+    if (ans) {
+        await projectStore.getProjectsEva();
+        $q.notify({
+            type: "positive",
+            message: "Bewertung wurde zwischengespeichert",
+            color: "green",
+        });
+    } else {
+        $q.notify({
+            type: "negative",
+            message: "Bewertung konnte nicht zwischengespeichert werden",
+            color: "red",
+        });
+    }
 }
-function send() {
-    evaluationstore.postBewertung();
-    projectstore.getProjectsEva();
+
+async function send() {
+    const ans = await evaluationStore.postBewertung(selectedproject.value.id);
+    if (ans) {
+        await projectStore.getProjectsEva();
+        $q.notify({
+            type: "positive",
+            message: "Bewertung wurde gespeichert",
+            color: "green",
+        });
+    } else {
+        $q.notify({
+            type: "negative",
+            message: "Bewertung konnte nicht gespeichert werden",
+            color: "red",
+        });
+    }
 }
 
 function load() {
-    evaluationstore.getKriterien();
+    evaluationStore.getKriterien();
 }
 watch(selectedproject, async changeProject => {
-    evaluationstore.bewertung = evaluationstore.bewertung.splice(0, 0);
-    await evaluationstore.clear();
+    evaluationStore.bewertung = evaluationStore.bewertung.splice(0, 0);
+    await evaluationStore.clear();
     await Promise.all([
-        evaluationstore.getall(selectedproject.value.id),
-        evaluationstore.getImages(selectedproject.value.id),
-        projectstore.setProject(selectedproject.value),
+        evaluationStore.getall(selectedproject.value.id),
+        evaluationStore.getImages(selectedproject.value.id),
+        projectStore.setProject(selectedproject.value),
     ]);
     iniProject.value.loadProject();
 });
@@ -70,7 +100,7 @@ load();
                 </div>
             </div>
             <div v-else id="zentrierer" class="col-5 q-gutter-lg">
-                <q-card v-for="k in kriterien" :key="k" class="q-gutter-lg bewetungcards">
+                <q-card v-for="k in kriterien" :key="k" class="q-gutter-lg bewertungcards">
                     <q-card-section>{{ k.frage }}</q-card-section>
                     <q-radio
                         disable
@@ -137,7 +167,7 @@ load();
 </template>
 
 <style scoped>
-.bewetungcards {
+.bewertungcards {
     min-width: 300px;
 }
 @media (max-width: 1200px) {
