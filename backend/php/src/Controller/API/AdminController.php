@@ -63,6 +63,75 @@ class AdminController extends BaseController
 		}
 	}
 
+	public function setpwAction()
+	{
+		// Variablen setzen
+		$strErrorDesc = '';
+		// Kommunikations-Methode entnehmen
+		$requestMethod = $_SERVER["REQUEST_METHOD"];
+		try {
+			// Überprüfung gültiger Session
+			if (!$this->sessionCheck()) {
+				$strErrorDesc = "Nicht akzeptierte Session";
+				$strErrorHeader = $this->fehler(405);
+
+				// Überprüfung erlaubter Rollen
+			} elseif (!$this->userCheck('admin')) {
+				$strErrorDesc = "Unberechtigt diese Aktion auszuführen";
+				$strErrorHeader = $this->fehler(401);
+			} else {
+				// abfrage ob es eine GET_Methode ist
+				if (strtoupper($requestMethod) == 'POST') {
+					// Aufruf benötigter Klassen
+					$usermodel = new ModelTeilnehmende();
+					$pwmodel = new ModelPw();
+					$saltmodel = new ModelSalt();
+					// Post Daten holen
+					$data = json_decode(file_get_contents('php://input'), true);
+					// Userinformationen holen
+					$user = $usermodel->getUserwithMail($data['email']);
+					// neuen salt generieren
+					$saltmodel->resetSaltbyID($user['saltId']);
+					// neuen salt holen
+					$salt = $saltmodel->getSaltbyID($user['saltId']);
+					// neuen hash generieren mit neuem passwort und salt
+					$pwCheck = $pwmodel->setNewHashbyId($salt, $user['pwId'], $data['password']);
+					$message = new stdClass();
+					if ($pwCheck) {
+						$message->answer = true;
+						$message->message = 'Passwort erfolgreich gesetzt';
+						$message->type = 'positive';
+					} else {
+						$message->answer = false;
+						$message->message = 'Passwort konnte nicht neu gesetzt werden';
+						$message->type = 'negative';
+					}
+					$responseData = json_encode($message);
+
+				} else {
+					// Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde
+					$strErrorDesc = 'Method not supported';
+					$strErrorHeader = $this->fehler(422);
+				}
+			}
+		} catch (Error $e) {
+			// Fehlermeldung, falls ein serverseitiger Fehler entstanden ist
+			$strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+			$strErrorHeader = $this->fehler(500);
+		}
+		// Falls kein Fehler enthalten ist wird die Antwort verpackt und versendet
+		if (!$strErrorDesc && ($requestMethod == 'POST')) {
+			$this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
+
+			// Falls ein Fehler enthalten ist wird dieser verpackt und versendet
+		} else {
+			$this->sendOutput(
+				json_encode(array('error' => $strErrorDesc)),
+				array('Content-Type: application/json', $strErrorHeader)
+			);
+		}
+	}
+
 	//API Funktion um Änderungen zu speichern die der Admin bei einem User macht
 	public function saveAction()
 	{

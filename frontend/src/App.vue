@@ -66,14 +66,20 @@ onMounted(() => {
                                 @click="settitle('Userverwaltung')"
                                 to="/verwaltung"
                                 label="Userverwaltung"
-                                icon="dynamic_form"
+                                icon="people"
                             />
-                            <q-route-tab @click="settitle('Projekte')" to="/project" label="Projekte" icon="settings" />
+                            <q-route-tab @click="settitle('Projekte')" to="/project" label="Projekte" icon="description" />
                             <q-route-tab
                                 @click="settitle('Konfiguration')"
                                 to="/designe"
                                 label="Konfiguration"
                                 icon="settings"
+                            />
+                            <q-route-tab
+                                @click="settitle('Passwortverwaltung')"
+                                to="/password-set"
+                                label="Passwortverwaltung"
+                                icon="lock"
                             />
                         </q-list>
                     </q-menu>
@@ -83,7 +89,7 @@ onMounted(() => {
                     <q-route-tab to="/login" label="Login" />
                 </div>
                 <div v-else>
-                    <q-route-tab @click="logout()" label="Logout" />
+                    <q-route-tab @click="logout()" label="Logout" icon="logout" />
                 </div>
             </q-tabs>
         </q-header>

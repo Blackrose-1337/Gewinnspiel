@@ -1,8 +1,8 @@
-import {defineStore} from "pinia";
+import { defineStore } from "pinia";
 import NetworkHelper from "@/utils/networkHelper";
-import {HTTPError} from "ky";
-import {Notify} from "quasar";
-import type {User} from "@/stores/interfaces";
+import { HTTPError } from "ky";
+import { Notify } from "quasar";
+import type { User } from "@/stores/interfaces";
 
 const api = new NetworkHelper();
 export type State = {
@@ -69,11 +69,35 @@ export const useUserStore = defineStore({
                     userId: userId,
                 };
                 const res = await api.get<boolean>("admin/pwreset", param);
-                console.log(res);
                 if (res) {
                     return res;
                 } else {
+                    Notify.create({
+                        message: `Da ist etwas schiefgelaufen, melden Sie sich beim Administrator`,
+                        type: "negative",
+                    });
+                }
+            } catch (err) {
+                console.error(err);
+                if (err instanceof HTTPError) {
+                    Notify.create({ message: `HTTP Error: ${err.message}`, type: "negative" });
+                }
+            }
+        },
+        async setPW(email: string, password: string) {
+            try {
+                const param = {
+                    email: email,
+                    password: password,
+                };
+                const res = await api.post<boolean>("admin/setpw", param);
+                if (res) {
                     return res;
+                } else {
+                    Notify.create({
+                        message: `Da ist etwas schiefgelaufen, melden Sie sich beim Administrator`,
+                        type: "negative",
+                    });
                 }
             } catch (err) {
                 console.error(err);

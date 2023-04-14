@@ -65,6 +65,12 @@ const router = createRouter({
             meta: { requiresAuth: false },
             component: () => import("../views/LoginView.vue")
         },
+	    {
+		    path: "/password-set",
+		    name: "password-set",
+		    meta: { requiresAuth: false },
+		    component: () => import("../views/PasswordView.vue")
+	    },
         {
             path: "/:pathMatch(.*)*",
             name: "NotFound",
