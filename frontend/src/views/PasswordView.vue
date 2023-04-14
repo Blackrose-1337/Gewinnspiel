@@ -14,7 +14,7 @@ const showPassword = ref(false);
 
 function isValidEmail(val: string) {
     const emailPattern =
-        /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,7}$/;
+	    /^(?=[a-zA-Z0-9äöüÄÖÜ@._%+-]{6,254}$)[a-zA-Z0-9äöüÄÖÜ._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,7}$/;
     return emailPattern.test(val) || "Invalid email";
 }
 function isValidpw(val: string) {
