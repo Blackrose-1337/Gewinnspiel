@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { toRefs } from "vue";
 import { useQuasar } from "quasar";
 import type { User } from "@/stores/interfaces";
@@ -45,6 +45,7 @@ const landRef = ref(null);
 const surnameRef = ref(null);
 const emailRef = ref(null);
 const dialog = ref(false);
+const users = computed(() => userStore.users);
 
 const selectOptionsTyp = ["DE", "AU", "CH", "Sonstiges"];
 
@@ -55,25 +56,25 @@ function myvalidate() {
     landRef.value.validate();
     plzRef.value.validate();
     ortschaftRef.value.validate();
-	strasseRef.value.validate();
+    strasseRef.value.validate();
     strNrRef.value.validate();
 }
 defineExpose({ myvalidate });
 function isValidEmail(val: string) {
     const emailPattern =
-        /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,7}$/;
+	    /^(?=[a-zA-Z0-9äöüÄÖÜ@._%+-]{6,254}$)[a-zA-Z0-9äöüÄÖÜ._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,7}$/;
     return emailPattern.test(val) || "Invalide E-mail";
 }
 function isValidName(val: string) {
-    const namepattern = /^[a-zA-Z]{2,50}$/;
+    const namepattern = /^[a-zA-Z äöüÄÖÜ]{2,50}$/;
     return namepattern.test(val) || "Invalider Name";
 }
 function isValidOrt(val: string) {
-    const ortpattern = /^[a-zA-Z ]{2,50}$/;
+    const ortpattern = /^[a-zA-Z äöüÄÖÜ]{2,50}$/;
     return ortpattern.test(val) || "Invalider Ort";
 }
 function isValidStrasse(val: string) {
-    const strassepattern = /^[a-zA-Z ]{2,50}$/;
+    const strassepattern = /^[a-zA-Z äöüÄÖÜ]{2,50}$/;
     return strassepattern.test(val) || "Invalide Strasse";
 }
 function isValidPlz(val: number) {
@@ -93,6 +94,9 @@ function changeValue(p: User) {
 }
 function updateModel(u: User) {
     model.value = u;
+}
+function getUserByEmail(email: string): User {
+    return users.value.find(u => u.email === email);
 }
 async function saveChange() {
     if (model.value.surname == "") {
@@ -121,6 +125,8 @@ async function saveChange() {
         if (answer1) {
             const answer = await userStore.saveUserChange(model.value);
             if (answer == true) {
+                await userStore.getUsers();
+                model.value = await getUserByEmail(model.value.email);
                 $q.notify({
                     type: "positive",
                     message: "Änderungen wurden gespeichert",
@@ -140,6 +146,7 @@ async function saveChange() {
     }
 }
 async function remove() {
+    // if (model.value.id !== 0) {
     const answer = await userStore.remove(model.value.id);
     if (answer["answer"] == true) {
         $q.notify({
@@ -157,7 +164,6 @@ async function remove() {
 }
 async function resetPw() {
     const answer = await userStore.resetPW(model.value.id);
-    console.log(answer);
     if (answer) {
         $q.notify({
             type: "positive",
@@ -179,7 +185,7 @@ watch(user, changeUser => {
 
 <template>
     <div>
-        <div class="row q-gutter-sm">
+        <div v-if="model.role !== 'jury'" class="row q-gutter-sm">
             <div class="row q-gutter-sm col-12">
                 <q-input
                     v-model="model.surname"
@@ -325,6 +331,50 @@ watch(user, changeUser => {
                     class="col-3"
                     type="tel"
                     @change="changeValue(model)"
+                />
+            </div>
+        </div>
+        <div v-else class="row q-gutter-sm">
+            <div class="row q-gutter-sm col-12">
+                <q-input
+                    v-model="model.surname"
+                    ref="surnameRef"
+                    standout="bg-secondary"
+                    label-color="accent"
+                    label="Nachname *"
+                    outlined
+                    clearable
+                    class="col-4"
+                    @change="changeValue(model)"
+                    :rules="[val => !!val || 'Pflichtfeld *', isValidName]"
+                />
+                <q-input
+                    v-model="model.name"
+                    ref="nameRef"
+                    standout="bg-secondary"
+                    label-color="accent"
+                    label="Vorname *"
+                    outlined
+                    clearable
+                    class="col-4"
+                    @change="changeValue(model)"
+                    :rules="[val => !!val || 'Pflichtfeld *', isValidName]"
+                />
+            </div>
+            <div v-if="view !== 'User'" class="row q-gutter-sm col-12">
+                <q-input
+                    v-model="model.email"
+                    ref="emailRef"
+                    standout="bg-secondary"
+                    label-color="accent"
+                    label="E-Mail *"
+                    outlined
+                    clearable
+                    class="col-5"
+                    type="email"
+                    lazy-rules
+                    @change="changeValue(model)"
+                    :rules="[val => !!val || 'Pflichtfeld *', isValidEmail]"
                 />
             </div>
         </div>

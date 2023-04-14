@@ -18,7 +18,7 @@ function isValidEmail(val: string) {
     return emailPattern.test(val) || "Invalid email";
 }
 function isValidpw(val: string) {
-    const pwpattern = /^[a-zA-Z0-9@+?!%]{12,100}$/;
+    const pwpattern = /^[a-zA-Z0-9!@#$%^*()_+-={}|:,.<>?]{12,20}$/;
     return pwpattern.test(val) || "Invalid password";
 }
 async function check() {

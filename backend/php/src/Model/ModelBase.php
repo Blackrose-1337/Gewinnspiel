@@ -15,7 +15,7 @@ class ModelBase
     protected function getString()
     {
         // mögliche Zeichen des Passwortes
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@!?+';
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^*()_+-={}|:,.<>?';
         $randomString = '';
 
         // Anzahl wiederholungen genertierter zufälligen Zeichen (Passwortlänge)
