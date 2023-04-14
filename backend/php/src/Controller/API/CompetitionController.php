@@ -31,7 +31,6 @@ class CompetitionController extends BaseController
                     if (PHP_OS == "Linux") {
                         // BilderPfad auf dem Server
                         $generalpath =getenv('F_PATH') . '/project';
-                        error_log('competition: ' . $generalpath);
                         // ProjectId auf Variable setzen
                         $number = $newproject->getId();
                         // Dem Pfad die Nummer anbinden
@@ -63,7 +62,6 @@ class CompetitionController extends BaseController
                     // Information Wettbewerb holen
                     $ans = $competitionmodel->getCompetition();
                     // Mail versenden (param: Mail, Token, PW, Name, Surname, Wettbewerbende)
-	                error_log('SEND_MAIL_CUSTOMER_BOOLEAN:'.getenv('SEND_MAIL_CUSTOMER_BOOLEAN')  );
                     if (getenv('SEND_MAIL_CUSTOMER_BOOLEAN')) {
                         $this->sendmail($data['user']['email'], $usermodel->getToken(), $usermodel->getPw(), $data['user']['name'], $data['user']['surname'], $ans['wettbewerbende']);
                     } else {

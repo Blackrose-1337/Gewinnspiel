@@ -34,8 +34,6 @@ class ProjectController extends BaseController
 					}
                     // Abruf eines pezifischen Projektes als Admin
                 } else if ($_SESSION['user_role'] == 'admin') {
-					error_log('User: ' . $arrQueryStringParams['userId']);
-					error_log('Projecttest: ' . json_encode($projectmodel->checkProject($arrQueryStringParams['userId'])));
 					if ($projectmodel->checkProject($arrQueryStringParams['userId'])) {
 						// Projekt wird geholt anhand mitgebener User-Id
 						$answer = $projectmodel->getProject($arrQueryStringParams['userId']);
@@ -204,7 +202,6 @@ class ProjectController extends BaseController
 				$bewertungmodel = new ModelBewertung();
                 // Post Daten holen
                 $data = json_decode(file_get_contents('php://input'), true);
-				error_log('Project: ' . json_encode($data));
 	            $message = new stdClass();
 	            if ($bewertungmodel->checkBewertung($data['id'])) {
 		            $message->answer = false;

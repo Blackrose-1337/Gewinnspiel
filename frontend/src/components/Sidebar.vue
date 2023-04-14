@@ -47,7 +47,7 @@ function addJury() {
         land: "",
         plz: null,
         ortschaft: "",
-        str: "",
+        strasse: "",
         strNr: null,
         vorwahl: "",
         tel: null,

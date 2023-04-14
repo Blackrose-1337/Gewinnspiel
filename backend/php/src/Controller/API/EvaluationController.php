@@ -72,7 +72,7 @@ class EvaluationController extends BaseController
                     $strErrorHeader = $this->fehler(405);
 
                     // Überprüfung erlaubter Rollen
-                } else if (!$this->userCheck('admin', 'jury')) {
+                } else if (!$this->userCheck('jury')) {
                     $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
                     $strErrorHeader = $this->fehler(401);
                 } else {

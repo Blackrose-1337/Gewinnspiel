@@ -80,7 +80,7 @@ class AdminController extends BaseController
 				$strErrorDesc = "Unberechtigt diese Aktion auszuführen";
 				$strErrorHeader = $this->fehler(401);
 			} else {
-				// abfrage ob es eine GET_Methode ist
+				// abfrage ob es eine POST_Methode ist
 				if (strtoupper($requestMethod) == 'POST') {
 					// Aufruf benötigter Klassen
 					$usermodel = new ModelTeilnehmende();

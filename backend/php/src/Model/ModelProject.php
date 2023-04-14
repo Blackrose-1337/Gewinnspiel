@@ -208,7 +208,6 @@ class ModelProject extends ModelBase
         $this->db->query("SELECT COUNT(*) FROM Project WHERE userId = :id");
         $this->db->bind(":id", $id);
         $data = $this->db->resultSet();
-		error_log('check: ' . $data);
         return $data[0]['COUNT(*)'] == 1;
     }
 
