@@ -211,9 +211,21 @@ function showImage(image: string) {
 function hideImage() {
     previewImage.value = null;
 }
-function approval() {
-    projectStore.approvalPost();
-    projectStore.getProjects();
+async function approval() {
+    const ans = await projectStore.approvalPost();
+    if (ans) {
+        await projectStore.getProjects();
+        $q.notify({
+            type: "positive",
+            message: `Das Projekt wurde freigegeben`,
+        });
+        await projectStore.getProjects();
+    } else {
+        $q.notify({
+            type: "negative",
+            message: `Das Projekt wurde nicht freigegeben`,
+        });
+    }
 }
 // Wird initialisiert wenn sich user prop ändert
 watch(user, changeuser => {
@@ -338,8 +350,9 @@ watch(selectedproject, changeselectedproject => {
             <h3>{{ project.title }}</h3>
             <p>{{ project.text }}</p>
         </div>
-        <div class="column content-center image-container">
+        <div class="row content-center image-container">
             <img
+                class="imgwitdh"
                 alt="Bilddarstellung eines Verlinkten Bildes des Projektes"
                 v-for="pic in pics"
                 :key="pic"
@@ -381,8 +394,6 @@ watch(selectedproject, changeselectedproject => {
 }
 
 .image-preview img {
-    /* max-width: 80%;
-    max-height: 80%; */
     object-fit: contain;
     cursor: pointer;
     transform: scale(4);
@@ -410,5 +421,10 @@ watch(selectedproject, changeselectedproject => {
 }
 .fileele {
     min-height: 50px;
+}
+@media (max-width: 1200px) {
+    .imgwitdh {
+        max-height: 200px !important;
+    }
 }
 </style>
