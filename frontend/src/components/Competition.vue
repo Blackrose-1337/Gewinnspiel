@@ -103,7 +103,7 @@ async function sendCompetition() {
                 isLoading.value = false;
                 $q.notify({
                     type: "negative",
-                    message: "Da ist was schieff gelaufen",
+                    message: "Da ist was schief gelaufen",
                     color: "red",
                 });
             }
@@ -307,7 +307,7 @@ load();
                             color="accent"
                             right-label
                             v-model="teilnahmebedingungenbestaetigung"
-                            label="Teilnahmebedingungen annehmen"
+                            label="Teilnahmebedingungen annehmen *"
                             class="col-4"
                         />
                     </q-field>

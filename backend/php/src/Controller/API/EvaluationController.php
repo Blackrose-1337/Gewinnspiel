@@ -190,7 +190,6 @@ class EvaluationController extends BaseController
                 if (!$this->sessionCheck()) {
                     $strErrorDesc = "Nicht akzeptierte Session";
                     $strErrorHeader = $this->fehler(405);
-
                     // Überprüfung erlaubter Rollen
                 } else if (!$this->userCheck('admin', 'teilnehmende', 'jury')) {
                     $strErrorDesc = "Unberechtigt diese Aktion auszuführen";

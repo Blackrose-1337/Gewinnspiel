@@ -25,16 +25,18 @@ class ModelBewertung extends ModelBase
         $data = $this->db->resultSet();
         return $data;
     }
-    public function getMissingProject(){
-        $this->db->query("SELECT u.name, u.surname, JSON_ARRAYAGG(p.id) AS project_ids
-FROM User u
-JOIN Project p ON u.role IN ('jury')
-LEFT JOIN Bewertung b ON p.id = b.projectid AND b.administrativeId = u.id
-WHERE b.id IS NULL OR b.finish = 0
-GROUP BY u.id;
-");
-        return $this->db->resultSet();
-    }
+	public function getMissingProject(){
+		$this->db->query("SELECT u.name, u.surname, GROUP_CONCAT(DISTINCT p.id) AS project_ids
+        FROM User u
+        JOIN Project p ON u.role IN ('jury')
+        LEFT JOIN Bewertung b ON p.id = b.projectid AND b.administrativeId = u.id
+        WHERE b.id IS NULL OR b.finish = 0
+        GROUP BY u.id;
+    ");
+		return $this->db->resultSet();
+	}
+
+
 
 	/**
 	 * Überprüfung ob Bewertung bereits existiert mittels Projekt-ID

@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import NetworkHelper from "@/utils/networkHelper";
 import { Notify } from "quasar";
 import type { Bewertung, Kriterien, Auswertung, Message, Missing } from "@/stores/interfaces";
+import { forEach } from "lodash";
 
 const api = new NetworkHelper();
 
@@ -94,6 +95,9 @@ export const useEvaluationStore = defineStore({
         },
         async getmissing() {
             this.missing = await api.get("evaluation/bewertungsCheck");
+            forEach(this.missing, (value, key) => {
+                value.project_ids = value.project_ids.split(",");
+            });
         },
         async getImages(id: number) {
             const param = {

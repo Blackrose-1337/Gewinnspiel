@@ -94,7 +94,7 @@ load();
                         <q-tooltip class="bg-accent">Die Bewertung wird zwischengespeichert</q-tooltip>
                     </q-btn>
                     <q-space />
-                    <q-btn color="green-5" label="Bewertung abschliessen" @click="send">
+                    <q-btn color="green-5" label="Als bewertet markieren" @click="send">
                         <q-tooltip class="bg-accent">Bewertung wird final abgeschlossen</q-tooltip>
                     </q-btn>
                 </div>
@@ -153,7 +153,7 @@ load();
                         <q-tooltip class="bg-accent">Die Bewertung wird zwischengespeichert</q-tooltip>
                     </q-btn>
                     <q-space />
-                    <q-btn disable color="green-5" label="Bewertung abschliessen" @click="send">
+                    <q-btn disable color="green-5" label="Als bewertet markieren" @click="send">
                         <q-tooltip class="bg-accent">Bewertung wird final abgeschlossen</q-tooltip>
                     </q-btn>
                 </div>

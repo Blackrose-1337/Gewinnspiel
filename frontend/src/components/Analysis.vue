@@ -33,16 +33,30 @@ onMounted(() => {
 <template>
     <div class="row q-ma-md q-pb-xl">
         <div class="col-8 q-ma-md">
-            <q-table title="Punkteliste" :rows="auswertung" :columns="columns" row-key="name" />
+            <q-table
+                title="Punkteliste"
+                virtual-scroll
+                class="my-sticky-virtscroll-table"
+                :rows-per-page-options="[0]"
+                :rows="auswertung"
+                :columns="columns"
+                row-key="value"
+            />
         </div>
         <q-space />
         <div class="m-list q-ma-lg col-2">
             <q-btn @click="getmissing" class="full-width genBtn" label="Fehlende Bewertungen anzeigen" />
             <q-card>
                 <div class="q-mt-md" v-for="m in missing" :key="m">
-                    <q-card-section class="bg-amber-1">
+                    <q-card-section class="bg-primary">
                         <h6>{{ m.name }} {{ m.surname }}</h6>
-                        <p>{{ m.project_ids }}</p>
+                        <div class="row">
+                            <div class="q-pa-sm" v-for="p in m.project_ids" :key="p">
+                                <q-card class="col-3">{{ p }}</q-card>
+                            </div>
+                        </div>
+
+                        <!--                        <p>{{ m.project_ids }}</p>-->
                     </q-card-section>
                 </div>
             </q-card>
@@ -52,5 +66,8 @@ onMounted(() => {
 <style scoped>
 .m-list {
     min-width: 300px;
+}
+.my-sticky-virtscroll-table {
+	max-height: 60%;
 }
 </style>

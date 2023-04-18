@@ -14,7 +14,7 @@ const showPassword = ref(false);
 
 function isValidEmail(val: string) {
     const emailPattern =
-	    /^(?=[a-zA-Z0-9äöüÄÖÜ@._%+-]{6,254}$)[a-zA-Z0-9äöüÄÖÜ._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,7}$/;
+        /^(?=[a-zA-Z0-9äöüÄÖÜ@._%+-]{6,254}$)[a-zA-Z0-9äöüÄÖÜ._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,7}$/;
     return emailPattern.test(val) || "Invalid email";
 }
 function isValidpw(val: string) {
@@ -79,7 +79,7 @@ async function login() {
     <q-page class="q-pa-xl">
         <span class="text-h5">Login</span>
 
-        <q-form ref="form">
+        <q-form ref="form" @keydown.enter="login">
             <q-input
                 label="E-Mail"
                 standout="bg-secondary"

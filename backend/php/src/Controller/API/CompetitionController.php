@@ -36,11 +36,11 @@ class CompetitionController extends BaseController
                         // Dem Pfad die Nummer anbinden
                         $newPath = $generalpath . strval($number);
                         // erstellen des Projektordners
-                        mkdir($newPath, 0777, true);
+	                    mkdir($newPath, 0775, true);
                         // neuen Pfad mit GUID
                         $newPath = $newPath . '/' . $this->GUID();
                         // GUID Ordner erstellen (Sicherheitsvorkehrung)
-                        mkdir($newPath, 0777, true);
+	                    mkdir($newPath, 0775, true);
                         // Bilder Speichern und auf DB Pfad speichern
                         $this->saveImage($picturebase64, $newPath, $newproject->getId());
                     } elseif (PHP_OS == "Windows") {

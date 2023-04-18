@@ -194,7 +194,6 @@ watch(user, changeUser => {
                     label-color="accent"
                     label="Nachname *"
                     outlined
-                    clearable
                     class="col-4"
                     @change="changeValue(model)"
                     :rules="[val => !!val || 'Pflichtfeld *', isValidName]"
@@ -206,7 +205,6 @@ watch(user, changeUser => {
                     label-color="accent"
                     label="Vorname *"
                     outlined
-                    clearable
                     class="col-4"
                     @change="changeValue(model)"
                     :rules="[val => !!val || 'Pflichtfeld *', isValidName]"
@@ -220,7 +218,6 @@ watch(user, changeUser => {
                     label-color="accent"
                     label="E-Mail *"
                     outlined
-                    clearable
                     class="col-5"
                     type="email"
                     lazy-rules
@@ -236,7 +233,6 @@ watch(user, changeUser => {
                     label="E-Mail *"
                     outlined
                     disable
-                    clearable
                     class="col-5"
                     type="email"
                     @change="changeValue(model)"
@@ -264,7 +260,6 @@ watch(user, changeUser => {
                     label-color="accent"
                     label="PLZ *"
                     outlined
-                    clearable
                     class="col-3"
                     type="number"
                     @change="changeValue(model)"
@@ -277,7 +272,6 @@ watch(user, changeUser => {
                     label-color="accent"
                     label="Ortschaft *"
                     outlined
-                    clearable
                     class="col-4"
                     @change="changeValue(model)"
                     :rules="[val => !!val || 'Pflichtfeld *', isValidOrt]"
@@ -292,7 +286,6 @@ watch(user, changeUser => {
                     label-color="accent"
                     label="Strasse *"
                     outlined
-                    clearable
                     class="col-5"
                     @change="changeValue(model)"
                     :rules="[val => !!val || 'Pflichtfeld *', isValidStrasse]"
@@ -317,7 +310,6 @@ watch(user, changeUser => {
                     label-color="accent"
                     label="Vorwahl"
                     outlined
-                    clearable
                     class="col-2"
                     @change="changeValue(model)"
                 />
@@ -327,7 +319,6 @@ watch(user, changeUser => {
                     label-color="accent"
                     label="Tel-Nummer"
                     outlined
-                    clearable
                     class="col-3"
                     type="tel"
                     @change="changeValue(model)"
@@ -343,7 +334,6 @@ watch(user, changeUser => {
                     label-color="accent"
                     label="Nachname *"
                     outlined
-                    clearable
                     class="col-4"
                     @change="changeValue(model)"
                     :rules="[val => !!val || 'Pflichtfeld *', isValidName]"
@@ -355,7 +345,6 @@ watch(user, changeUser => {
                     label-color="accent"
                     label="Vorname *"
                     outlined
-                    clearable
                     class="col-4"
                     @change="changeValue(model)"
                     :rules="[val => !!val || 'Pflichtfeld *', isValidName]"
@@ -369,7 +358,6 @@ watch(user, changeUser => {
                     label-color="accent"
                     label="E-Mail *"
                     outlined
-                    clearable
                     class="col-5"
                     type="email"
                     lazy-rules
