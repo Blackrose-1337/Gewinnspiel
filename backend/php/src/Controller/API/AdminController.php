@@ -235,45 +235,49 @@ class AdminController extends BaseController
 
 				// project_id holen
 				$project = $projectmodel->getProject($data['userId']);
+				$check =true;
 				// falls ein Projekt vorhanden ist
 				if ($project['id']) {
 					// Überprüfung ob eine Bewertung vorhanden ist
 					if ($bewertungmodel->checkBewertung($project['id'])) {
 						$message = new stdClass();
 						$message->answer = false;
-						$message->message = 'Bewertung vorhanden - User kann nicht gelöscht werden';
+						$message->message = 'Bewertung vorhanden - User & Projekt kann nicht gelöscht werden';
 						$message->type = 'negative';
 						$responseData = json_encode($message);
+						$check = false;
 					}
 				}
-				// Überprüfung der mitgegeben 'userId'
-				if ($data['userId'] !== 0) {
-					if ($usermodel->getUserRole($data['userId'])[0]['role'] == 'teilnehmende') {
-						// Löschen des Projekts über UserID
-						$projectmodel->deleteProjectWithUserId($data);
-					}
-					//PW- und SaltID holen
-					$ans = $usermodel->getPwSaltId($data['userId']);
+				if ($check) {
+					// Überprüfung der mitgegeben 'userId'
+					if ($data['userId'] !== 0) {
+						if ($usermodel->getUserRole($data['userId'])[0]['role'] == 'teilnehmende') {
+							// Löschen des Projekts über UserID
+							$projectmodel->deleteProjectWithUserId($data);
+						}
+						//PW- und SaltID holen
+						$ans = $usermodel->getPwSaltId($data['userId']);
 
-					// Löschen des Users (übergabe voller User)
-					$checkuserdelete = $usermodel->deleteUser($data);
-					// Salt und Pw Löschen
-					$checksaltdelete = $saltmodel->deleteSaltDB($ans[0]['saltId']);
-					$checkpwdelete = $pwmodel->deleteHashDB($ans[0]['pwId']);
-					$message = new stdClass();
-					if ($checkuserdelete && $checksaltdelete && $checkpwdelete) {
-						$message->answer = true;
-						$message->message = 'User erfolgreich gelöscht';
-						$message->type = 'positive';
+						// Löschen des Users (übergabe voller User)
+						$checkuserdelete = $usermodel->deleteUser($data);
+						// Salt und Pw Löschen
+						$checksaltdelete = $saltmodel->deleteSaltDB($ans[0]['saltId']);
+						$checkpwdelete = $pwmodel->deleteHashDB($ans[0]['pwId']);
+						$message = new stdClass();
+						if ($checkuserdelete && $checksaltdelete && $checkpwdelete) {
+							$message->answer = true;
+							$message->message = 'User erfolgreich gelöscht';
+							$message->type = 'positive';
+						} else {
+							$message->answer = false;
+							$message->message = 'User konnte nicht gelöscht werden';
+							$message->type = 'negative';
+						}
+						$responseData = json_encode($message);
 					} else {
-						$message->answer = false;
-						$message->message = 'User konnte nicht gelöscht werden';
-						$message->type = 'negative';
+						// Antwort, wenn 'userId' nicht hinterlegt ist oder auf 0 gesetzt
+						$responseData = false;
 					}
-					$responseData = json_encode($message);
-				} else {
-					// Antwort, wenn 'userId' nicht hinterlegt ist oder auf 0 gesetzt
-					$responseData = false;
 				}
 			} else {
 				// Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde

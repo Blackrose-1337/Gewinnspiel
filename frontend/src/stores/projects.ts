@@ -109,7 +109,13 @@ export const useProjectStore = defineStore({
         },
         async postPicUpload() {
             if (this.newImage.length > 0) {
-                return await api.post<boolean>("project/addPicture", this.newImage);
+                const ans = await api.post<boolean>("project/addPicture", this.newImage);
+                console.log(ans);
+                if (ans) {
+                    this.newImage.splice(0, this.newImage.length);
+                    console.log(this.newImage);
+                    return ans;
+                }
             } else {
                 return 2;
             }

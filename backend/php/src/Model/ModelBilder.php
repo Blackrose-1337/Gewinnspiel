@@ -17,6 +17,15 @@ class ModelBilder extends ModelBase
         $answer = $this->db->execute();
         return $answer;
     }
+	// Funktion Anzahl Bilder eines Projektes
+	public function getPictureCount($proid)
+	{
+		$this->db->query("SELECT COUNT(*) FROM Image
+		WHERE projectid = :projectid");
+		$this->db->bind(":projectid", $proid);
+		$data = $this->db->resultSet();
+		return $data;
+	}
 
     /* Funktion prüft, ob ein Bild für das angegebene Projekt existiert. Wenn ja,
     gibt sie ein Array mit allen Datensätzen aus der DB zurück, die diesem Projekt zugeordnet sind */

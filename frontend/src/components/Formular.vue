@@ -50,19 +50,22 @@ const users = computed(() => userStore.users);
 const selectOptionsTyp = ["DE", "AU", "CH", "Sonstiges"];
 
 function myvalidate() {
-    nameRef.value.validate();
-    surnameRef.value.validate();
-    emailRef.value.validate();
-    landRef.value.validate();
-    plzRef.value.validate();
-    ortschaftRef.value.validate();
-    strasseRef.value.validate();
-    strNrRef.value.validate();
+    return !!(
+        nameRef.value.validate() &&
+        surnameRef.value.validate() &&
+        emailRef.value.validate() &&
+        landRef.value.validate() &&
+        plzRef.value.validate() &&
+        ortschaftRef.value.validate() &&
+        strasseRef.value.validate() &&
+        strNrRef.value.validate()
+    );
 }
+// "Exportiert" die Funktion myvalidate() um sie in anderen Komponenten verwenden zu können
 defineExpose({ myvalidate });
 function isValidEmail(val: string) {
     const emailPattern =
-	    /^(?=[a-zA-Z0-9äöüÄÖÜ@._%+-]{6,254}$)[a-zA-Z0-9äöüÄÖÜ._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,7}$/;
+        /^(?=[a-zA-Z0-9äöüÄÖÜ@._%+-]{6,254}$)[a-zA-Z0-9äöüÄÖÜ._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,7}$/;
     return emailPattern.test(val) || "Invalide E-mail";
 }
 function isValidName(val: string) {
@@ -151,7 +154,7 @@ async function remove() {
     if (answer["answer"] == true) {
         $q.notify({
             type: "positive",
-            message: "User wurde gelöscht",
+            message: "User & Projekt wurde gelöscht",
             color: "green",
         });
     } else {
@@ -228,6 +231,7 @@ watch(user, changeUser => {
             <div v-else class="row q-gutter-sm col-12">
                 <q-input
                     v-model="model.email"
+                    ref="emailRef"
                     standout="bg-secondary"
                     label-color="accent"
                     label="E-Mail *"
@@ -370,7 +374,7 @@ watch(user, changeUser => {
         <div v-if="view === 'Project'">
             <q-btn label="Änderungen Speichern" color="accent" @click="saveChange" class="genBtn" />
             <q-btn label="Passwort zurücksetzen" color="red-5" @click="resetPw" class="genBtn" />
-            <q-btn label="User Löschen" color="red-5" @click="dialog = true" class="genBtn" />
+            <q-btn label="User & Projekt Löschen" color="red-5" @click="dialog = true" class="genBtn" />
             <div>
                 <q-dialog v-model="dialog" persistent transition-show="scale" transition-hide="scale">
                     <q-card class="bg-grey-3 text-black" style="width: 300px">
@@ -379,7 +383,7 @@ watch(user, changeUser => {
                         </q-card-section>
 
                         <q-card-section class="q-pt-none bg-secondary">
-                            Möchten Sie wirklich den User vollständig Löschen?
+                            Möchten Sie wirklich den User & das Projekt vollständig Löschen?
                         </q-card-section>
 
                         <q-card-actions align="right" class="bg-secondary text-teal">

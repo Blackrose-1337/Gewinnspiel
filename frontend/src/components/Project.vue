@@ -27,6 +27,8 @@ let previewImage = ref();
 let bild = new Image();
 const dialog = ref(false);
 const maxfilecount = ref();
+const proTitleRef = ref(null);
+const proTextRef = ref(null);
 
 //--------------- computed ------------------------------
 const project = computed(() => projectStore.project);
@@ -66,7 +68,7 @@ async function remove() {
     if (answer["answer"] == true) {
         $q.notify({
             type: "positive",
-            message: "Projekt wurde gelöscht",
+            message: "User & Projekt wurde gelöscht",
             color: "green",
         });
         await projectStore.getProjects();
@@ -92,8 +94,8 @@ async function removepic(file: string) {
         await loadImage();
     } else {
         $q.notify({
-            type: "negative",
-            message: `Das Bild wurde nicht gelöscht`,
+            type: ans["type"],
+            message: ans["message"],
         });
     }
 }
@@ -165,7 +167,6 @@ function onRejected(rejectedEntries: object) {
         message: `${rejectedEntries.length} file(s) did not pass validation constraints`,
     });
 }
-
 // Bilder vom Store werden bereitgestellt zur Darstellung
 async function loadImage() {
     isLoading.value = true;
@@ -202,7 +203,6 @@ async function loadProject() {
     project.value.pics = img;
     await loadImage();
 }
-defineExpose({ loadProject });
 // Bild vergrössern
 function showImage(image: string) {
     previewImage.value = image;
@@ -211,6 +211,12 @@ function showImage(image: string) {
 function hideImage() {
     previewImage.value = null;
 }
+// project validation
+function myvalidate() {
+    return !!(proTitleRef.value.validate() && proTextRef.value.validate());
+}
+// "Exportiert" die Funktion myvalidate() um sie in anderen Komponenten verwenden zu können
+defineExpose({ myvalidate, loadProject });
 async function approval() {
     const ans = await projectStore.approvalPost();
     if (ans) {
@@ -256,9 +262,16 @@ watch(selectedproject, changeselectedproject => {
     <div v-if="view === 'Project' || view === 'User'">
         <div class="q-ma-sm">
             <h4 class="q-mt-sm">Projekttitle</h4>
-            <q-input standout="bg-secondary" v-model="project.title" outlined class="q-mt-sm" />
+            <q-input ref="proTitleRef" standout="bg-secondary" v-model="project.title" outlined class="q-mt-sm" />
             <h4 class="q-mt-sm">Projekttext</h4>
-            <q-input standout="bg-secondary" v-model="project.text" outlined class="q-mt-sm" autogrow />
+            <q-input
+                ref="proTextRef"
+                standout="bg-secondary"
+                v-model="project.text"
+                outlined
+                class="q-mt-sm"
+                autogrow
+            />
         </div>
         <div class="q-pa-sm">
             <q-file
@@ -315,7 +328,7 @@ watch(selectedproject, changeselectedproject => {
                 </div>
                 <div class="row">
                     <q-space />
-                    <q-btn label="Projekt Löschen" color="red-5" @click="dialog = true" class="genBtn" />
+                    <q-btn label="User & Projekt Löschen" color="red-5" @click="dialog = true" class="genBtn" />
                 </div>
                 <div>
                     <q-dialog v-model="dialog" persistent transition-show="scale" transition-hide="scale">
@@ -325,7 +338,7 @@ watch(selectedproject, changeselectedproject => {
                             </q-card-section>
 
                             <q-card-section class="q-pt-none bg-secondary">
-                                Möchten Sie wirklich das Projekt vollständig Löschen?
+                                Möchten Sie wirklich den User & das Projekt vollständig Löschen?
                             </q-card-section>
 
                             <q-card-actions align="right" class="bg-secondary text-teal">

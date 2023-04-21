@@ -179,7 +179,7 @@ class ProjectController extends BaseController
         }
     }
 
-    // API Funktion Projekt löschen
+    // API Funktion Projekt löschen (auch der User wird gelöscht)
     public function deleteAction()
     {
         $strErrorDesc = '';
@@ -200,21 +200,42 @@ class ProjectController extends BaseController
                 // Aufruf benötigter Klassen 
                 $projectmodel = new ModelProject();
 				$bewertungmodel = new ModelBewertung();
+				$usermodel = new ModelTeilnehmende();
+	            $saltmodel = new ModelSalt();
+	            $pwmodel = new ModelPw();
                 // Post Daten holen
                 $data = json_decode(file_get_contents('php://input'), true);
 	            $message = new stdClass();
 	            if ($bewertungmodel->checkBewertung($data['id'])) {
 		            $message->answer = false;
-		            $message->message = 'Bewertung vorhanden - Projekt kann nicht gelöscht werden';
+		            $message->message = 'Bewertung vorhanden - User & Projekt kann nicht gelöscht werden';
 		            $message->type = 'negative';
+		            $responseData = json_encode($message);
 	            } else {
 		            // Überprüfung ob die ID nicht 0 ist
 		            if ($data['id'] !== 0) {
+						// User id holen uas projekt
+			            $userID = $projectmodel->getUserIdWithId($data['id']);
+						// User holen
+			            $user = $usermodel->getUser($userID);
 			            // löschen des Projektes
 			            if($projectmodel->deleteProject($data)){
-				            $message->answer = true;
-				            $message->message = 'Projekt erfolgreich gelöscht';
-				            $message->type = 'positive';
+				            $ans = $usermodel->getPwSaltId($user);
+				            // Löschen des Users (übergabe voller User)
+				            $checkuserdelete = $usermodel->deleteUser($data);
+				            // Salt und Pw Löschen
+				            $checksaltdelete = $saltmodel->deleteSaltDB($ans[0]['saltId']);
+				            $checkpwdelete = $pwmodel->deleteHashDB($ans[0]['pwId']);
+							if($checkuserdelete && $checksaltdelete && $checkpwdelete){
+					            $message->answer = true;
+					            $message->message = 'User & Projekt erfolgreich gelöscht';
+					            $message->type = 'positive';
+				            } else {
+								$message->answer = false;
+					            $message->message = 'User konnte nicht gelöscht werden';
+					            $message->type = 'negative';
+				            }
+
 			            } else {
 				            $message->answer = false;
 				            $message->message = 'Projekt konnte nicht gelöscht werden';
@@ -222,7 +243,7 @@ class ProjectController extends BaseController
 			            }
 		            } else {
 			            $message->answer = false;
-			            $message->message = 'Projekt konnte nicht gelöscht werden';
+			            $message->message = 'User & Projekt konnten nicht gelöscht werden';
 			            $message->type = 'negative';
 		            }
 	            }
@@ -273,15 +294,27 @@ class ProjectController extends BaseController
                 // Post Daten holen
                 $data = json_decode(file_get_contents('php://input'), true);
                 if ($data['projectId'] !== 0) {
-                    // auftrennung des Strings
-                    $newdata = explode('/', $data['imgPath']);
-                    // neuen Pfad definieren
-                    $newpath = './' . $newdata[3] . '/' . $newdata[4] . '/' . $newdata[5] . '/' . $newdata[6];
-                    // löschen aus der DB mittels Pfad und Projekt-ID
-                    $picmodel->DeletePath($newpath, $data['projectId']);
-                    // Bild in den Ordner 'trash' verschieben, falls es jemand nicht wollte noch zu retten ist Administrativ
-                    rename($newpath, getenv('F_PATH').'/trash/' . $newdata[4] . '-' . $newdata[6] . '-' . count(scandir(getenv('F_PATH').'/trash')));
-                    $responseData = true;
+					// überprüfen Anzahl Bilder
+	                $count = $picmodel->getPictureCount($data['projectId']);
+					error_log("Anzahl Bilder: ");
+					error_log($count[0]["COUNT(*)"]);
+					if ($count[0]["COUNT(*)"] > 1) {
+						// auftrennung des Strings
+						$newdata = explode('/', $data['imgPath']);
+						// neuen Pfad definieren
+						$newpath = './' . $newdata[3] . '/' . $newdata[4] . '/' . $newdata[5] . '/' . $newdata[6];
+						// löschen aus der DB mittels Pfad und Projekt-ID
+						$picmodel->DeletePath($newpath, $data['projectId']);
+						// Bild in den Ordner 'trash' verschieben, falls es jemand nicht wollte noch zu retten ist Administrativ
+						//  rename($newpath, getenv('F_PATH').'/trash/' . $newdata[4] . '-' . $newdata[6] . '-' . count(scandir(getenv('F_PATH').'/trash')));
+						$responseData = true;
+					} else {
+						$message = new stdClass();
+						$message->answer = false;
+						$message->message = 'Projekt muss mindestens ein Bild besitzen';
+						$message->type = 'negative';
+						$responseData = json_encode($message);
+					}
                 } else {
                     $responseData = false;
                 }

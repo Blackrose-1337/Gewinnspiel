@@ -68,6 +68,6 @@ onMounted(() => {
     min-width: 300px;
 }
 .my-sticky-virtscroll-table {
-	max-height: 60%;
+    max-height: 60vh;
 }
 </style>
