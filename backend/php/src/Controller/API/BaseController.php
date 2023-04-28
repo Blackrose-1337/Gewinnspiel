@@ -92,6 +92,7 @@ class BaseController
     {
         // Aufruf benötigter Klassen 
         $modelimage = new ModelBilder;
+		$modelProject = new ModelProject();
 
         // Zähler variable für namesgebung
         $count = $number;
@@ -101,7 +102,7 @@ class BaseController
             // Base64 Code trennen von nicht benötigten informationen
             $picture = explode(',', $base64['bildbase']);
 			// ändern der Nummerierungsart
-	        $newcount = sprintf("%02d", $count);
+	        $newcount = sprintf("%03d", $count);
             // Pfadbestimmung zum abspeichern der Bilder auf dem Server
             $newpath = $path . "/image" . $newcount . ".png";
             // Auf neuem Pfad Datei öffnen zum bearbeiten
@@ -115,6 +116,7 @@ class BaseController
             // Model Bilder ansprechen um Pfad auf der Datenbank zu hinterlegen inclusive zugewissem Projekt
             $modelimage->createImagePath($projectid, $newpath);
         }
+		$modelProject->setPictureIncrement($projectid, $count -1);
     }
 
     // Pfad Hinterlegung zur Antwortversendung
@@ -164,16 +166,33 @@ class BaseController
        
         <p>Das stickstoff-Magazin Team wünscht Ihnen viel Erfolg!</p>
         </body>
-        </html>'
-            ;
+        </html>';
             // für HTML-E-Mails muss der 'Content-type'-Header gesetzt werden
             $mail->Host = 'localhost'; // Hier die IP-Adresse oder Domain des Mail-Servers eintragen
-
             // Empfänger und Inhalt
-            $mail->setFrom('noreply@stickstoff-magazin.de', 'Stickstoff-Magazin');
+            $mail->setFrom('noreply@stickstoff-magazin.de', 'Stickstoff-Magazin', true);
             $mail->CharSet = 'UTF-8';
             $mail->isHtml(true);
-            $mail->addAddress($empfaenger);
+	        error_log("sendmail9");
+	        try {
+		        $mail->addAddress( strval($empfaenger));
+	        } catch (Exception $e) {
+		        error_log($e);
+				$betreff = 'Benachrichtigung: E-Mail-Versand fehlgeschlagen';
+		        $nachricht = '<!DOCTYPE html>
+<html lang="de">
+<body>
+	<h2>Benachrichtigung: E-Mail-Versand fehlgeschlagen</h2>
+	<p>Guten Tag,</p>
+	<p>Leider ist es nicht möglich, eine E-Mail an folgende Adresse zu senden:</p>
+	<p><strong>Empfängeradresse:</strong> '. $empfaenger . ' </p>
+	<p>Es gab ein Problem beim Senden der E-Mail, das wie folgt beschrieben werden kann:</p>
+	<p>' . $e .'</p>
+</body>
+</html>';
+		        $mail->addAddress('it@stickstoff-magazin.de');
+				error_log($e);
+	        }
             $mail->Subject = $betreff;
             $mail->Body = $nachricht;
             if (getenv('ENVIRONMENT') === 'development'){
@@ -194,6 +213,7 @@ class BaseController
         $mail = new PHPMailer(true);
         try {
             $mail->isMail();
+	        $mail->CharSet = "UTF-8";
             // Betreff
             $betreff = 'Neues Passwort Stickstoff Wettbewerb';
             // Nachricht
@@ -215,7 +235,6 @@ class BaseController
 
             // Empfänger und Inhalt
             $mail->setFrom('noreply@stickstoff-magazin.de', 'Stickstoff-Magazin');
-            $mail->CharSet = 'UTF-8';
             $mail->isHtml(true);
             $mail->addAddress($empfaenger);
             $mail->Subject = $betreff;
@@ -226,7 +245,6 @@ class BaseController
             } else {
                 $mail->send();
             }
-
         } catch (Exception $e) {
             error_log('Die E-Mail konnte nicht gesendet werden. Fehlermeldung: ', $mail->ErrorInfo);
         }

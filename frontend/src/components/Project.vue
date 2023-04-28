@@ -1,4 +1,5 @@
 <script setup lang="ts">
+//--------------------- Imports ----------------------------------
 import { useQuasar } from "quasar";
 import type { Project, ProjectBild, User } from "@/stores/interfaces";
 import { useProjectStore } from "@/stores/projects";
@@ -8,43 +9,45 @@ import Loading from "vue-loading-overlay";
 import { storeToRefs } from "pinia";
 import { isArray } from "lodash";
 
-//--------------- Props ------------------------------
+//--------------------- Props ------------------------------------
 const props = defineProps<{
     user?: User;
     selectedproject?: Project;
     view?: string;
 }>();
 
-//--------------- Storeload ------------------------------
+//--------------------- Storeload --------------------------------
 const projectStore = useProjectStore();
 const evaluationstore = useEvaluationStore();
 const $q = useQuasar();
 
-//--------------- variables ------------------------------
-let isLoading = ref(false);
-const fullPage = ref(true);
-let previewImage = ref();
-let bild = new Image();
-const dialog = ref(false);
-const maxfilecount = ref();
+//--------------------- variable's -------------------------------
 const proTitleRef = ref(null);
 const proTextRef = ref(null);
+const fullPage = ref(true);
+const dialog = ref(false);
+let isLoading = ref(false);
+const maxfilecount = ref();
+let previewImage = ref();
+let bild = new Image();
 
-//--------------- computed ------------------------------
+//--------------------- computed ---------------------------------
 const project = computed(() => projectStore.project);
 let newimage = computed(() => projectStore.newImage);
 const img = computed(() => evaluationstore.img);
 
-//--------------- storeToRefs ------------------------------
+//--------------------- storeToRefs ------------------------------
 const { pics } = storeToRefs(projectStore);
 const { tempImage } = storeToRefs(projectStore);
+const { tempProject } = storeToRefs(projectStore);
 
-//--------------- toRefs to props------------------------------
+//--------------------- toRefs to props---------------------------
 const { user } = toRefs(props) as User;
 const { selectedproject } = toRefs(props) as Project;
 const { view } = toRefs(props);
 
-//--------------- funcions ------------------------------
+//--------------------- function's -------------------------------
+//--------------- function's for save ----------------------------
 // save: Speichervorgang Initialisiert den Post zum Backend mit allen vorgenommen Änderungen an dem Project
 async function save() {
     const bool: boolean = await projectStore.postProject();
@@ -60,8 +63,60 @@ async function save() {
             message: "Der Speichervorgang ist gescheitert",
             color: "red",
         });
+        isLoading.value = false;
     }
 }
+// Bilder werden per Post an das Backend gesendet zum speichern und die Bilder werden frisch abgefragt
+async function upload() {
+	isLoading.value = true;
+    if (projectStore.newImage.length < 1) {
+        $q.notify({
+            type: "negative",
+            message: `Es sind keine Bilder zum hochgeladen bereitgestellt`,
+        });
+    } else {
+        const ans = await projectStore.postPicUpload();
+        await evaluationstore.getImages(project.value.id);
+        await projectStore.clearPics();
+        project.value.pics = img;
+        tempProject.value.pics = img;
+        tempImage.value.splice(0, tempImage.value.length);
+        if (ans === 1) {
+            $q.notify({
+                type: "positive",
+                message: `Das Bild wurde erfolgreich hochgeladen`,
+            });
+            projectStore.newImage.splice(0);
+            await loadImage();
+        } else {
+            $q.notify({
+                type: "negative",
+                message: `Das Bild wurde nicht hochgeladen`,
+            });
+        }
+    }
+	isLoading.value = false;
+}
+// approval:  Freigabe des Projektes per Post Initialisieren
+async function approval() {
+    const ans = await projectStore.approvalPost();
+    if (ans) {
+        await projectStore.getProjects();
+        $q.notify({
+            type: "positive",
+            message: `Das Projekt wurde freigegeben`,
+        });
+        await projectStore.getProjects();
+    } else {
+        $q.notify({
+            type: "negative",
+            message: `Das Projekt wurde nicht freigegeben`,
+        });
+    }
+    isLoading.value = false;
+}
+
+//--------------- function's for remove -------------------------
 // remove:  Löschen des Projektes per Post Initialisieren
 async function remove() {
     const answer = await projectStore.projectRemove(project.value.id);
@@ -79,13 +134,13 @@ async function remove() {
         });
     }
 }
-
 // removepic:  Löschen des Bildes per Post Initialisieren
 async function removepic(file: string) {
     const ans = await projectStore.deletePic(file.toString());
     await evaluationstore.getImages(project.value.id);
     await projectStore.clearPics();
     project.value.pics = img;
+    tempProject.value.pics = img;
     if (ans === 1) {
         $q.notify({
             type: "positive",
@@ -100,6 +155,7 @@ async function removepic(file: string) {
     }
 }
 
+//--------------- function's for load ---------------------------
 // Bilder im Store bereitstellen
 async function loadIntoStore() {
     if (newimage.value.length > 0) {
@@ -127,45 +183,6 @@ async function loadIntoStore() {
         }
         await Promise.all(promises);
     }
-}
-// Bilder werden per Post an das Backend gesendet zum speichern und die Bilder werden frisch abgefragt
-async function upload() {
-    if (projectStore.newImage.length < 1) {
-        $q.notify({
-            type: "negative",
-            message: `Es sind keine Bilder zum hochgeladen bereitgestellt`,
-        });
-    } else {
-        const ans = await projectStore.postPicUpload();
-        await evaluationstore.getImages(project.value.id);
-        await projectStore.clearPics();
-        project.value.pics = img;
-        tempImage.value.splice(0, tempImage.value.length);
-        if (ans === 1) {
-            $q.notify({
-                type: "positive",
-                message: `Das Bild wurde erfolgreich hochgeladen`,
-            });
-            projectStore.newImage.splice(0);
-            await loadImage();
-        } else {
-            $q.notify({
-                type: "negative",
-                message: `Das Bild wurde nicht hochgeladen`,
-            });
-        }
-    }
-}
-// Validierung ob die Files als PNG oder JPEG Format hochgeladen wurden
-function checkFileType(files: object) {
-    return files.filter((file: object) => file.type === "image/png" || file.type === "image/jpeg");
-}
-// Reaktion wenn die Validierung fehlschlaegt
-function onRejected(rejectedEntries: object) {
-    $q.notify({
-        type: "negative",
-        message: `${rejectedEntries.length} file(s) did not pass validation constraints`,
-    });
 }
 // Bilder vom Store werden bereitgestellt zur Darstellung
 async function loadImage() {
@@ -203,6 +220,27 @@ async function loadProject() {
     project.value.pics = img;
     await loadImage();
 }
+
+//--------------- function's for validation ---------------------
+// Validierung ob die Files als PNG oder JPEG Format hochgeladen wurden
+function checkFileType(files: object) {
+    return files.filter((file: object) => file.type === "image/png" || file.type === "image/jpeg");
+}
+// Reaktion wenn die Validierung fehlschlaegt
+function onRejected(rejectedEntries: object) {
+    $q.notify({
+        type: "negative",
+        message: `${rejectedEntries.length} file(s) did not pass validation constraints`,
+    });
+}
+// Initialisierung der Validierung von Titel und Text
+function myvalidate() {
+    return !!(proTitleRef.value.validate() && proTextRef.value.validate());
+}
+// "Exportiert" die Funktion myvalidate() um sie in anderen Komponenten verwenden zu können
+defineExpose({ myvalidate, loadProject });
+
+//--------------- function's for image handling --------------------------
 // Bild vergrössern
 function showImage(image: string) {
     previewImage.value = image;
@@ -211,28 +249,8 @@ function showImage(image: string) {
 function hideImage() {
     previewImage.value = null;
 }
-// project validation
-function myvalidate() {
-    return !!(proTitleRef.value.validate() && proTextRef.value.validate());
-}
-// "Exportiert" die Funktion myvalidate() um sie in anderen Komponenten verwenden zu können
-defineExpose({ myvalidate, loadProject });
-async function approval() {
-    const ans = await projectStore.approvalPost();
-    if (ans) {
-        await projectStore.getProjects();
-        $q.notify({
-            type: "positive",
-            message: `Das Projekt wurde freigegeben`,
-        });
-        await projectStore.getProjects();
-    } else {
-        $q.notify({
-            type: "negative",
-            message: `Das Projekt wurde nicht freigegeben`,
-        });
-    }
-}
+
+//--------------- function's for watch/onMounted --------------------------
 // Wird initialisiert wenn sich user prop ändert
 watch(user, changeuser => {
     load();
@@ -284,7 +302,7 @@ watch(selectedproject, changeselectedproject => {
                 append
                 use-chips
                 multiple
-                label="Bilder-upload (jpeg + png only) *"
+                label="Bilder-Upload (max. 5MB pro Bild): Nur JPEG/PNG. *"
                 counter
                 :max-files="maxfilecount"
                 max-file-size="5242880"
@@ -316,19 +334,46 @@ watch(selectedproject, changeselectedproject => {
             <div v-if="view === 'Project'">
                 <div class="row">
                     <q-space />
-                    <q-btn class="genBtn" color="accent" label="Bilder Speichern" icon="upload" @click="upload" />
+                    <q-btn
+                        class="genBtn"
+                        :loading="isLoading"
+                        color="accent"
+                        label="Bilder Speichern"
+                        icon="upload"
+                        @click="upload"
+                    />
                 </div>
                 <div class="row">
                     <q-space />
-                    <q-btn label="Änderungen Speichern" color="accent" @click="save" class="genBtn" />
+                    <q-btn
+                        :loading="isLoading"
+                        label="Änderungen Speichern"
+                        color="accent"
+                        @click="save"
+                        class="genBtn"
+                    />
                 </div>
                 <div class="row">
                     <q-space />
-                    <q-btn label="Projekt Freigeben" color="green-5" @click="approval" class="genBtn" />
+                    <q-btn
+                        label="Projekt Freigeben"
+                        :loading="isLoading"
+                        color="green-5"
+                        @click="approval"
+                        class="genBtn"
+                    >
+                        <q-tooltip class="bg-accent">Das Projekt wird als kontrolliert markiert</q-tooltip>
+                    </q-btn>
                 </div>
                 <div class="row">
                     <q-space />
-                    <q-btn label="User & Projekt Löschen" color="red-5" @click="dialog = true" class="genBtn" />
+                    <q-btn
+                        label="User & Projekt Löschen"
+                        :loading="isLoading"
+                        color="red-5"
+                        @click="dialog = true"
+                        class="genBtn"
+                    />
                 </div>
                 <div>
                     <q-dialog v-model="dialog" persistent transition-show="scale" transition-hide="scale">
@@ -381,6 +426,7 @@ watch(selectedproject, changeselectedproject => {
                 <br />
             </div>
         </div>
+        <div class="q-pb-xl"></div>
     </div>
 </template>
 
@@ -391,7 +437,6 @@ watch(selectedproject, changeselectedproject => {
     justify-content: center;
     align-items: center;
 }
-
 .image-container img {
     width: auto;
     max-height: 25vh;
@@ -401,11 +446,9 @@ watch(selectedproject, changeselectedproject => {
     filter: brightness(100%);
     transition: filter 0.3s;
 }
-
 .image-container img:hover {
     filter: brightness(80%);
 }
-
 .image-preview img {
     object-fit: contain;
     cursor: pointer;
@@ -414,7 +457,6 @@ watch(selectedproject, changeselectedproject => {
 .image-preview img:hover {
     filter: brightness(100%);
 }
-
 .image-preview {
     position: fixed;
     top: 0;
@@ -427,7 +469,6 @@ watch(selectedproject, changeselectedproject => {
     background-color: rgba(0, 0, 0, 0.823);
     z-index: 9999; /* sorgt dafür, dass das Vorschaubild immer über anderen Inhalten erscheint */
 }
-
 .texts {
     border-radius: 5px;
     margin: 10px;

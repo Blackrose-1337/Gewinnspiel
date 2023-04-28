@@ -217,15 +217,15 @@ class ProjectController extends BaseController
 						// User id holen uas projekt
 			            $userID = $projectmodel->getUserIdWithId($data['id']);
 						// User holen
-			            $user = $usermodel->getUser($userID);
+			            $user = $usermodel->getUser($userID[0]['userId']);
 			            // löschen des Projektes
 			            if($projectmodel->deleteProject($data)){
-				            $ans = $usermodel->getPwSaltId($user);
+
 				            // Löschen des Users (übergabe voller User)
-				            $checkuserdelete = $usermodel->deleteUser($data);
+				            $checkuserdelete = $usermodel->deleteUser($userID[0]);
 				            // Salt und Pw Löschen
-				            $checksaltdelete = $saltmodel->deleteSaltDB($ans[0]['saltId']);
-				            $checkpwdelete = $pwmodel->deleteHashDB($ans[0]['pwId']);
+				            $checksaltdelete = $saltmodel->deleteSaltDB($user['saltId']);
+				            $checkpwdelete = $pwmodel->deleteHashDB($user['pwId']);
 							if($checkuserdelete && $checksaltdelete && $checkpwdelete){
 					            $message->answer = true;
 					            $message->message = 'User & Projekt erfolgreich gelöscht';
@@ -306,7 +306,7 @@ class ProjectController extends BaseController
 						// löschen aus der DB mittels Pfad und Projekt-ID
 						$picmodel->DeletePath($newpath, $data['projectId']);
 						// Bild in den Ordner 'trash' verschieben, falls es jemand nicht wollte noch zu retten ist Administrativ
-						//  rename($newpath, getenv('F_PATH').'/trash/' . $newdata[4] . '-' . $newdata[6] . '-' . count(scandir(getenv('F_PATH').'/trash')));
+						rename($newpath, getenv('F_PATH').'/trash/' . $newdata[4] . '-' . $newdata[6] . '-' . count(scandir(getenv('F_PATH').'/trash')));
 						$responseData = true;
 					} else {
 						$message = new stdClass();
@@ -366,6 +366,7 @@ class ProjectController extends BaseController
                 $data = json_decode(file_get_contents('php://input'), true);
                 // User-ID holen mittel Projekt-ID
                 $id = $projectmodel->getUserIdWithId($data[0]['projectId']);
+				$number = $projectmodel->getPictureIncrement($data[0]['projectId']);
                 /* Überprüfung ob die aktive Rolle ein Admin ist oder ob die ID übereinstimmt mit der 'user_id'
                der Session, damit 'teilnehmende' nur ihrem Projekt Bilder hinzufügen können */
                 if ($id[0]['userId'] == $_SESSION['user_id'] || $_SESSION['user_role'] == 'admin') {
@@ -375,22 +376,15 @@ class ProjectController extends BaseController
                         // holt alle Datein und Ordner in dem Verzeichnis
                         $newpath = glob($parent_dir);
                         // Überprüfung ob in dem Ordner schon Dateien enthalten sind
-                        if (count(scandir($newpath[0])) > 2) {
-	                        $filenames = scandir($newpath[0], 1);
-                            // Trennung des Pfadestrings um die Ziffer zu erhalten
-                            $ele = explode('e', $filenames[0]);
-                            $ele = explode('.', $ele[1]);
-                            // Ziffer um 1 erhöhen
-                            $number = (int)$ele[0] + 1;
-                            // Bildspeichern mit neuer Nummerierung
-                            $this->saveImage($data, $newpath[0], $data[0]['projectId'], $number);
-                        } elseif (count(scandir($newpath[0])) > 12 ){
+                        if (count(scandir($newpath[0])) > 12 ){
 							// Fehlermeldung, falls der Ordner schon 10 Bilder enthält
 							$strErrorDesc = "Zu viele Bilder in diesem Projekt";
 							$strErrorHeader = $this->fehler(422);
 						} else {
-                            // Bildspeichern ohne zusätzliche die Nummerierung zu beeinflussen
-                            $this->saveImage($data, $newpath[0], $data[0]['projectId']);
+	                        // Ziffer um 1 erhöhen
+	                        $number =  $number + 1;
+                            // Bildspeichern Funktion aufrufen
+                            $this->saveImage($data, $newpath[0], $data[0]['projectId'], $number);
                         }
                         $responseData = true;
                     } else {

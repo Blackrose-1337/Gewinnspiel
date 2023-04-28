@@ -23,10 +23,10 @@ class CompetitionController extends BaseController
                 } else {
                     // id von neuem User auf Variable speichern
                     $data['project']['userid'] = $usermodel->id;
+	                // Bilder in seperate Variable platzieren
+	                $picturebase64 = $data['pics'];
                     // Projekt erstellen 
-                    $answerProject = $newproject->createProject($data['project']);
-                    // Bilder in seperate Variable platzieren
-                    $picturebase64 = $data['pics'];
+                    $answerProject = $newproject->createProject($data['project'], count($picturebase64));
                     // Abfrage Betriebssystem
                     if (PHP_OS == "Linux") {
                         // BilderPfad auf dem Server
@@ -63,7 +63,7 @@ class CompetitionController extends BaseController
                     $ans = $competitionmodel->getCompetition();
                     // Mail versenden (param: Mail, Token, PW, Name, Surname, Wettbewerbende)
                     if (getenv('SEND_MAIL_CUSTOMER_BOOLEAN')) {
-                        $this->sendmail($data['user']['email'], $usermodel->getToken(), $usermodel->getPw(), $data['user']['name'], $data['user']['surname'], $ans['wettbewerbende']);
+                       $this->sendmail($data['user']['email'], $usermodel->getToken(), $usermodel->getPw(), $data['user']['name'], $data['user']['surname'], $ans['wettbewerbende']);
                     } else {
 						error_log('Usermail:'.$data['user']['email']);
                         error_log('Token: ' . $usermodel->getToken());

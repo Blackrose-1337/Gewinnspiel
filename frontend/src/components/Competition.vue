@@ -83,9 +83,11 @@ async function sendCompetition() {
             competition.value.project = projectmodel.value;
             competition.value.user = usermodel.value;
             isLoading.value = true;
+			fullPage.value = true;
             const ans = await competitionstore.postCompetition(competition.value);
             if (ans === 1) {
                 isLoading.value = false;
+				fullPage.value = false;
                 dialog.value = true;
                 $q.notify({
                     type: "positiv",
@@ -271,7 +273,7 @@ load();
                 </div>
             </div>
             <div id="comp" class="col-6">
-                <div class="place row q-ma-md">
+                <div class="place row">
                     <Formular id="comp" ref="addressFormRef" @change:declarations="changeUserModel" />
                     <q-file
                         for="qfileelements"
@@ -285,7 +287,7 @@ load();
                         use-chips
                         multiple
                         :rules="[val => !!val || 'Pflichtfeld *', validatefilesPng]"
-                        label="Bilder-upload (jpeg + png only) *"
+                        label="Bilder-Upload (max. 5MB pro Bild): Nur JPEG/PNG. *"
                         counter
                         max-files="10"
                         max-file-size="5242880"
@@ -349,6 +351,7 @@ load();
             <q-card-section v-html="competitionDetails.wettbewerbCloseText" />
         </q-card>
     </div>
+	<div class="q-pb-lg" />
 </template>
 
 <style scoped>

@@ -90,6 +90,10 @@ class AdminController extends BaseController
 					$data = json_decode(file_get_contents('php://input'), true);
 					// Userinformationen holen
 					$user = $usermodel->getUserwithMail($data['email']);
+					if($data['optIn']) {
+						// OptIn in der Datenbank setzen mit email
+						$usermodel->setOptInDB($data['email']);
+					}
 					// neuen salt generieren
 					$saltmodel->resetSaltbyID($user['saltId']);
 					// neuen salt holen

@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import type { Auswertung } from "@/stores/interfaces";
 import { useEvaluationStore } from "@/stores/evaluation.ts";
 
 const evaluationstore = useEvaluationStore();
 const auswertung = computed(() => evaluationstore.auswertung) as Auswertung;
 const missing = computed(() => evaluationstore.missing);
+const isLoading = ref(false);
 
 const columns = [
     {
@@ -22,8 +23,10 @@ const columns = [
     { name: "value", label: "Gesamtpunkte", field: "value", sortable: true },
 ];
 
-function getmissing() {
-    evaluationstore.getmissing();
+async function getmissing() {
+	isLoading.value = true;
+    await evaluationstore.getmissing();
+    isLoading.value = false;
 }
 
 onMounted(() => {
@@ -31,7 +34,7 @@ onMounted(() => {
 });
 </script>
 <template>
-    <div class="row q-ma-md q-pb-xl">
+    <div class="q-pb-xl row">
         <div class="col-8 q-ma-md">
             <q-table
                 title="Punkteliste"
@@ -45,7 +48,12 @@ onMounted(() => {
         </div>
         <q-space />
         <div class="m-list q-ma-lg col-2">
-            <q-btn @click="getmissing" class="full-width genBtn" label="Fehlende Bewertungen anzeigen" />
+            <q-btn
+                @click="getmissing"
+                :loading="isLoading"
+                class="full-width genBtn"
+                label="Fehlende Bewertungen anzeigen"
+            />
             <q-card>
                 <div class="q-mt-md" v-for="m in missing" :key="m">
                     <q-card-section class="bg-primary">

@@ -1,10 +1,11 @@
 <script setup lang="ts">
+//--------------------- import ----------------------------------
 import Project from "@/components/Project.vue";
 import Formular from "@/components/Formular.vue";
 import { useProjectStore } from "@/stores/projects";
 import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
-import { computed, onBeforeMount, ref } from "vue";
+import {computed, onBeforeMount, ref} from "vue";
 import { useUserStore } from "@/stores/users";
 import { useAuthStore } from "@/stores/auth";
 import { useCompetitionStore } from "@/stores/competition";
@@ -12,15 +13,14 @@ import { useEvaluationStore } from "@/stores/evaluation.ts";
 import Loading from "vue-loading-overlay";
 import { storeToRefs } from "pinia";
 
-//--------------- Storeload ------------------------------
-
+//--------------------- Storeload --------------------------------
 const authStore = useAuthStore();
 const userStore = useUserStore();
 const projectStore = useProjectStore();
-const competitionstore = useCompetitionStore();
-const evaluationstore = useEvaluationStore();
+const competitionStore = useCompetitionStore();
+const evaluationStore = useEvaluationStore();
 
-//--------------- variables ------------------------------
+//--------------------- variable's -------------------------------
 const $q = useQuasar();
 const router = useRouter();
 var bild = new Image();
@@ -29,19 +29,20 @@ const fullPage = ref(true);
 const projectRef = ref(null); //ref to child component
 const formularRef = ref(null); //ref to child component
 
-//--------------- computed ------------------------------
+//--------------------- computed ---------------------------------
 const project = computed(() => projectStore.project);
 const selectedUser = computed(() => userStore.user);
-const competitionDetails = computed(() => competitionstore.competitionDetails);
-const img = computed(() => evaluationstore.img);
+const competitionDetails = computed(() => competitionStore.competitionDetails);
+const img = computed(() => evaluationStore.img);
 
-//---------------storeToRefs------------------------------
+//--------------------- storeToRefs ------------------------------
 const { pics } = storeToRefs(projectStore);
 const { tempImage } = storeToRefs(projectStore);
+const { tempProject } = storeToRefs(projectStore);
 
-competitionstore.getCompetitionDeclarations();
-
-//--------------- functions ------------------------------
+//--------------------- function's -------------------------------
+//----------------- function's for check -------------------------
+//check if user is logged in
 async function check() {
     const answer: boolean = await authStore.check();
     if (!answer) {
@@ -52,6 +53,7 @@ async function check() {
         await router.push("/");
     }
 }
+//check if competition is open
 function dateCheck() {
     const currentDateWithFormat = new Date().toJSON().slice(0, 10).replace(/-/g, "/");
     return (
@@ -59,17 +61,18 @@ function dateCheck() {
         currentDateWithFormat < competitionDetails.value.wettbewerbende
     );
 }
+//----------------- function's from child ------------------------
+//call child function
 async function callChildFunction() {
-	console.log(projectRef.value.myvalidate());
-	console.log(formularRef.value.myvalidate());
     if (projectRef.value.myvalidate() && formularRef.value.myvalidate()) {
         isLoading.value = true;
         const bool: number = await projectStore.postProject();
         const ans = await projectStore.postPicUpload();
-        await evaluationstore.getImages(project.value.id);
+        await evaluationStore.getImages(project.value.id);
         const answer: number = await userStore.saveUserChange();
         await projectStore.clearPics();
         project.value.pics = img;
+        tempProject.value.pics = img;
         tempImage.value.splice(0, tempImage.value.length);
         await loadImage();
         switch (ans) {
@@ -109,6 +112,8 @@ async function callChildFunction() {
         });
     }
 }
+//----------------- function's for load --------------------------
+//load images
 async function loadImage() {
     pics.value = [];
     if (project.value.pics !== null && project.value.pics !== "undefined") {
@@ -122,10 +127,15 @@ async function loadImage() {
     }, 500);
 }
 
+//----------------- function's for Mount -------------------------
 onBeforeMount(async () => {
     await check();
     await userStore.getUser();
+    await competitionStore.getCompetitionDeclarations();
 });
+// onMounted(async () => {
+// 	await userStore.getUser();
+// });
 </script>
 <template>
     <loading
@@ -134,7 +144,7 @@ onBeforeMount(async () => {
         :can-cancel="true"
         :is-full-page="fullPage"
     ></loading>
-    <div v-if="dateCheck()" class="row q-ma-md">
+    <div v-if="dateCheck()" class="row">
         <div class="q-ma-md col user-E">
             <Project :user="selectedUser" ref="projectRef" :view="'User'" />
         </div>
@@ -146,6 +156,7 @@ onBeforeMount(async () => {
                 <q-btn
                     class="genBtn"
                     color="blue"
+                    :loading="isLoading"
                     label="Änderungen Speichern"
                     icon="upload"
                     @click="callChildFunction"

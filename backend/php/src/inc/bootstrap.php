@@ -30,6 +30,7 @@ switch ($uri[2]) {
         require_once PROJECT_ROOT_PATH . "Model/ModelProject.php";
         require_once PROJECT_ROOT_PATH . "Model/ModelBilder.php";
 		require_once PROJECT_ROOT_PATH . "Model/ModelBewertung.php";
+		require_once PROJECT_ROOT_PATH . "Model/ModelTeilnehmende.php";
         break;
     case 'evaluation':
         require_once PROJECT_ROOT_PATH . "Model/ModelBewertung.php";

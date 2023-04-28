@@ -48,37 +48,64 @@ class AuthController extends BaseController
                     $email = isset($data['email']) ? $data['email'] : "";
                     $passwort = isset($data['password']) ? $data['password'] : "";
                     // Validierung Mail-Adresse
-                    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL) || !preg_match("/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]+$/", $email)) {
+                    if (empty($email) || !preg_match("/^(?=[a-zA-Z0-9äöüÄÖÜ@._%+-]{6,254}$)[a-zA-Z0-9äöüÄÖÜ._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,7}$/", $email)) {
                         // Fehlermeldung, falls die Validierung der Mail-Adresse fehlgeschlagen ist
                         $strErrorDesc = 'Ungültige E-Mail';
                         $strErrorHeader = $this->fehler(420);
 
                         // Validierung Passwort
-                    } elseif (strlen($passwort) < 12 || !preg_match("/^[a-zA-Z0-9\?\!\+\@]/", $passwort)) {
+                    } elseif (strlen($passwort) < 12 || !preg_match("/^[a-zA-Z0-9!@#$%^*()_+-={}|:,.<>?]{12,30}$/", $passwort)) {
                         // Fehlermeldung, falls die Validierung des Passwortes fehlgeschlagen ist
                         $strErrorDesc = 'Das Passwort ist kürzer als 12 Zeichen oder enthält nicht erlaubte Zeichen';
                         $strErrorHeader = $this->fehler(420);
                     } else {
                         // User von DB holen anhand der Mail-Adresse
                         $user = $usermodel->getUserwithMail($email);
-                        // Salt von DB holen anhand der Salt-Id
-                        $salt = $saltmodel->getSaltbyID($user['saltId']);
-                        // Abgleich des Hash anhand des Passwortes und Salt
-                        $controll = $pwmodel->controllHash($passwort, $salt, $user['pwId']);
-                        if (!$controll) {
-                            // Fehlermeldung, falls die Kontrolle negative ausgefallen ist
-                            $strErrorDesc = "Passwort ist falsch";
-                            $strErrorHeader = $this->fehler(401);
-                        } else {
-                            // Aktive Session setzen
-                            $this->createUserSession($user['id'], $user['email'], $user['name'], $user['role']);
-                            // Antwort mit aktiver Rolle
-                            $answer = [
-                                "success" => 1,
-                                "role" => $user['role'],
-                            ];
-                            $responseData = json_encode($answer);
-                        }
+						$check = true;
+					error_log("User: " . json_encode($user));
+	                    error_log(json_encode($user));
+	                    if (!$user) {
+							error_log("User existiert nicht");
+		                    // Fehlermeldung, falls die Mail-Adresse nicht in der DB existiert
+		                    $check = false;
+		                    $message = new stdClass();
+		                    $message->answer = false;
+		                    $message->message = 'E-Mail-Adresse existiert nicht';
+		                    $message->type = 'negative';
+		                    $responseData = json_encode($message);
+	                    }
+						if($user['optIn'] != 1 && $check) {
+							// Fehlermeldung, falls die Mail-Adresse nicht in der DB existiert
+							$check = false;
+							$message = new stdClass();
+							$message->answer = false;
+							$message->message = 'Nicht bestätigte E-Mail-Adresse';
+							$message->type = 'negative';
+							$responseData = json_encode($message);
+						}
+						if($check) {
+							// Salt von DB holen anhand der Salt-Id
+							$salt = $saltmodel->getSaltbyID($user['saltId']);
+							// Abgleich des Hash anhand des Passwortes und Salt
+							$controll = $pwmodel->controllHash($passwort, $salt, $user['pwId']);
+							if (!$controll) {
+								// Fehlermeldung, falls die Kontrolle negative ausgefallen ist
+								$message = new stdClass();
+								$message->answer = false;
+								$message->message = 'Passwort ist falsch';
+								$message->type = 'negative';
+								$responseData = json_encode($message);
+							} else {
+								// Aktive Session setzen
+								$this->createUserSession($user['id'], $user['email'], $user['name'], $user['role']);
+								// Antwort mit aktiver Rolle
+								$answer = [
+									"success" => 1,
+									"role" => $user['role'],
+								];
+								$responseData = json_encode($answer);
+							}
+						}
                     }
                 }
             } else {

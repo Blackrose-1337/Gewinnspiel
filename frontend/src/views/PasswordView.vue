@@ -11,6 +11,7 @@ const router = useRouter();
 const email = ref(import.meta.env.MODE === "production" ? "" : "");
 const password = ref(import.meta.env.MODE === "production" ? "" : "");
 const showPassword = ref(false);
+const OptIn = ref(false);
 
 function isValidEmail(val: string) {
     const emailPattern =
@@ -18,7 +19,7 @@ function isValidEmail(val: string) {
     return emailPattern.test(val) || "Invalid email";
 }
 function isValidpw(val: string) {
-    const pwpattern = /^[a-zA-Z0-9!@#$%^*()_+-={}|:,.<>?]{12,20}$/;
+    const pwpattern = /^[a-zA-Z0-9!@#$%^*()_+-={}|:,.<>?]{12,30}$/;
     return pwpattern.test(val) || "Invalid password";
 }
 async function check() {
@@ -35,7 +36,7 @@ async function check() {
     }
 }
 
-async function login() {
+async function changePw() {
     if (isValidEmail(email.value) != true) {
         $q.notify({
             message: "Email ist inakzeptabel",
@@ -47,7 +48,7 @@ async function login() {
             type: "negative",
         });
     } else {
-        const answer = await useUserStore().setPW(email.value, password.value);
+        const answer = await useUserStore().setPW(email.value, password.value, OptIn.value);
         if (answer["answer"] == true) {
             $q.notify({
                 type: "positive",
@@ -101,7 +102,17 @@ onBeforeMount(() => {
                 </template>
             </q-input>
             <p class="text-accent">Passwort muss min. 12 Zeichen besitzen</p>
-            <q-btn label="Ändern" class="q-mt-auto" color="accent" icon="lock_reset" @click="login" />
+            <q-field class="q-pb-lg" v-model="OptIn" color="accent" ref="checkRef" dense borderless>
+                <q-checkbox
+                    standout="bg-secondary"
+                    color="accent"
+                    right-label
+                    v-model="OptIn"
+                    label="Opt-In bestätigen"
+                    class="col-4"
+                />
+            </q-field>
+            <q-btn label="Ändern" class="q-mt-auto" color="accent" icon="lock_reset" @click="changePw" />
         </q-form>
     </q-page>
 </template>

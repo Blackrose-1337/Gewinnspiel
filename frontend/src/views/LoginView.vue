@@ -18,7 +18,7 @@ function isValidEmail(val: string) {
     return emailPattern.test(val) || "Invalid email";
 }
 function isValidpw(val: string) {
-    const pwpattern = /^[a-zA-Z0-9!@#$%^*()_+-={}|:,.<>?]{12,20}$/;
+    const pwpattern = /^[a-zA-Z0-9!@#$%^*()_+-={}|:,.<>?]{12,30}$/;
     return pwpattern.test(val) || "Invalid password";
 }
 
@@ -34,41 +34,31 @@ async function login() {
             type: "negative",
         });
     } else {
-        try {
-            const answer = await authStore.login(email.value, password.value);
-            if (answer) {
-                $q.notify({
-                    message: "Login aktzeptiert",
-                    type: "positive",
-                });
-                switch (authStore.role) {
-                    case "teilnehmende": {
-                        redirectTo.value = "/user";
-                        break;
-                    }
-                    case "jury": {
-                        redirectTo.value = "/evaluation";
-                        break;
-                    }
-                    case "admin": {
-                        redirectTo.value = "/verwaltung";
-                        break;
-                    }
-                }
-                await router.push(redirectTo.value);
-            } else {
-                $q.notify({
-                    message: answer.error,
-                    type: answer.success,
-                });
-                authStore.role = answer.role;
-                await router.push(redirectTo.value);
-            }
-        } catch (err) {
-            console.error("Login failed: ", err);
+        const answer = await authStore.login(email.value, password.value);
+        if (answer.answer) {
             $q.notify({
-                message: "Login fehlgeschlagen\n",
-                type: "negative",
+                message: "Login aktzeptiert",
+                type: "positive",
+            });
+            switch (authStore.role) {
+                case "teilnehmende": {
+                    redirectTo.value = "/user";
+                    break;
+                }
+                case "jury": {
+                    redirectTo.value = "/evaluation";
+                    break;
+                }
+                case "admin": {
+                    redirectTo.value = "/verwaltung";
+                    break;
+                }
+            }
+            await router.push(redirectTo.value);
+        } else {
+            $q.notify({
+                message: answer.message,
+                type: answer.type,
             });
         }
     }

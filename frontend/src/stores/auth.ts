@@ -14,13 +14,13 @@ export const useAuthStore = defineStore({
         ({
             isAuthenticated: false as boolean,
             isInitialized: false,
-            role: '' as string,
+            role: "" as string,
         } as State),
     actions: {
         answerhandler(res: any) {
             this.role = res.role;
-            this.isAuthenticated = res.success
-            return true;
+            this.isAuthenticated = res.success;
+            return { answer: res.success };
         },
         async login(email: string, password: string) {
             try {
@@ -28,15 +28,16 @@ export const useAuthStore = defineStore({
                     email,
                     password,
                 });
-                
                 if (res?.success) {
                     return this.answerhandler(res);
                 } else if (res?.role) {
                     return this.answerhandler(res);
+                } else {
+                    return res;
                 }
             } catch (err) {
                 this.isAuthenticated = false;
-                throw err; 
+                throw err;
             }
         },
         async logout() {
@@ -53,17 +54,17 @@ export const useAuthStore = defineStore({
         },
         async check() {
             try {
-                const res = await api.get<{ success: boolean; role: string; error: string }>("auth/check");  
+                const res = await api.get<{ success: boolean; role: string; error: string }>("auth/check");
                 if (res?.success == true) {
                     return this.answerhandler(res);
                 } else {
-                    this.role = '';
+                    this.role = "";
                     return false;
                 }
             } catch (err) {
                 this.isAuthenticated = false;
-                throw err; 
+                throw err;
             }
-        }
+        },
     },
 });

@@ -55,17 +55,6 @@ export const useProjectStore = defineStore({
                 }
             }
         },
-        async clearPics() {
-            if (this.project.pics) {
-                this.project.pics.splice(0, 0);
-            }
-        },
-        async projectRemove($id: number) {
-            const param = {
-                id: $id,
-            };
-            return await api.post<boolean>("project/delete", param);
-        },
         async getProjects() {
             try {
                 const projects = await api.get<Project[]>("project/takeAll");
@@ -110,14 +99,17 @@ export const useProjectStore = defineStore({
         async postPicUpload() {
             if (this.newImage.length > 0) {
                 const ans = await api.post<boolean>("project/addPicture", this.newImage);
-                console.log(ans);
                 if (ans) {
                     this.newImage.splice(0, this.newImage.length);
-                    console.log(this.newImage);
                     return ans;
                 }
             } else {
                 return 2;
+            }
+        },
+        async clearPics() {
+            if (this.project.pics) {
+                this.project.pics.splice(0, 0);
             }
         },
         async deletePic(imgPath: string) {
@@ -134,6 +126,12 @@ export const useProjectStore = defineStore({
                 });
             }
             return bool;
+        },
+        async projectRemove($id: number) {
+            const param = {
+                id: $id,
+            };
+            return await api.post<boolean>("project/delete", param);
         },
         async approvalPost() {
             return api.post<boolean>("project/approval", this.project.id);

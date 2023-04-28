@@ -84,11 +84,12 @@ export const useUserStore = defineStore({
                 }
             }
         },
-        async setPW(email: string, password: string) {
+        async setPW(email: string, password: string, optIn: boolean) {
             try {
                 const param = {
                     email: email,
                     password: password,
+                    optIn: optIn,
                 };
                 const res = await api.post<boolean>("admin/setpw", param);
                 if (res) {

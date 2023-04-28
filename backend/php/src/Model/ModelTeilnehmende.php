@@ -43,13 +43,12 @@ class ModelTeilnehmende extends ModelBase
         $modelpw = new ModelPw;
 
         // Überprüfung, ob E-Mail bereits existiert
-        $this->db->query("SELECT id FROM User WHERE LOWER(email) = LOWER(:email)");
+        $this->db->query("SELECT email FROM User WHERE LOWER(email) = LOWER(:email)");
         $this->db->bind(":email", $data["email"]);
         $check = $this->db->resultSet();
-
         // falls die DB eine Übereinstimmung hat, wird 'false' zurückgegeben
-        if (isset($check[0])) {
-            return 0;
+        if (isset($check[0]) && $check[0]["email"] == $data["email"]) {
+			return 0;
         } else {
 
 
@@ -217,6 +216,13 @@ class ModelTeilnehmende extends ModelBase
         return $this->db->resultSet();
     }
 
+	// funktion zum setzen des OptIn Status auf der DB
+	public function setOptInDB($email){
+		$this->db->query("UPDATE User SET optIn = 1 WHERE email = :email");
+		$this->db->bind(":email", $email);
+		return $this->db->execute();
+	}
+
     // Token überprüfung
     public function tokencheck($token)
     {
@@ -254,6 +260,8 @@ class ModelTeilnehmende extends ModelBase
         }
         return $newdata[0];
     }
+
+
 
 
     /**

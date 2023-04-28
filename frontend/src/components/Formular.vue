@@ -1,11 +1,40 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from "vue";
+//--------------------- Imports ----------------------------------
+import { computed, onMounted, ref, watch } from "vue";
 import { toRefs } from "vue";
 import { useQuasar } from "quasar";
 import type { User } from "@/stores/interfaces";
 import { useProjectStore } from "@/stores/projects";
 import { useUserStore } from "@/stores/users";
 
+//--------------------- Props / Emit -----------------------------
+const props = defineProps<{
+    user?: User;
+    view?: string;
+}>();
+const emit = defineEmits<{
+    (event: "change:declarations", u: User): void;
+}>();
+
+//--------------------- Storeload --------------------------------
+const $q = useQuasar();
+const projectStore = useProjectStore();
+const userStore = useUserStore();
+
+//--------------------- toRefs to props---------------------------
+const { user } = toRefs(props) as User;
+const { view } = toRefs(props);
+
+//--------------------- variable's -------------------------------
+const nameRef = ref(null);
+const plzRef = ref(null);
+const ortschaftRef = ref(null);
+const strasseRef = ref(null);
+const strNrRef = ref(null);
+const landRef = ref(null);
+const surnameRef = ref(null);
+const emailRef = ref(null);
+const dialog = ref(false);
 const model: User = ref({
     id: 0,
     name: "",
@@ -20,87 +49,14 @@ const model: User = ref({
     vorwahl: "",
     tel: null,
 });
-
-const props = defineProps<{
-    user?: User;
-    view?: string;
-}>();
-
-const emit = defineEmits<{
-    (event: "change:declarations", u: User): void;
-}>();
-
-const $q = useQuasar();
-const { user } = toRefs(props) as User;
-const { view } = toRefs(props);
-
-const projectStore = useProjectStore();
-const userStore = useUserStore();
-const nameRef = ref(null);
-const plzRef = ref(null);
-const ortschaftRef = ref(null);
-const strasseRef = ref(null);
-const strNrRef = ref(null);
-const landRef = ref(null);
-const surnameRef = ref(null);
-const emailRef = ref(null);
-const dialog = ref(false);
-const users = computed(() => userStore.users);
-
 const selectOptionsTyp = ["DE", "AU", "CH", "Sonstiges"];
 
-function myvalidate() {
-    return !!(
-        nameRef.value.validate() &&
-        surnameRef.value.validate() &&
-        emailRef.value.validate() &&
-        landRef.value.validate() &&
-        plzRef.value.validate() &&
-        ortschaftRef.value.validate() &&
-        strasseRef.value.validate() &&
-        strNrRef.value.validate()
-    );
-}
-// "Exportiert" die Funktion myvalidate() um sie in anderen Komponenten verwenden zu können
-defineExpose({ myvalidate });
-function isValidEmail(val: string) {
-    const emailPattern =
-        /^(?=[a-zA-Z0-9äöüÄÖÜ@._%+-]{6,254}$)[a-zA-Z0-9äöüÄÖÜ._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,7}$/;
-    return emailPattern.test(val) || "Invalide E-mail";
-}
-function isValidName(val: string) {
-    const namepattern = /^[a-zA-Z äöüÄÖÜ]{2,50}$/;
-    return namepattern.test(val) || "Invalider Name";
-}
-function isValidOrt(val: string) {
-    const ortpattern = /^[a-zA-Z äöüÄÖÜ]{2,50}$/;
-    return ortpattern.test(val) || "Invalider Ort";
-}
-function isValidStrasse(val: string) {
-    const strassepattern = /^[a-zA-Z äöüÄÖÜ]{2,50}$/;
-    return strassepattern.test(val) || "Invalide Strasse";
-}
-function isValidPlz(val: number) {
-    if (model.value.land == "DE") {
-        const plzpattern = /^[0-9]{5}$/;
-        return plzpattern.test(val) || "Invalide PLZ";
-    } else if (model.value.land == "CH" || model.value.land == "AU") {
-        const plzpattern = /^[0-9]{4}$/;
-        return plzpattern.test(val) || "Invalide PLZ";
-    } else {
-        const plzpattern = /^[0-9]{4,7}$/;
-        return plzpattern.test(val) || "Invalide PLZ";
-    }
-}
-function changeValue(p: User) {
-    emit("change:declarations", p);
-}
-function updateModel(u: User) {
-    model.value = u;
-}
-function getUserByEmail(email: string): User {
-    return users.value.find(u => u.email === email);
-}
+//--------------------- computed ---------------------------------
+const users = computed(() => userStore.users);
+const setUser = computed(() => userStore.user);
+
+//--------------------- function's -------------------------------
+//--------------- function's for save ----------------------------
 async function saveChange() {
     if (model.value.surname == "") {
         $q.notify({
@@ -148,6 +104,15 @@ async function saveChange() {
         }
     }
 }
+function updateModel(u: User) {
+    if (u) {
+        model.value = u;
+    }
+}
+function changeValue(p: User) {
+    emit("change:declarations", p);
+}
+//--------------- function's for remove --------------------------
 async function remove() {
     // if (model.value.id !== 0) {
     const answer = await userStore.remove(model.value.id);
@@ -181,13 +146,70 @@ async function resetPw() {
     }
 }
 
+//------------------- function's for validate --------------------
+function myvalidate() {
+    return !!(
+        nameRef.value.validate() &&
+        surnameRef.value.validate() &&
+        emailRef.value.validate() &&
+        landRef.value.validate() &&
+        plzRef.value.validate() &&
+        ortschaftRef.value.validate() &&
+        strasseRef.value.validate() &&
+        strNrRef.value.validate()
+    );
+}
+// "Exportiert" die Funktion myvalidate() um sie in anderen Komponenten verwenden zu können
+defineExpose({ myvalidate });
+function isValidEmail(val: string) {
+    const emailPattern =
+        /^(?=[a-zA-Z0-9äöüÄÖÜ@._%+-]{6,254}$)[a-zA-Z0-9äöüÄÖÜ._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,7}$/;
+    return emailPattern.test(val) || "Invalide E-mail";
+}
+function isValidName(val: string) {
+    const namepattern = /^[a-zA-Z äöüÄÖÜ]{2,50}$/;
+    return namepattern.test(val) || "Invalider Name";
+}
+function isValidOrt(val: string) {
+    const ortpattern = /^[a-zA-Z äöüÄÖÜ]{2,50}$/;
+    return ortpattern.test(val) || "Invalider Ort";
+}
+function isValidStrasse(val: string) {
+    const strassepattern = /^[a-zA-Z äöüÄÖÜ]{2,50}$/;
+    return strassepattern.test(val) || "Invalide Strasse";
+}
+function isValidPlz(val: number) {
+    if (model.value.land == "DE") {
+        const plzpattern = /^[0-9]{5}$/;
+        return plzpattern.test(val) || "Invalide PLZ";
+    } else if (model.value.land == "CH" || model.value.land == "AU") {
+        const plzpattern = /^[0-9]{4}$/;
+        return plzpattern.test(val) || "Invalide PLZ";
+    } else {
+        const plzpattern = /^[0-9]{4,7}$/;
+        return plzpattern.test(val) || "Invalide PLZ";
+    }
+}
+
+//------------------- function's for load ------------------------
+function getUserByEmail(email: string): User {
+    return users.value.find(u => u.email === email);
+}
+
+//------------------- function's for watch -----------------------
 watch(user, changeUser => {
+    updateModel(changeUser);
+});
+onMounted(() => {
+    updateModel(user.value);
+});
+watch(setUser, changeUser => {
     updateModel(changeUser);
 });
 </script>
 
 <template>
-    <div>
+    <div v-if="model">
         <div v-if="model.role !== 'jury'" class="row q-gutter-sm">
             <div class="row q-gutter-sm col-12">
                 <q-input
@@ -302,9 +324,10 @@ watch(user, changeUser => {
                     label="Nr. *"
                     outlined
                     class="col-2"
-                    type="number"
+                    type="text"
                     @change="changeValue(model)"
                     :rules="[val => !!val || 'Pflichtfeld *']"
+                    maxlength="11"
                 />
             </div>
             <div class="row q-gutter-sm col-12">
@@ -326,6 +349,7 @@ watch(user, changeUser => {
                     class="col-3"
                     type="tel"
                     @change="changeValue(model)"
+                    maxlength="30"
                 />
             </div>
         </div>
@@ -372,9 +396,12 @@ watch(user, changeUser => {
         </div>
 
         <div v-if="view === 'Project'">
-            <q-btn label="Änderungen Speichern" color="accent" @click="saveChange" class="genBtn" />
-            <q-btn label="Passwort zurücksetzen" color="red-5" @click="resetPw" class="genBtn" />
-            <q-btn label="User & Projekt Löschen" color="red-5" @click="dialog = true" class="genBtn" />
+            <div class="q-mb-xl">
+                <q-btn label="Änderungen Speichern" color="accent" @click="saveChange" class="genBtn" />
+                <q-btn label="Passwort zurücksetzen" color="red-5" @click="resetPw" class="genBtn" />
+                <q-btn label="User & Projekt Löschen" color="red-5" @click="dialog = true" class="genBtn" />
+            </div>
+
             <div>
                 <q-dialog v-model="dialog" persistent transition-show="scale" transition-hide="scale">
                     <q-card class="bg-grey-3 text-black" style="width: 300px">

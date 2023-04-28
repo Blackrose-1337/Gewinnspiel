@@ -13,6 +13,7 @@ class ModelProject extends ModelBase
     private int $userId;
     private string $title;
     private string $text;
+	private int $pictureIncrement;
 
     // holt alle Projekte von DB
     public function getAllProject()
@@ -53,14 +54,15 @@ class ModelProject extends ModelBase
     }
 
     // Projekt wird als Datensatz in die DB eingetragen
-    public function createProject($data)
+    public function createProject($data, $number )
     {
         $this->db->query("INSERT INTO Project
-        (`userid`, `title`, `text`)
-        VALUES (:userid, :title, :text)");
+        (`userid`, `title`, `text`, `pictureIncrement`)
+        VALUES (:userid, :title, :text, :pictureIncrement)");
         $this->db->bind(":userid", $data['userid']);
         $this->db->bind(":title", $data['title']);
         $this->db->bind(":text", $data['text']);
+		$this->db->bind(":pictureIncrement", $number);
         $answer = $this->db->execute();
 
         // get Id from DB
@@ -73,6 +75,23 @@ class ModelProject extends ModelBase
         return $answer;
     }
 
+	// holt pictureIncrement von der DB
+	public function getPictureIncrement($id)
+	{
+		$this->db->query("SELECT pictureIncrement FROM Project WHERE id = :id");
+		$this->db->bind(":id", $id);
+		$answer = $this->db->resultSet();
+		return $answer[0]['pictureIncrement'];
+	}
+
+	// setzt pictureIncrement in der DB
+	public function setPictureIncrement($id, $number)
+	{
+		$this->db->query("UPDATE Project SET pictureIncrement = :pictureIncrement WHERE id = :id");
+		$this->db->bind(":pictureIncrement", $number);
+		$this->db->bind(":id", $id);
+		return $this->db->execute();
+	}
     // Änderung vom Projekt auf der DB
     public function updateProject($data)
     {
