@@ -74,7 +74,7 @@ switch ($uri[2]) {
         break;
     default: // Ausgabe bei nicht zutreffender URL
         header("Page can’t be found", true, 404);
-
+	    $objFeedController = null;
 }
 
 // Variable wirt mit dem vierten Element der URL geführt mit dem Anhang 'Action'

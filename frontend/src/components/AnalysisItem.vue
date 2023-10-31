@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
-import type { Auswertung } from "@/stores/interfaces";
 import { useEvaluationStore } from "@/stores/evaluation.ts";
 
 const evaluationstore = useEvaluationStore();
-const auswertung = computed(() => evaluationstore.auswertung) as Auswertung;
+const auswertung = computed(() => evaluationstore.auswertung);
 const missing = computed(() => evaluationstore.missing);
 const isLoading = ref(false);
 
@@ -15,7 +14,7 @@ const columns = [
         label: "Nachname",
         align: "left",
         field: "surname",
-        format: (val: any) => `${val}`,
+        format: (val: never) => `${val}`,
         sortable: true,
     },
     { name: "name", align: "left", label: "Vorname", field: "name", sortable: true },
@@ -24,7 +23,7 @@ const columns = [
 ];
 
 async function getmissing() {
-	isLoading.value = true;
+    isLoading.value = true;
     await evaluationstore.getmissing();
     isLoading.value = false;
 }
@@ -40,10 +39,9 @@ onMounted(() => {
                 title="Punkteliste"
                 virtual-scroll
                 class="my-sticky-virtscroll-table"
-                :rows-per-page-options="[0]"
                 :rows="auswertung"
                 :columns="columns"
-                row-key="value"
+                row-key="id"
             />
         </div>
         <q-space />

@@ -3,7 +3,7 @@ import { onBeforeMount } from "vue";
 import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
 import { useAuthStore } from "@/stores/auth";
-import Auswertung from "@/components/Analysis.vue";
+import Auswertung from "@/components/AnalysisItem.vue";
 
 const router = useRouter();
 const authStore = useAuthStore();

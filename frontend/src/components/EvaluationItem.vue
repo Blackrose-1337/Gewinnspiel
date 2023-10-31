@@ -24,7 +24,7 @@ const role = computed(() => authStore.role);
 let { selectedproject } = toRefs(props) as Project;
 const view = "evaluation";
 async function update() {
-	isLoading.value = true;
+    isLoading.value = true;
     const ans = await evaluationStore.update(selectedproject.value.id);
     if (ans) {
         await projectStore.getProjectsEva();
@@ -40,11 +40,11 @@ async function update() {
             color: "red",
         });
     }
-	isLoading.value = false;
+    isLoading.value = false;
 }
 
 async function send() {
-	isLoading.value = true;
+    isLoading.value = true;
     const ans = await evaluationStore.postBewertung(selectedproject.value.id);
     if (ans) {
         await projectStore.getProjectsEva();
@@ -60,7 +60,7 @@ async function send() {
             color: "red",
         });
     }
-	isLoading.value = false;
+    isLoading.value = false;
 }
 
 function load() {
@@ -95,11 +95,11 @@ load();
                     <q-radio dense color="accent" v-model="k.value" :val="5" label="5" class="q-pb-md q-px-md" />
                 </q-card>
                 <div class="row q-pb-xl">
-                    <q-btn :loading="isLoading"  color="green-5" label="Speichern" @click="update">
+                    <q-btn :loading="isLoading" color="green-5" label="Speichern" @click="update">
                         <q-tooltip class="bg-accent">Die Bewertung wird zwischengespeichert</q-tooltip>
                     </q-btn>
                     <q-space />
-                    <q-btn :loading="isLoading"  color="green-5" label="Als bewertet markieren" @click="send">
+                    <q-btn :loading="isLoading" :disable="isLoading" color="green-5" label="Als bewertet markieren" @click="send">
                         <q-tooltip class="bg-accent">Bewertung wird final abgeschlossen</q-tooltip>
                     </q-btn>
                 </div>

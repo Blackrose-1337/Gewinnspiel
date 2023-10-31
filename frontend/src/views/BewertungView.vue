@@ -4,7 +4,7 @@ import type { Ref } from "vue";
 import { useQuasar } from "quasar";
 import { ref, onBeforeMount } from "vue";
 import Sidebar from "@/components/Sidebar.vue";
-import Evaluation from "@/components/Evaluation.vue";
+import Evaluation from "@/components/EvaluationItem.vue";
 import type { Project } from "@/stores/interfaces";
 import { useAuthStore } from "@/stores/auth";
 

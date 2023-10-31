@@ -18,11 +18,11 @@ export const useEvaluationStore = defineStore({
     id: "evaluation",
     state: () =>
         ({
-            bewertung: [] as Bewertung[],
-            kriterien: [] as Kriterien[],
-            img: [] as string[],
-            auswertung: [] as Auswertung[],
-            missing: [] as Missing[],
+            bewertung: [],
+            kriterien: [],
+            img: [],
+            auswertungen: [],
+            missing: [],
         } as State),
     getters: {},
     actions: {
@@ -37,6 +37,19 @@ export const useEvaluationStore = defineStore({
             krieterin.forEach(k => this.kriterien.push(k));
         },
         async postBewertung(idProject: number) {
+            if (this.bewertung.length !== this.kriterien.length) {
+                Notify.create({
+                    message: "Es fehlen noch Bewertungen",
+                    type: "warning",
+                });
+                return;
+            } else if (this.bewertung.some(b => b.bewertung === null)) {
+                Notify.create({
+                    message: "Es fehlen noch Bewertungen",
+                    type: "warning",
+                });
+                return;
+            }
             if (this.bewertung.length === 0) {
                 this.kriterien.forEach(k => {
                     this.bewertung.push({

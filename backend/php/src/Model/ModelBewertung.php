@@ -43,7 +43,7 @@ class ModelBewertung extends ModelBase
 	 * @param $projectId int Projekt-ID
 	 * @return bool true wenn Bewertung existiert, false wenn nicht
 	*/
-	public function checkBewertung(int $projectId)
+	public function checkBewertung(int $projectId): bool
 	{
 		$this->db->query("SELECT * FROM Bewertung
 		WHERE projectId= :projectId");
@@ -65,10 +65,20 @@ class ModelBewertung extends ModelBase
         return $data;
     }
 
+	private function checkSetBewertungen(int $projectId, int $administrativeId): int
+	{
+		$this->db->query("SELECT * FROM Bewertung
+		WHERE projectId= :projectId AND administrativeId = :administrativeId");
+		$this->db->bind(":projectId", $projectId);
+		$this->db->bind(":administrativeId", $administrativeId);
+		$data = $this->db->resultSet();
+		return $data.count();
+	}
+
     // Speichert Bewertung auf der DB
-    public function createOrUpdateBewertung($data)
+    public function createOrUpdateBewertung($data): int
     {
-		if ($data["id"] == 0) {
+		if ($data["id"] == 0 && $this->checkSetBewertungen($data["projectId"], $_SESSION["user_id"]) < 4) {
 
             $this->db->query("INSERT INTO Bewertung
             (`administrativeId`,`projectId`,`kriterienId`,`bewertung`,`finish`)
