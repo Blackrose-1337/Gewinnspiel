@@ -22,7 +22,6 @@ async function check() {
     const answer: boolean = await authStore.check();
     if (!answer) {
         router.push("/login");
-    } else if (authStore.role == "jury" || authStore.role == "admin") {
     } else {
         $q.notify({
             type: "negative",
