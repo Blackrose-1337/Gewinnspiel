@@ -24,12 +24,7 @@ onMounted(() => {
 });
 </script>
 <template>
-    <loading
-        v-model="isLoading"
-        backgroundColor="rgba(0, 0, 0, 0.021)"
-        :can-cancel="true"
-        :is-full-page="fullPage"
-    />
+    <loading v-model="isLoading" backgroundColor="rgba(0, 0, 0, 0.021)" :can-cancel="true" :is-full-page="fullPage" />
     <div v-if="user.id === 0">
         <q-card flat align="center">
             <h4>

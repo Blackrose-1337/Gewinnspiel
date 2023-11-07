@@ -2,7 +2,6 @@ import { defineStore } from "pinia";
 import NetworkHelper from "@/utils/networkHelper";
 import type { User } from "@/stores/interfaces";
 
-
 const api = new NetworkHelper();
 
 export type State = {
@@ -12,20 +11,22 @@ export type State = {
 export const useConfirmStore = defineStore({
     id: "confirm",
     state: () =>
-    ({           
+        ({
             user: {} as User,
         } as State),
     actions: {
-        
         async confirm(token: string) {
             try {
                 const param = {
-                    'token': token,
+                    token: token,
                 };
                 this.user = await api.get<User>("confirm/confirm", param);
             } catch (err) {
-                
-                throw err; 
+                $q.notify({
+                    type: "negative",
+                    message: "Der Token ist invalide. Bitte melden Sie sich beim Betreiber der Seite.",
+                    color: "red",
+                });
             }
         },
     },

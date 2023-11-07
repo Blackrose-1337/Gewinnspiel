@@ -6,7 +6,7 @@ import { onBeforeMount } from "vue";
 
 const $q = useQuasar();
 const competitionstore = useCompetitionStore();
-const { competition, competitionDetails } = storeToRefs(competitionstore);
+const { competitionDetails } = storeToRefs(competitionstore);
 
 const toolbar = [
     [
@@ -95,6 +95,25 @@ onBeforeMount(() => {
             <div class="bg-grey-8k q-pa-md col-5 closetext">
                 <h5>Text wenn Gewinnspiel geschlossen ist</h5>
                 <q-editor v-model="competitionDetails.wettbewerbCloseText" ref="editorRef" :toolbar="toolbar" />
+            </div>
+        </div>
+        <div>
+            <div class="bg-grey-8k q-pa-md col-5 closetext">
+                <q-checkbox
+                    left-label
+                    label="Werden Mails versendet bei der Anmeldung"
+                    model-value=""
+                    v-model="competitionDetails.istEmailAktiv"
+                    color="black"
+                />
+            </div>
+            <div class="bg-grey-8k q-pa-md col-5 closetext">
+                <q-checkbox
+                    left-label
+                    label="Können User ihr Projekt Löschen"
+                    v-model="competitionDetails.istProjektLoeschenUserErlaubt"
+                    color="black"
+                />
             </div>
         </div>
 

@@ -64,6 +64,7 @@ async function sendCompetition() {
     //abfrage ob Bilder hochgeladen wurden falls ja werden diese in Base64 konvertiert
 
     if (errMessage.length === 0) {
+        isLoading.value = true;
         for (let index = 0; index < filesPng.value.length; index++) {
             let file = filesPng.value[index];
             let reader = new FileReader();
@@ -83,23 +84,15 @@ async function sendCompetition() {
             competition.value.project = projectmodel.value;
             competition.value.user = usermodel.value;
             isLoading.value = true;
-			fullPage.value = true;
+            fullPage.value = true;
             const ans = await competitionstore.postCompetition(competition.value);
             if (ans === 1) {
-                isLoading.value = false;
-				fullPage.value = false;
+                fullPage.value = false;
                 dialog.value = true;
                 $q.notify({
                     type: "positiv",
                     message: "Ihr Gewinnspielsteilnahme wurde versendet",
                     color: "green",
-                });
-            } else if (ans === 2) {
-                isLoading.value = false;
-                $q.notify({
-                    type: "negative",
-                    message: "Sie haben bereits am Gewinnspiel teilgenommen",
-                    color: "red",
                 });
             } else {
                 isLoading.value = false;
@@ -202,6 +195,9 @@ function dateCheck() {
         currentDateWithFormat < competitionDetails.value.wettbewerbende
     );
 }
+function switchLoadingOff() {
+    isLoading.value = false;
+}
 
 function isValidEmail(val: string) {
     const emailPattern =
@@ -245,7 +241,7 @@ load();
             <q-card-section align="left" v-html="competitionDetails.text" />
         </q-card>
         <form @submit.prevent.stop="sendCompetition" class="row q-pa-md">
-            <div id="comp" class="col-4 comp-proj q-ma-sm">
+            <div class="col-4 comp comp-proj q-ma-sm">
                 <div class="textarea full-width">
                     <q-input
                         class="q-ma-sm"
@@ -272,11 +268,10 @@ load();
                     />
                 </div>
             </div>
-            <div id="comp" class="col-6">
+            <div class="comp col-6">
                 <div class="place row">
-                    <Formular id="comp" ref="addressFormRef" @change:declarations="changeUserModel" />
+                    <Formular class="comp" ref="addressFormRef" @change:declarations="changeUserModel" />
                     <q-file
-                        for="qfileelements"
                         class="picloader col-11 q-mt-md"
                         ref="fileRef"
                         v-model="filesPng"
@@ -296,7 +291,10 @@ load();
                     >
                         <q-tooltip class="bg-accent">Zum Hochladen von Bildern einfach in das Feld klicken.</q-tooltip>
                     </q-file>
+                    <q-space class="full-width" />
+
                     <q-field
+                        stack-label
                         v-model="teilnahmebedingungenbestaetigung"
                         color="accent"
                         ref="checkRef"
@@ -305,11 +303,11 @@ load();
                         borderless
                     >
                         <q-checkbox
+                            label="Teilnahmebedingungen annehmen *"
                             standout="bg-secondary"
                             color="accent"
                             right-label
                             v-model="teilnahmebedingungenbestaetigung"
-                            label="Teilnahmebedingungen annehmen *"
                             class="col-4"
                         />
                     </q-field>
@@ -340,7 +338,7 @@ load();
                         </span>
                     </q-card-section>
                     <q-card-actions align="right">
-                        <q-btn flat label="OK" class="bg-accent" v-close-popup />
+                        <q-btn flat label="OK" @click="switchLoadingOff" class="bg-accent" v-close-popup />
                     </q-card-actions>
                 </q-card>
             </q-dialog>
@@ -351,7 +349,7 @@ load();
             <q-card-section v-html="competitionDetails.wettbewerbCloseText" />
         </q-card>
     </div>
-	<div class="q-pb-lg" />
+    <div class="q-pb-lg" />
 </template>
 
 <style scoped>
@@ -373,7 +371,7 @@ load();
     min-width: 400px;
 }
 @media (max-width: 1100px) {
-    #comp {
+    .comp {
         min-width: 400px;
         max-width: 800px;
         width: 100%;

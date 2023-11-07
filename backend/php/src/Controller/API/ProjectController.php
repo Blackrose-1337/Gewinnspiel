@@ -23,7 +23,6 @@ class ProjectController extends BaseController
                 // Aufruf benötigter Klassen 
                 $projectmodel = new ModelProject();
                 $bildermodel = new ModelBilder();
-
                 // Abruf des eigenen Projektes als 'teilnehmende' Rolle
                 if ($_SESSION['user_role'] == 'teilnehmende') {
 					if ($projectmodel->checkProject($_SESSION['user_id'])){
@@ -41,22 +40,22 @@ class ProjectController extends BaseController
 						$answer = null;
 					}
                 }
-                if (isset($answer['id'])) {
-                    // Bilder werden geholt mittels Projekt-ID
-                    $imgs = $bildermodel->getPictureByProId($answer['id']);
-                    // Array Vorbereitung
-                    $base64 = [];
-                    // verpacken der Bilder und push in den Array
-                    foreach ($imgs as $img) {
-                        $pic = $this->getImage($img['path']);
-                        array_push($base64, $pic);
-                    }
-                    // Array noch verpacken
-                    $answer['pics'] = $base64;
-                    // Antwort zu Json formatieren
-                } else {
-                    $answer['pics'] = null;
-                }
+				if (isset($answer['id'])) {
+					// Bilder werden geholt mittels Projekt-ID
+					$imgs = $bildermodel->getPictureByProId($answer['id']);
+					// Array Vorbereitung
+					$base64 = [];
+					// verpacken der Bilder und push in den Array
+					foreach ($imgs as $img) {
+						$pic = $this->getImage($img['path']);
+						array_push($base64, $pic);
+					}
+					// Array noch verpacken
+					$answer['pics'] = $base64;
+				} else {
+					$answer['pics'] = null;
+				}
+	            // Antwort zu Json formatieren
 	            $responseData = json_encode($answer);
             } else {
                 // Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde
@@ -81,7 +80,7 @@ class ProjectController extends BaseController
         }
     }
 
-    // API Funktion alle Projekte abrufen
+    // API Funktion alle Projekte abrufen (nur für Admin und Jury)
     public function takeAllAction()
     {
         $strErrorDesc = '';
@@ -149,6 +148,7 @@ class ProjectController extends BaseController
                 $projectmodel = new ModelProject();
                 // Post Daten holen
                 $data = json_decode(file_get_contents('php://input'), true);
+				error_log(print_r($data, true));
                 // Überprüfung ob die ID nicht 0 ist
                 if ($data['id'] !== 0) {
                     // update Projekt
@@ -180,7 +180,7 @@ class ProjectController extends BaseController
     }
 
     // API Funktion Projekt löschen (auch der User wird gelöscht)
-    public function deleteAction()
+   /* public function deleteAction()
     {
         $strErrorDesc = '';
         // Kommunikations-Methode entnehmen
@@ -206,47 +206,48 @@ class ProjectController extends BaseController
                 // Post Daten holen
                 $data = json_decode(file_get_contents('php://input'), true);
 	            $message = new stdClass();
-	            if ($bewertungmodel->checkBewertung($data['id'])) {
-		            $message->answer = false;
-		            $message->message = 'Bewertung vorhanden - User & Projekt kann nicht gelöscht werden';
-		            $message->type = 'negative';
-		            $responseData = json_encode($message);
-	            } else {
-		            // Überprüfung ob die ID nicht 0 ist
-		            if ($data['id'] !== 0) {
-						// User id holen uas projekt
-			            $userID = $projectmodel->getUserIdWithId($data['id']);
-						// User holen
-			            $user = $usermodel->getUser($userID[0]['userId']);
-			            // löschen des Projektes
-			            if($projectmodel->deleteProject($data)){
-
-				            // Löschen des Users (übergabe voller User)
-				            $checkuserdelete = $usermodel->deleteUser($userID[0]);
-				            // Salt und Pw Löschen
-				            $checksaltdelete = $saltmodel->deleteSaltDB($user['saltId']);
-				            $checkpwdelete = $pwmodel->deleteHashDB($user['pwId']);
-							if($checkuserdelete && $checksaltdelete && $checkpwdelete){
-					            $message->answer = true;
-					            $message->message = 'User & Projekt erfolgreich gelöscht';
-					            $message->type = 'positive';
-				            } else {
+	            if ($data['id'] !== 0) {
+		            // User id holen aus projekt
+		            $userID = $projectmodel->getUserIdWithId($data['id']);
+		            // User holen
+		            $user = $usermodel->getUser($userID[0]['userId']);
+					$projects = $projectmodel->getAnyProject($userID[0]['userId']);
+					$count = count($projects);
+					$liste = "Folgende Projekte konnten nicht gelöscht werden: ";
+					foreach ($projects as $project) {
+						if (!$bewertungmodel->checkBewertung($project['id'])) {
+							if (!$projectmodel->deleteProject($project)) {
+								$liste .= $project['title'] . ', ';
+							} else {
+								$count--;
+							}
+						}
+						if ($count == 0) {
+							// Löschen des Users (übergabe voller User)
+							$checkuserdelete = $usermodel->deleteUser($userID[0]);
+							// Salt und Pw Löschen
+							$checksaltdelete = $saltmodel->deleteSaltDB($user['saltId']);
+							$checkpwdelete = $pwmodel->deleteHashDB($user['pwId']);
+							if ($checkuserdelete && $checksaltdelete && $checkpwdelete) {
+								$message->answer = true;
+								$message->message = 'User & Projekte erfolgreich gelöscht';
+								$message->type = 'positive';
+							} else {
 								$message->answer = false;
-					            $message->message = 'User konnte nicht gelöscht werden';
-					            $message->type = 'negative';
-				            }
-
-			            } else {
-				            $message->answer = false;
-				            $message->message = 'Projekt konnte nicht gelöscht werden';
-				            $message->type = 'negative';
-			            }
-		            } else {
-			            $message->answer = false;
-			            $message->message = 'User & Projekt konnten nicht gelöscht werden';
-			            $message->type = 'negative';
-		            }
-	            }
+								$message->message = 'User konnte nicht gelöscht werden';
+								$message->type = 'negative';
+							}
+						} else {
+							$message->answer = false;
+							$message->message = 'User & '.$liste;
+							$message->type = 'negative';
+						}
+					}
+	            }  else {
+	            $message->answer = false;
+	            $message->message = 'User & Projekt konnten nicht gelöscht werden';
+	            $message->type = 'negative';
+                }
 	            $responseData = json_encode($message);
             } else {
                 // Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde
@@ -269,7 +270,87 @@ class ProjectController extends BaseController
                 array('Content-Type: application/json', $strErrorHeader)
             );
         }
-    }
+    }*/
+
+	public function deleteProjectAction()
+	{
+		$strErrorDesc = '';
+		// Kommunikations-Methode entnehmen
+		$requestMethod = $_SERVER["REQUEST_METHOD"];
+		try {
+			// Überprüfung gültiger Session
+			if (!$this->sessionCheck()) {
+				$strErrorDesc = "Nicht akzeptierte Session";
+				$strErrorHeader = $this->fehler(405);
+			} // Überprüfung erlaubter Rollen
+			else if (!$this->userCheck('admin', 'teilnehmende')) {
+				$strErrorDesc = "Unberechtigt diese Aktion auszuführen";
+				$strErrorHeader = $this->fehler(401);
+			}
+			// abfrage ob es eine POST_Methode ist
+			if (strtoupper($requestMethod) == 'POST') {
+				// Aufruf benötigter Klassen
+				$competitionmodel = new ModelCompetition();
+				$projectmodel = new ModelProject();
+				$bewertungmodel = new ModelBewertung();
+
+				if($competitionmodel->isDeleteAllowed()) {
+					// Post Daten holen
+					$data = json_decode(file_get_contents('php://input'), true);
+					$message = new stdClass();
+					if ($bewertungmodel->checkBewertung($data['id'])) {
+						$message->answer = false;
+						$message->message = 'Bewertung vorhanden - Projekt kann nicht gelöscht werden';
+						$message->type = 'negative';
+						$responseData = json_encode($message);
+					} else {
+						// Überprüfung ob die ID nicht 0 ist
+						if ($data['id'] !== 0) {
+							// löschen des Projektes
+							if ($projectmodel->deleteProject($data)) {
+								$message->answer = true;
+								$message->message = 'Projekt erfolgreich gelöscht';
+								$message->type = 'positive';
+							} else {
+								$message->answer = false;
+								$message->message = 'Projekt konnte nicht gelöscht werden';
+								$message->type = 'negative';
+							}
+						} else {
+							$message->answer = false;
+							$message->message = 'Projekt konnten nicht gelöscht werden';
+							$message->type = 'negative';
+						}
+					}
+				} else {
+					$message = new stdClass();
+					$message->answer = false;
+					$message->message = 'Projekt kann nicht gelöscht werden';
+					$message->type = 'negative';
+				}
+				$responseData = json_encode($message);
+			} else {
+				// Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde
+				$strErrorDesc = 'Method not supported';
+				$strErrorHeader = $this->fehler(422);
+			}
+		} catch (Error $e) {
+			// Fehlermeldung, falls ein serverseitiger Fehler entstanden ists
+			$strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+			$strErrorHeader = $this->fehler(500);
+		}
+		// Falls kein Fehler enthalten ist wird die Antwort verpackt und versendet
+		if (!$strErrorDesc) {
+			$this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
+
+			// Falls ein Fehler enthalten ist wird dieser verpackt und versendet
+		} else {
+			$this->sendOutput(
+				json_encode(array('error' => $strErrorDesc)),
+				array('Content-Type: application/json', $strErrorHeader)
+			);
+		}
+	}
 
     // API Funktion Bild löschen auf DB und Bild in trash Ordner verschieben
     public function deletePictureAction()
@@ -418,50 +499,140 @@ class ProjectController extends BaseController
             );
         }
     }
-    public function takeprojectsAction()
+	// API Funktion aller freigegebenen Projekte abrufen
+	public function takeprojectsAction()
+	{
+		$strErrorDesc = '';
+		// Kommunikations-Methode entnehmen
+		$requestMethod = $_SERVER["REQUEST_METHOD"];
+		try {
+			// Überprüfung gültiger Session
+			if (!$this->sessionCheck()) {
+				$strErrorDesc = "Nicht akzeptierte Session";
+				$strErrorHeader = $this->fehler(405);
+
+				// Überprüfung erlaubter Rollen
+			} else if (!$this->userCheck('jury', 'admin')) {
+				$strErrorDesc = "Unberechtigt diese Aktion auszuführen";
+				$strErrorHeader = $this->fehler(401);
+			}
+			// abfrage ob es eine GET_Methode ist
+			if (strtoupper($requestMethod) == 'GET') {
+				// Aufruf benötigter Klassen
+				$projectmodel = new ModelProject();
+				// Abfrage aller Projekte direkt zu Json formatiert
+				$responseData = json_encode($projectmodel->getAllProjectwithfinish());
+			} else {
+				// Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde
+				$strErrorDesc = 'Method not supported';
+				$strErrorHeader = $this->fehler(422);
+			}
+		} catch (Error $e) {
+			// Fehlermeldung, falls ein serverseitiger Fehler entstanden ist
+			$strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+			$strErrorHeader = $this->fehler(500);
+		}
+		// Falls kein Fehler enthalten ist wird die Antwort verpackt und versendet
+		if (!$strErrorDesc) {
+			$this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
+
+			// Falls ein Fehler enthalten ist wird dieser verpackt und versendet
+		} else {
+			$this->sendOutput(
+				json_encode(array('error' => $strErrorDesc)),
+				array('Content-Type: application/json', $strErrorHeader)
+			);
+		}
+	}
+
+    public function takeAllProjectsUserAction()
     {
-        $strErrorDesc = '';
-        // Kommunikations-Methode entnehmen
-        $requestMethod = $_SERVER["REQUEST_METHOD"];
-        try {
-            // Überprüfung gültiger Session
-            if (!$this->sessionCheck()) {
-                $strErrorDesc = "Nicht akzeptierte Session";
-                $strErrorHeader = $this->fehler(405);
+	    $strErrorDesc = '';
+	    // Kommunikations-Methode entnehmen
+	    $requestMethod = $_SERVER["REQUEST_METHOD"];
+	    // QueryParams entgegennehmen
+	    $arrQueryStringParams = $this->getQueryStringParams();
+	    try {
+		    // Überprüfung gültiger Session
+		    if (!$this->sessionCheck()) {
+			    $strErrorDesc = "Nicht akzeptierte Session";
+			    $strErrorHeader = $this->fehler(405);
+		    } // Überprüfung erlaubter Rollen
+		    else if (!$this->userCheck('admin', 'teilnehmende')) {
+			    $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
+			    $strErrorHeader = $this->fehler(401);
+		    } // abfrage ob es eine GET_Methode ist
+		    else if (strtoupper($requestMethod) == 'GET') {
+			    // Aufruf benötigter Klassen
+			    $projectmodel = new ModelProject();
+			    $bildermodel = new ModelBilder();
 
-                // Überprüfung erlaubter Rollen
-            } else if (!$this->userCheck('admin', 'jury')) {
-                $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
-                $strErrorHeader = $this->fehler(401);
-            }
-            // abfrage ob es eine GET_Methode ist
-            if (strtoupper($requestMethod) == 'GET') {
-                // Aufruf benötigter Klassen
-                $projectmodel = new ModelProject();
-                // Abfrage aller Projekte direkt zu Json formatiert
-                $responseData = json_encode($projectmodel->getAllProjectwithfinish());
-            } else {
-                // Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde
-                $strErrorDesc = 'Method not supported';
-                $strErrorHeader = $this->fehler(422);
-            }
-        } catch (Error $e) {
-            // Fehlermeldung, falls ein serverseitiger Fehler entstanden ist
-            $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
-            $strErrorHeader = $this->fehler(500);
-        }
-        // Falls kein Fehler enthalten ist wird die Antwort verpackt und versendet
-        if (!$strErrorDesc) {
-            $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
+			    // Abruf des eigenen Projektes als 'teilnehmende' Rolle
+			    if ($_SESSION['user_role'] == 'teilnehmende') {
+				    if ($projectmodel->checkProject($_SESSION['user_id'])){
+					    // Projekt wird geholt mit 'user_id' der Session
+					    $answer = $projectmodel->getProjects($_SESSION['user_id']);
+				    } else {
+					    $answer = null;
+				    }
+				    // Abruf eines pezifischen Projektes als Admin
+			    } else if ($_SESSION['user_role'] == 'admin') {
+				    if ($projectmodel->checkProject($arrQueryStringParams['userId'])) {
+					    // Projekt wird geholt anhand mitgebener User-Id
+					    $answer = $projectmodel->getProject($arrQueryStringParams['userId']);
+				    } else {
+					    $answer = null;
+				    }
+			    }
 
-            // Falls ein Fehler enthalten ist wird dieser verpackt und versendet
-        } else {
-            $this->sendOutput(
-                json_encode(array('error' => $strErrorDesc)),
-                array('Content-Type: application/json', $strErrorHeader)
-            );
-        }
+			   /* foreach ($answer as &$value) {
+				    if (isset($value['id'])) {
+
+					    // Bilder werden geholt mittels Projekt-ID
+					    $imgs = $bildermodel->getPictureByProId($value['id']);
+					    // Array Vorbereitung
+					    $base64 = [];
+					    // verpacken der Bilder und push in den Array
+					    foreach ($imgs as $img) {
+						    $pic = $this->getImage($img['path']);
+						    array_push($base64, $pic);
+					    }
+					    // Array noch verpacken
+					    $value['pics'] = $base64;
+					    error_log(print_r($value, true));
+					    error_log(count($value['pics']));
+					    // Antwort zu Json formatieren
+				    } else {
+					    $value['pics'] = null;
+				    }
+				    unset($value);
+			    }*/
+
+			    $responseData = json_encode($answer);
+		    } else {
+			    // Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde
+			    $strErrorDesc = 'Method not supported';
+			    $strErrorHeader = $this->fehler(422);
+		    }
+	    } catch (Error $e) {
+		    // Fehlermeldung, falls ein serverseitiger Fehler entstanden ist
+		    $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+		    $strErrorHeader = $this->fehler(500);
+	    }
+	    // Falls kein Fehler enthalten ist wird die Antwort verpackt und versendet
+	    if (!$strErrorDesc) {
+		    $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
+
+		    // Falls ein Fehler enthalten ist wird dieser verpackt und versendet
+	    } else {
+		    $this->sendOutput(
+			    json_encode(array('error' => $strErrorDesc)),
+			    array('Content-Type: application/json', $strErrorHeader)
+		    );
+	    }
     }
+
+	// API Funktion Projekt Freigeben
     public function approvalAction()
     {
         $strErrorDesc = '';

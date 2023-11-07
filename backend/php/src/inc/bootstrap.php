@@ -27,6 +27,7 @@ switch ($uri[2]) {
         require_once PROJECT_ROOT_PATH . "Model/ModelBilder.php";
         break;
     case 'project':
+	    require_once PROJECT_ROOT_PATH . "Model/ModelCompetition.php";
         require_once PROJECT_ROOT_PATH . "Model/ModelProject.php";
         require_once PROJECT_ROOT_PATH . "Model/ModelBilder.php";
 		require_once PROJECT_ROOT_PATH . "Model/ModelBewertung.php";

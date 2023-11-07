@@ -75,6 +75,13 @@ class ModelProject extends ModelBase
         return $answer;
     }
 
+	public function checkProjectOnPerson(int $userId)
+	{
+		$this->db->query("SELECT * FROM Project WHERE userId = :userId");
+		$this->db->bind(":userId", $userId);
+		$answer = $this->db->resultSet();
+		return count($answer);
+	}
 	// holt pictureIncrement von der DB
 	public function getPictureIncrement($id)
 	{
@@ -124,6 +131,14 @@ class ModelProject extends ModelBase
         return $answer;
     }
 
+	public function getAnyProject($id)
+	{
+		$this->db->query("SELECT * FROM Project WHERE userId = :id");
+		$this->db->bind(":id", $id);
+		$answer = $this->db->resultSet();
+		return $answer;
+	}
+
     // löscht das gesammte Projekt wie auch die hinterlegten Bildpfade von der DB mittels Projekt-ID
     private function deletePro($id)
     {
@@ -156,18 +171,22 @@ class ModelProject extends ModelBase
     public function deleteProjectWithUserId($data)
     {
         // Projekt-ID von DB Holen
-        $answer = $this->getProject($data['userId']);
-
+        $answer = $this->getProjects($data['userId']);
+		$answers =[];
         if ($answer != 0 ){
-            // Löschprozess mit Projekt-ID initialisieren
-            $answer = $this->deletePro($answer['id']);
+			foreach ($answer as $project) {
+				// Löschprozess mit Projekt-ID initialisieren
+				$oneAnswer = $this->deletePro($project['id']);
+				array_push($answers, $oneAnswer);
+			}
         }
-        return $answer;
+        return $answers;
     }
 
     // Recursive Löschfunktion eines Ordnerpfades
     private function rrmdir($picpath)
     {
+		error_log($picpath);
         if (is_dir($picpath)) {
             $objects = scandir($picpath);
             foreach ($objects as $object) {
@@ -188,11 +207,23 @@ class ModelProject extends ModelBase
         $datas = $this->getAllProject();
         foreach ($datas as $data) {
             if ($data['userId'] == $userId) {
-                return $data;
+	            return $data;
             }
         }
         return 0;
     }
+
+	public function getProjects($userId)
+	{
+		$datas = $this->getAllProject();
+		$projects= [];
+		foreach ($datas as $data) {
+			if ($data['userId'] == $userId) {
+				array_push($projects, $data);
+			}
+		}
+		return $projects;
+	}
 
     // holt die User-ID von der DB mittels Projekt-ID
     public function getUserIdWithId($projectId)
@@ -227,7 +258,7 @@ class ModelProject extends ModelBase
         $this->db->query("SELECT COUNT(*) FROM Project WHERE userId = :id");
         $this->db->bind(":id", $id);
         $data = $this->db->resultSet();
-        return $data[0]['COUNT(*)'] == 1;
+        return $data[0]['COUNT(*)'] > 0;
     }
 
 

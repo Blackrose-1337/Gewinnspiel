@@ -66,7 +66,7 @@ async function send() {
 function load() {
     evaluationStore.getKriterien();
 }
-watch(selectedproject, async changeProject => {
+watch(selectedproject, async () => {
     evaluationStore.bewertung = evaluationStore.bewertung.splice(0, 0);
     await evaluationStore.clear();
     await Promise.all([

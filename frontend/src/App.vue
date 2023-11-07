@@ -51,7 +51,7 @@ onMounted(() => {
                     label="Gewinnspiel"
                 />
                 <q-route-tab to="/user" label="User" v-if="role === 'teilnehmende'" />
-
+                <q-route-tab to="/user-project" label="Projekte" v-if="role === 'teilnehmende'" />
                 <q-route-tab
                     @click="settitle('Admin')"
                     to="/evaluation"
@@ -68,7 +68,12 @@ onMounted(() => {
                                 label="Userverwaltung"
                                 icon="people"
                             />
-                            <q-route-tab @click="settitle('Projekte')" to="/project" label="Projekte" icon="description" />
+                            <q-route-tab
+                                @click="settitle('Projekte')"
+                                to="/project"
+                                label="Projekte"
+                                icon="description"
+                            />
                             <q-route-tab
                                 @click="settitle('Konfiguration')"
                                 to="/designe"

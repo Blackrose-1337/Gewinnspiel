@@ -68,7 +68,6 @@ async function login() {
 <template>
     <q-page class="q-pa-xl">
         <span class="text-h5">Login</span>
-
         <q-form ref="form" @keydown.enter="login">
             <q-input
                 label="E-Mail"

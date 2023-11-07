@@ -72,7 +72,7 @@ class ModelBewertung extends ModelBase
 		$this->db->bind(":projectId", $projectId);
 		$this->db->bind(":administrativeId", $administrativeId);
 		$data = $this->db->resultSet();
-		return $data.count();
+		return count($data);
 	}
 
     // Speichert Bewertung auf der DB

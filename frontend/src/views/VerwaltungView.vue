@@ -5,7 +5,6 @@ import { useQuasar } from "quasar";
 import { useAuthStore } from "@/stores/auth";
 import Formular from "@/components/Formular.vue";
 import Sidebar from "@/components/Sidebar.vue";
-import Project from "@/components/Project.vue";
 import type { User } from "@/stores/interfaces";
 import { useRouter } from "vue-router";
 
@@ -44,23 +43,20 @@ onBeforeMount(() => {
     <main>
         <Sidebar @change:selection="onUserChanged" :view="view" />
         <div class="row">
-            <div v-if="selectedUser.role === 'teilnehmende'" class="col verw">
-                <Project :user="selectedUser" />
-            </div>
-            <div class="col q-gutter-md q-pa-md verw">
+            <div class="col q-gutter-md q-pa-md verwaltung">
                 <Formular :user="selectedUser" :view="'Project'" />
             </div>
         </div>
     </main>
 </template>
 <style scoped>
-.verw {
+.verwaltung {
     min-width: 500px;
     max-width: 800px;
 }
 
 @media (max-width: 1300px) {
-    .verw {
+    .verwaltung {
         min-width: 500px;
         max-width: 800px;
         margin: 0 auto;

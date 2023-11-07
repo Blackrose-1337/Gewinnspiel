@@ -148,15 +148,23 @@ async function resetPw() {
 
 //------------------- function's for validate --------------------
 function myvalidate() {
+    const nameCheck = nameRef.value.validate();
+    const surnameCheck = surnameRef.value.validate();
+    const emailCheck = emailRef.value.validate();
+    const landCheck = landRef.value.validate();
+    const plzCheck = plzRef.value.validate();
+    const ortschaftCheck = ortschaftRef.value.validate();
+    const strasseCheck = strasseRef.value.validate();
+    const strNrCheck = strNrRef.value.validate();
     return !!(
-        nameRef.value.validate() &&
-        surnameRef.value.validate() &&
-        emailRef.value.validate() &&
-        landRef.value.validate() &&
-        plzRef.value.validate() &&
-        ortschaftRef.value.validate() &&
-        strasseRef.value.validate() &&
-        strNrRef.value.validate()
+        nameCheck &&
+        surnameCheck &&
+        emailCheck &&
+        landCheck &&
+        plzCheck &&
+        ortschaftCheck &&
+        strasseCheck &&
+        strNrCheck
     );
 }
 // "Exportiert" die Funktion myvalidate() um sie in anderen Komponenten verwenden zu können

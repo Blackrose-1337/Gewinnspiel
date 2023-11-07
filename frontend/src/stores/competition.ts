@@ -32,6 +32,9 @@ export const useCompetitionStore = defineStore({
                 competitionDetails.wettbewerbbeginn = competitionDetails.wettbewerbbeginn.replaceAll("-", "/");
                 competitionDetails.wettbewerbende = competitionDetails.wettbewerbende.replaceAll("-", "/");
                 this.competitionDetails = competitionDetails;
+                this.competitionDetails.istEmailAktiv = competitionDetails.istEmailAktiv != 0;
+                this.competitionDetails.istProjektLoeschenUserErlaubt =
+                    competitionDetails.istProjektLoeschenUserErlaubt != 0;
             } catch (err) {
                 console.error(err);
                 if (err instanceof HTTPError) {

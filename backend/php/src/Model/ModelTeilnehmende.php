@@ -43,14 +43,14 @@ class ModelTeilnehmende extends ModelBase
         $modelpw = new ModelPw;
 
         // Überprüfung, ob E-Mail bereits existiert
-        $this->db->query("SELECT email FROM User WHERE LOWER(email) = LOWER(:email)");
+        $this->db->query("SELECT email, id FROM User WHERE LOWER(email) = LOWER(:email)");
         $this->db->bind(":email", $data["email"]);
         $check = $this->db->resultSet();
         // falls die DB eine Übereinstimmung hat, wird 'false' zurückgegeben
         if (isset($check[0]) && $check[0]["email"] == $data["email"]) {
-			return 0;
+	        $this->id = $check[0]["id"];
+			return $check[0]["id"];
         } else {
-
 
             // salt erstellen und direkt auf der Datenbank speichern
             $salt->createSaltDB();

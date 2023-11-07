@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onBeforeMount, ref } from "vue";
 import { useEvaluationStore } from "@/stores/evaluation.ts";
+import Loading from "vue-loading-overlay";
 
 const evaluationstore = useEvaluationStore();
 const auswertung = computed(() => evaluationstore.auswertung);
 const missing = computed(() => evaluationstore.missing);
 const isLoading = ref(false);
+const fullPage = ref(true);
 
 const columns = [
     {
@@ -28,13 +30,24 @@ async function getmissing() {
     isLoading.value = false;
 }
 
-onMounted(() => {
-    evaluationstore.getAnalysis();
+async function load() {
+    isLoading.value = true;
+    await evaluationstore.getAnalysis();
+    isLoading.value = false;
+}
+onBeforeMount(async () => {
+    await load();
 });
 </script>
 <template>
+    <loading
+        v-model="isLoading"
+        backgroundColor="rgba(0, 0, 0, 0.223)"
+        :can-cancel="true"
+        :is-full-page="fullPage"
+    ></loading>
     <div class="q-pb-xl row">
-        <div class="col-8 q-ma-md">
+        <div v-if="!isLoading && auswertung && columns" class="col-8 q-ma-md">
             <q-table
                 title="Punkteliste"
                 virtual-scroll
@@ -61,8 +74,6 @@ onMounted(() => {
                                 <q-card class="col-3">{{ p }}</q-card>
                             </div>
                         </div>
-
-                        <!--                        <p>{{ m.project_ids }}</p>-->
                     </q-card-section>
                 </div>
             </q-card>

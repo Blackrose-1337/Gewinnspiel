@@ -21,14 +21,12 @@ const $q = useQuasar();
 async function check() {
     const answer: boolean = await authStore.check();
     if (!answer) {
-        router.push("/login");
-    } else {
+        await router.push("/");
         $q.notify({
             type: "negative",
             message: "Keine Berechtigung für diese Seite",
             color: "red",
         });
-        router.push("/");
     }
 }
 
@@ -38,6 +36,15 @@ onBeforeMount(() => {
 </script>
 <template>
     <main class="q-pa-md">
+        <q-card style="max-width: 350px" class="q-mb-md q-mx-auto transition-0 bg-accent fa-border">
+            <div class="row">
+                <q-space />
+                <q-icon size="md" class="q-ma-xs" name="info" />
+            </div>
+            <div class="q-mx-auto">
+                <q-item header class="text-h6 justify-center">Je mehr Punkte, desto Besser.</q-item>
+            </div>
+        </q-card>
         <Evaluation :selectedproject="selectedProject" class="spacing" />
         <Sidebar @change:selectproject="projectChange" :view="view" />
     </main>

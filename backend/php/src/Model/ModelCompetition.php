@@ -11,6 +11,11 @@ class ModelCompetition extends ModelBase
     private string $title;
     private string $text;
     private string $teilnehmerbedingungen;
+	private DateTime $wettbewerbbeginn;
+	private DateTime $wettbewerbende;
+	private string $wettbewerbCloseText;
+	private bool $istEmailAktiv;
+	private bool $istProjektLoeschenUserErlaubt;
 
     // holt alle Wettbewerbsinformationen von DB (alle Datensätze / hat bloss einen )
     public function getCompetition()
@@ -19,12 +24,24 @@ class ModelCompetition extends ModelBase
         $data = $this->db->resultSet();
         return $data[0];
     }
+	public function isMailAllowed()
+	{
+		$this->db->query("SELECT istEmailAktiv FROM Competition");
+		$data = $this->db->resultSet();
+		return $data[0]["istEmailAktiv"];
+	}
+	public function isDeleteAllowed()
+	{
+		$this->db->query("SELECT istProjektLoeschenUserErlaubt FROM Competition");
+		$data = $this->db->resultSet();
+		return $data[0]["istProjektLoeschenUserErlaubt"];
+	}
 
     // Passt Wettbewerbsinformation auf der DB an
     public function updateData($data)
     {
         $this->db->query("UPDATE Competition SET
-        title = :title, text = :text, teilnehmerbedingung = :teilnehmerbedingung, wettbewerbbeginn = :wettbewerbbeginn, wettbewerbende = :wettbewerbende, wettbewerbCloseText = :wettbewerbCloseText
+        title = :title, text = :text, teilnehmerbedingung = :teilnehmerbedingung, wettbewerbbeginn = :wettbewerbbeginn, wettbewerbende = :wettbewerbende, wettbewerbCloseText = :wettbewerbCloseText, istEmailAktiv = :istEmailAktiv, istProjektLoeschenUserErlaubt = :istProjektLoeschenUserErlaubt
         WHERE id = :id");
         $this->db->bind(":title", $data["title"]);
         $this->db->bind(":text", $data["text"]);
@@ -32,6 +49,8 @@ class ModelCompetition extends ModelBase
         $this->db->bind(":wettbewerbbeginn", $data["wettbewerbbeginn"]);
         $this->db->bind(":wettbewerbende", $data["wettbewerbende"]);
         $this->db->bind(":wettbewerbCloseText", $data["wettbewerbCloseText"]);
+		$this->db->bind(":istEmailAktiv", $data["istEmailAktiv"]);
+		$this->db->bind(":istProjektLoeschenUserErlaubt", $data["istProjektLoeschenUserErlaubt"]);
         $this->db->bind(":id", $data["id"]);
         return $this->db->execute();
     }

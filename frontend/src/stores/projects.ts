@@ -67,6 +67,19 @@ export const useProjectStore = defineStore({
                 }
             }
         },
+        async getProjectsUser() {
+            try {
+                this.projects.splice(0);
+                this.projects = await api.get<Project[]>("project/takeAllProjectsUser");
+                // this.projects.splice(0);
+                /*projects.forEach(p => this.projects.push(p));*/
+            } catch (err) {
+                console.error(err);
+                if (err instanceof HTTPError) {
+                    Notify.create({ message: `HTTP Error: ${err.message}`, type: "negative" });
+                }
+            }
+        },
         async getProjectsEva() {
             try {
                 const projects = await api.get<Project[]>("project/takeprojects");
@@ -127,11 +140,17 @@ export const useProjectStore = defineStore({
             }
             return bool;
         },
+        // async projectUserRemove($id: number) {
+        //     const param = {
+        //         id: $id,
+        //     };
+        //     return await api.post<boolean>("project/delete", param);
+        // },
         async projectRemove($id: number) {
             const param = {
                 id: $id,
             };
-            return await api.post<boolean>("project/delete", param);
+            return await api.post<boolean>("project/deleteProject", param);
         },
         async approvalPost() {
             return api.post<boolean>("project/approval", this.project.id);

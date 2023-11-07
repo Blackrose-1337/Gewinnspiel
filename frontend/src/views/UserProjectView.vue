@@ -1,33 +1,33 @@
 <script setup lang="ts">
 //--------------------- import ----------------------------------
-import Formular from "@/components/Formular.vue";
+import ProjectItem from "@/components/Project.vue";
+import Sidebar from "@/components/SidebarUser.vue";
+import type { Project } from "@/stores/interfaces";
 import { useRouter } from "vue-router";
-import { useQuasar } from "quasar";
-import { computed, onBeforeMount, ref } from "vue";
-import { useUserStore } from "@/stores/users";
+import { computed, onBeforeMount, Ref, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useCompetitionStore } from "@/stores/competition";
 import Loading from "vue-loading-overlay";
 
 //--------------------- Storeload --------------------------------
 const authStore = useAuthStore();
-const userStore = useUserStore();
 const competitionStore = useCompetitionStore();
 
 //--------------------- variable's -------------------------------
-const $q = useQuasar();
 const router = useRouter();
 let isLoading = ref(false);
 const fullPage = ref(true);
-const formularRef = ref(null); //ref to child component
 
 //--------------------- computed ---------------------------------
-const selectedUser = computed(() => userStore.user);
 const competitionDetails = computed(() => competitionStore.competitionDetails);
 
 //--------------------- storeToRefs ------------------------------
+const selectedProject = ref(null as unknown) as Ref<Project>;
 
 //--------------------- function's -------------------------------
+async function projectChange(p: Project) {
+    selectedProject.value = p;
+}
 //----------------- function's for check -------------------------
 //check if user is logged in
 async function check() {
@@ -49,40 +49,10 @@ function dateCheck() {
         currentDateWithFormat < competitionDetails.value.wettbewerbende
     );
 }
-//----------------- function's from child ------------------------
-//call child function
-async function callChildFunction() {
-    if (formularRef.value.myvalidate()) {
-        isLoading.value = true;
-        const answer: number = await userStore.saveUserChange();
-        if (answer === 1) {
-            $q.notify({
-                type: "positive",
-                message: "Änderung wurden gespeichert!",
-                color: "green",
-            });
-        } else if (answer === 0) {
-            $q.notify({
-                type: "negative",
-                message: "Der Speichervorgang ist gescheitert",
-                color: "red",
-            });
-        }
-    } else {
-        $q.notify({
-            type: "negative",
-            message: "Bitte füllen Sie alle Pflichtfelder aus",
-            color: "red",
-        });
-    }
-    isLoading.value = false;
-}
-//----------------- function's for load --------------------------
 
-//----------------- function's for Mount -------------------------
+//----------------- function's before Mount -------------------------
 onBeforeMount(async () => {
     await check();
-    await userStore.getUser();
     await competitionStore.getCompetitionDeclarations();
 });
 </script>
@@ -93,20 +63,10 @@ onBeforeMount(async () => {
         :can-cancel="true"
         :is-full-page="fullPage"
     ></loading>
-    <div v-if="dateCheck()">
+    <div v-if="dateCheck()" class="row">
+        <Sidebar @change:selectproject="projectChange" />
         <div class="q-ma-md col user-E">
-            <Formular :user="selectedUser" ref="formularRef" :view="'User'" />
-            <div class="row">
-                <q-space />
-                <q-btn
-                    class="genBtn"
-                    color="blue"
-                    :loading="isLoading"
-                    label="Änderungen Speichern"
-                    icon="upload"
-                    @click="callChildFunction"
-                />
-            </div>
+            <ProjectItem :selectedproject="selectedProject" :view="'User'" />
         </div>
     </div>
     <div v-else>

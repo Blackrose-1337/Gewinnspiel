@@ -47,6 +47,8 @@ export interface CompetitionDetails {
     wettbewerbbeginn: Date;
     wettbewerbende: Date;
     wettbewerbCloseText: string;
+    istEmailAktiv: boolean;
+    istProjektLoeschenUserErlaubt: boolean;
 }
 
 export interface Bewertung {

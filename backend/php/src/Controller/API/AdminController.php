@@ -238,20 +238,24 @@ class AdminController extends BaseController
 				$data = json_decode(file_get_contents('php://input'), true);
 
 				// project_id holen
-				$project = $projectmodel->getProject($data['userId']);
+				$projects = $projectmodel->getProjects($data['userId']);
 				$check =true;
 				// falls ein Projekt vorhanden ist
-				if ($project['id']) {
-					// Überprüfung ob eine Bewertung vorhanden ist
-					if ($bewertungmodel->checkBewertung($project['id'])) {
-						$message = new stdClass();
-						$message->answer = false;
-						$message->message = 'Bewertung vorhanden - User & Projekt kann nicht gelöscht werden';
-						$message->type = 'negative';
-						$responseData = json_encode($message);
-						$check = false;
+				foreach ($projects as $project)
+				{
+					if ($project['id']) {
+						// Überprüfung ob eine Bewertung vorhanden ist
+						if ($bewertungmodel->checkBewertung($project['id'])) {
+							$message = new stdClass();
+							$message->answer = false;
+							$message->message = 'Bewertung vorhanden - User & Projekt kann nicht gelöscht werden';
+							$message->type = 'negative';
+							$responseData = json_encode($message);
+							$check = false;
+						}
 					}
 				}
+
 				if ($check) {
 					// Überprüfung der mitgegeben 'userId'
 					if ($data['userId'] !== 0) {

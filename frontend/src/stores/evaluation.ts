@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import NetworkHelper from "@/utils/networkHelper";
 import { Notify } from "quasar";
-import type { Bewertung, Kriterien, Auswertung, Message, Missing } from "@/stores/interfaces";
+import type { Auswertung, Bewertung, Kriterien, Message, Missing } from "@/stores/interfaces";
 import { forEach } from "lodash";
 
 const api = new NetworkHelper();
@@ -37,19 +37,6 @@ export const useEvaluationStore = defineStore({
             krieterin.forEach(k => this.kriterien.push(k));
         },
         async postBewertung(idProject: number) {
-            if (this.bewertung.length !== this.kriterien.length) {
-                Notify.create({
-                    message: "Es fehlen noch Bewertungen",
-                    type: "warning",
-                });
-                return;
-            } else if (this.bewertung.some(b => b.bewertung === null)) {
-                Notify.create({
-                    message: "Es fehlen noch Bewertungen",
-                    type: "warning",
-                });
-                return;
-            }
             if (this.bewertung.length === 0) {
                 this.kriterien.forEach(k => {
                     this.bewertung.push({
@@ -73,6 +60,43 @@ export const useEvaluationStore = defineStore({
                         }
                     });
                 });
+                while (this.bewertung.length < this.kriterien.length) {
+                    const neueBewertung = this.kriterien.find(
+                        k => k.id !== this.bewertung.find(b => b.kriterienId === k.id)?.kriterienId
+                    );
+                    if (neueBewertung) {
+                        if (neueBewertung.value === 0 || neueBewertung.value === null) {
+                            this.bewertung.push({
+                                id: 0,
+                                projectId: idProject,
+                                kriterienId: neueBewertung?.id,
+                                bewertung: neueBewertung?.value,
+                                finish: 0,
+                            });
+                        } else {
+                            this.bewertung.push({
+                                id: 0,
+                                projectId: idProject,
+                                kriterienId: neueBewertung.id,
+                                bewertung: neueBewertung.value,
+                                finish: 1,
+                            });
+                        }
+                    }
+                }
+            }
+            if (this.bewertung.length !== this.kriterien.length) {
+                Notify.create({
+                    message: "Es fehlen noch Bewertungen",
+                    type: "warning",
+                });
+                return;
+            } else if (this.bewertung.some(b => b.bewertung === null)) {
+                Notify.create({
+                    message: "Es fehlen noch Bewertungen",
+                    type: "warning",
+                });
+                return;
             }
 
             return api.post<boolean>("evaluation/createBewertung", this.bewertung);
@@ -108,7 +132,7 @@ export const useEvaluationStore = defineStore({
         },
         async getmissing() {
             this.missing = await api.get("evaluation/bewertungsCheck");
-            forEach(this.missing, (value, key) => {
+            forEach(this.missing, value => {
                 value.project_ids = value.project_ids.split(",");
             });
         },
@@ -126,11 +150,11 @@ export const useEvaluationStore = defineStore({
             return this.img;
         },
         async getAnalysis() {
-            const ans = await api.get<Auswertung[]>("evaluation/analysis", null);
-            this.auswertung = ans;
+            this.auswertung = await api.get<Auswertung[]>("evaluation/analysis", null);
             this.auswertung.forEach(e => {
                 e.value = +e.value;
             });
+            return this.auswertung;
         },
         async update(idProject: number) {
             if (this.bewertung.length === 0) {

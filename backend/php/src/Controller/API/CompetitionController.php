@@ -19,7 +19,7 @@ class CompetitionController extends BaseController
                 // User erstellen
                 $answerUser = $usermodel->createUser($data['user']);
                 if ($answerUser == 0) {
-                    $responseData = 2; //Falls ein User bereits exsistiert mit der Email
+                    $responseData = 2; //Falls etwas schief ging
                 } else {
                     // id von neuem User auf Variable speichern
                     $data['project']['userid'] = $usermodel->id;
@@ -62,15 +62,18 @@ class CompetitionController extends BaseController
                     // Information Wettbewerb holen
                     $ans = $competitionmodel->getCompetition();
                     // Mail versenden (param: Mail, Token, PW, Name, Surname, Wettbewerbende)
-                    if (getenv('SEND_MAIL_CUSTOMER_BOOLEAN')) {
+	                $anzahlProjekte = $newproject->checkProjectOnPerson($usermodel->id);
+                    if ($competitionmodel->isMailAllowed() && $anzahlProjekte == 1) {
                        $this->sendmail($data['user']['email'], $usermodel->getToken(), $usermodel->getPw(), $data['user']['name'], $data['user']['surname'], $ans['wettbewerbende']);
                     } else {
-						error_log('Usermail:'.$data['user']['email']);
-                        error_log('Token: ' . $usermodel->getToken());
-	                    error_log('PW: ' . $usermodel->getPw());
+	                    error_log('Usermail:' . $data['user']['email']);
+	                    if ($anzahlProjekte == 1) {
+		                    error_log('Token: ' . $usermodel->getToken());
+		                    error_log('PW: ' . $usermodel->getPw());
+	                    }
                     }
                     // Überprüfung ob erstellung von Projekt und User erfolgreich waren
-                    if ($answerProject == 1 & $answerUser == 1) {
+                    if ($answerProject == 1 & $answerUser != 0) {
                         $responseData = true;
                     } else {
                         $responseData = false;

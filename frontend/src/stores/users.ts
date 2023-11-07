@@ -35,7 +35,10 @@ export const useUserStore = defineStore({
         },
         async getUsers() {
             this.users.splice(0);
-            const users = await api.get<User[]>("user/list");
+            let users = await api.get<User[]>("user/list");
+            users = users.sort((a, b) => {
+                return a.surname.localeCompare(b.surname);
+            });
             users.forEach(u => this.users.push(u));
         },
         async saveUserChange(u?: User) {

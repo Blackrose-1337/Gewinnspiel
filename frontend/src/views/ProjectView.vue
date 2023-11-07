@@ -13,7 +13,6 @@ const $q = useQuasar();
 const authStore = useAuthStore();
 
 const selectedProject = ref(null as unknown) as Ref<Project>;
-const view = "Project";
 async function onProjectChanged(p: Project) {
     selectedProject.value = p;
 }
@@ -21,14 +20,14 @@ async function onProjectChanged(p: Project) {
 async function check() {
     const answer: boolean = await authStore.check();
     if (!answer) {
-        router.push("/login");
+        await router.push("/login");
     } else if (authStore.role != "admin") {
         $q.notify({
             type: "negative",
             message: "Keine Berechtigung für diese Seite",
             color: "red",
         });
-        router.push("/");
+        await router.push("/");
     }
 }
 
@@ -38,8 +37,8 @@ onBeforeMount(() => {
 </script>
 <template>
     <main class="q-pa-md">
-        <Sidebar @change:selectproject="onProjectChanged" :view="view" />
-        <Managment :selectedproject="selectedProject" :view="view" />
+        <Sidebar @change:selectproject="onProjectChanged" ref="sidebarRef?" :view="'Project'" />
+        <Managment :selectedproject="selectedProject" :view="'Project'" />
     </main>
 </template>
 <style></style>

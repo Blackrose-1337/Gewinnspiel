@@ -79,6 +79,7 @@ onBeforeMount(() => {
                 label-color="accent"
                 outlined
                 v-model="email"
+                id="email"
                 type="email"
                 autofocus
                 lazy-rules
@@ -89,6 +90,7 @@ onBeforeMount(() => {
                 standout="bg-secondary"
                 label-color="accent"
                 outlined
+                id="password"
                 v-model="password"
                 :type="!showPassword ? 'password' : 'text'"
                 :rules="[val => (val && val.length > 0) || 'Password is required']"
@@ -102,17 +104,16 @@ onBeforeMount(() => {
                 </template>
             </q-input>
             <p class="text-accent">Passwort muss min. 12 Zeichen besitzen</p>
-            <q-field class="q-pb-lg" v-model="OptIn" color="accent" ref="checkRef" dense borderless>
-                <q-checkbox
-                    standout="bg-secondary"
-                    color="accent"
-                    right-label
-                    v-model="OptIn"
-                    label="Opt-In bestätigen"
-                    class="col-4"
-                />
-            </q-field>
-            <q-btn label="Ändern" class="q-mt-auto" color="accent" icon="lock_reset" @click="changePw" />
+            <q-checkbox
+                id="OptIn"
+                standout="bg-secondary"
+                color="accent"
+                right-label
+                v-model="OptIn"
+                label="Opt-In bestätigen"
+                class="col-4 full-width"
+            />
+            <q-btn label="Ändern" class="q-mt-sm" color="accent" icon="lock_reset" @click="changePw" />
         </q-form>
     </q-page>
 </template>

@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 import WettbewerbView from "@/views/WettbewerbView.vue";
-import { useAuthStore } from "@/stores/auth";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,57 +19,63 @@ const router = createRouter({
         {
             path: "/evaluation",
             name: "evaluation",
-            meta: { requiresAuth: false},
+            meta: { requiresAuth: false },
             component: () => import("../views/BewertungView.vue"),
         },
         {
             path: "/user",
             name: "user",
-            meta: { requiresAuth: false},
-            component: () => import("../views/UserView.vue")
+            meta: { requiresAuth: false },
+            component: () => import("../views/UserView.vue"),
+        },
+        {
+            path: "/user-project",
+            name: "user-project",
+            meta: { requiresAuth: false },
+            component: () => import("../views/UserProjectView.vue"),
         },
         {
             path: "/verwaltung",
             name: "verwaltung",
             meta: { requiresAuth: false },
-            component: () => import("../views/VerwaltungView.vue")
+            component: () => import("../views/VerwaltungView.vue"),
         },
         {
             path: "/project",
             name: "project",
             meta: { requiresAuth: false },
-            component: () => import("../views/ProjectView.vue")
+            component: () => import("../views/ProjectView.vue"),
         },
         {
             path: "/designe",
             name: "designe",
             meta: { requiresAuth: false },
-            component: () => import("../views/DesigneView.vue")
+            component: () => import("../views/DesigneView.vue"),
         },
         {
             path: "/analysis",
             name: "auswertung",
             meta: { requiresAuth: false },
-            component: () => import("../views/AuswertungView.vue")
+            component: () => import("../views/AuswertungView.vue"),
         },
         {
             path: "/:value",
             name: "confirm",
             meta: { requiresAuth: false },
-            component: () => import("../views/BestaetigungView.vue")
+            component: () => import("../views/BestaetigungView.vue"),
         },
         {
             path: "/login",
             name: "login",
             meta: { requiresAuth: false },
-            component: () => import("../views/LoginView.vue")
+            component: () => import("../views/LoginView.vue"),
         },
-	    {
-		    path: "/password-set",
-		    name: "password-set",
-		    meta: { requiresAuth: false },
-		    component: () => import("../views/PasswordView.vue")
-	    },
+        {
+            path: "/password-set",
+            name: "password-set",
+            meta: { requiresAuth: false },
+            component: () => import("../views/PasswordView.vue"),
+        },
         {
             path: "/:pathMatch(.*)*",
             name: "NotFound",

@@ -3,7 +3,7 @@
 import { useQuasar } from "quasar";
 import type { Project, ProjectBild, User } from "@/stores/interfaces";
 import { useProjectStore } from "@/stores/projects";
-import { computed, onMounted, ref, toRefs, watch } from "vue";
+import { computed, ref, toRefs, watch } from "vue";
 import { useEvaluationStore } from "@/stores/evaluation.ts";
 import Loading from "vue-loading-overlay";
 import { storeToRefs } from "pinia";
@@ -14,6 +14,9 @@ const props = defineProps<{
     user?: User;
     selectedproject?: Project;
     view?: string;
+}>();
+const emit = defineEmits<{
+    (event: "aktion:reload"): void;
 }>();
 
 //--------------------- Storeload --------------------------------
@@ -42,7 +45,6 @@ const { tempImage } = storeToRefs(projectStore);
 const { tempProject } = storeToRefs(projectStore);
 
 //--------------------- toRefs to props---------------------------
-const { user } = toRefs(props) as User;
 const { selectedproject } = toRefs(props) as Project;
 const { view } = toRefs(props);
 
@@ -68,7 +70,7 @@ async function save() {
 }
 // Bilder werden per Post an das Backend gesendet zum speichern und die Bilder werden frisch abgefragt
 async function upload() {
-	isLoading.value = true;
+    isLoading.value = true;
     if (projectStore.newImage.length < 1) {
         $q.notify({
             type: "negative",
@@ -95,7 +97,7 @@ async function upload() {
             });
         }
     }
-	isLoading.value = false;
+    isLoading.value = false;
 }
 // approval:  Freigabe des Projektes per Post Initialisieren
 async function approval() {
@@ -123,19 +125,24 @@ async function remove() {
     if (answer["answer"] == true) {
         $q.notify({
             type: "positive",
-            message: "User & Projekt wurde gelöscht",
+            message: "Projekt wurde gelöscht",
             color: "green",
         });
-        await projectStore.getProjects();
+        if (props.view == "User") {
+            await projectStore.getProjectsUser();
+        } else {
+            await projectStore.getProjects();
+        }
     } else {
         $q.notify({
             type: answer["type"],
             message: answer["message"],
         });
     }
+    emit("aktion:reload");
 }
 // removepic:  Löschen des Bildes per Post Initialisieren
-async function removepic(file: string) {
+async function removePic(file: string) {
     const ans = await projectStore.deletePic(file.toString());
     await evaluationstore.getImages(project.value.id);
     await projectStore.clearPics();
@@ -200,14 +207,7 @@ async function loadImage() {
     }, 500);
 }
 // Abruf vom Projekt mittels userId und initialisiert loadImage()
-async function load() {
-    isLoading.value = true;
-    if (user.value !== null) {
-        await projectStore.clearPics();
-        await projectStore.getProject(user.value.id);
-        await loadImage();
-    }
-}
+
 // Vorhandes Project wird dem selectedproject zugewissen
 async function loadProject() {
     pics.value = [];
@@ -251,21 +251,8 @@ function hideImage() {
 }
 
 //--------------- function's for watch/onMounted --------------------------
-// Wird initialisiert wenn sich user prop ändert
-watch(user, changeuser => {
-    load();
-});
-// Bevor die Seite geladen wird load() initialisiert, wenn prop View nicht Project oder evaluation entspricht
-onMounted(() => {
-    if (view?.value !== "Project" && view?.value !== "evaluation") {
-        if (typeof user.value.id !== "undefined") {
-            load();
-        }
-    }
-});
-
 // Wird initialisiert wenn sich selectedproject prop ändert
-watch(selectedproject, changeselectedproject => {
+watch(selectedproject, () => {
     loadProject();
 });
 </script>
@@ -320,7 +307,7 @@ watch(selectedproject, changeselectedproject => {
                         :src="pic"
                         @click="showImage(pic)"
                     />
-                    <q-btn class="fileele" flat icon="delete" @click="removepic(pic)" />
+                    <q-btn class="fileele" flat icon="delete" @click="removePic(pic)" />
                 </div>
                 <div class="image-preview" v-if="previewImage" @click="hideImage">
                     <img
@@ -331,7 +318,7 @@ watch(selectedproject, changeselectedproject => {
                 </div>
             </div>
             <!--     Buttons     -->
-            <div v-if="view === 'Project'">
+            <div v-if="view === 'Project' || view === 'User'">
                 <div class="row">
                     <q-space />
                     <q-btn
@@ -356,19 +343,7 @@ watch(selectedproject, changeselectedproject => {
                 <div class="row">
                     <q-space />
                     <q-btn
-                        label="Projekt Freigeben"
-                        :loading="isLoading"
-                        color="green-5"
-                        @click="approval"
-                        class="genBtn"
-                    >
-                        <q-tooltip class="bg-accent">Das Projekt wird als kontrolliert markiert</q-tooltip>
-                    </q-btn>
-                </div>
-                <div class="row">
-                    <q-space />
-                    <q-btn
-                        label="User & Projekt Löschen"
+                        label="Projekt Löschen"
                         :loading="isLoading"
                         color="red-5"
                         @click="dialog = true"
@@ -399,6 +374,20 @@ watch(selectedproject, changeselectedproject => {
                             </q-card-actions>
                         </q-card>
                     </q-dialog>
+                </div>
+                <div v-if="view === 'Project'">
+                    <div class="row">
+                        <q-space />
+                        <q-btn
+                            label="Projekt Freigeben"
+                            :loading="isLoading"
+                            color="green-5"
+                            @click="approval"
+                            class="genBtn"
+                        >
+                            <q-tooltip class="bg-accent">Das Projekt wird als kontrolliert markiert</q-tooltip>
+                        </q-btn>
+                    </div>
                 </div>
             </div>
         </div>
