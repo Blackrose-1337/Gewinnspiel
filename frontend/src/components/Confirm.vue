@@ -26,7 +26,7 @@ onMounted(() => {
 <template>
     <loading v-model="isLoading" backgroundColor="rgba(0, 0, 0, 0.021)" :can-cancel="true" :is-full-page="fullPage" />
     <div v-if="user.id === 0">
-        <q-card flat align="center">
+        <q-card flat class="text-center">
             <h4>
                 Der Bestätigungstoken ({{ $route.params.value }}) existiert nicht. Bitte wenden Sie sich an den
                 Administrator der Seite.
@@ -34,7 +34,7 @@ onMounted(() => {
         </q-card>
     </div>
     <div v-if="user.id === 1">
-        <q-card flat align="center">
+        <q-card flat class="text-center">
             <h4>
                 Vielen Dank für ihre Bestätigung {{ user.surname }} {{ user.name }}. Mit ihrer Mail
                 {{ user.email }} können Sie sich nun auf der Seite anmelden.
@@ -42,7 +42,7 @@ onMounted(() => {
         </q-card>
     </div>
     <div v-if="user.id === 2">
-        <q-card flat align="center" class="q-ma-sm">
+        <q-card flat class="text-center q-ma-sm">
             <h4>Ihre E-mail {{ user.email }} ist bereits bestätigt. Sie können sich unter</h4>
             <q-btn push size="30px" label="Login" @click="login()"></q-btn>
             <h4>einloggen um ihr Projekt anzusehen.</h4>

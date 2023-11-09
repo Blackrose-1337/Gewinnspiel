@@ -231,10 +231,10 @@ load();
     ></loading>
     <div v-if="dateCheck()">
         <q-card class="bg-primary" flat>
-            <q-card-section align="center" v-html="competitionDetails.title" />
+            <q-card-section class="text-center" v-html="competitionDetails.title" />
         </q-card>
         <q-card class="bg-primary" flat>
-            <q-card-section align="left" v-html="competitionDetails.text" />
+            <q-card-section class="text-left" v-html="competitionDetails.text" />
         </q-card>
         <form @submit.prevent.stop="sendCompetition" class="row q-pa-md">
             <div class="col-4 comp comp-proj q-ma-sm">
@@ -341,7 +341,7 @@ load();
         </div>
     </div>
     <div v-else>
-        <q-card flat align="center">
+        <q-card flat class="text-center">
             <q-card-section v-html="competitionDetails.wettbewerbCloseText" />
         </q-card>
     </div>

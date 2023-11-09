@@ -249,7 +249,7 @@ load();
         </div>
     </div>
     <div v-else>
-        <q-card flat align="center">
+        <q-card flat class="text-center">
             <q-card-section v-html="competitionDetails.wettbewerbCloseText" />
         </q-card>
     </div>
