@@ -12,11 +12,11 @@ class ConfirmController extends BaseController
             // abfrage ob es eine GET_Methode ist
             if (strtoupper($requestMethod) == 'GET') {
                 // Aufruf benötigter Klassen 
-                $usermodel = new ModelTeilnehmende();
+                $userModel = new ModelTeilnehmende();
                 // Kontrolle ob Token in der URL enthalten ist
                 if (isset($arrQueryStringParams['token'])) {
                     // Token wird überprüft
-                    $answer = $usermodel->tokencheck($arrQueryStringParams['token']);
+                    $answer = $userModel->tokencheck($arrQueryStringParams['token']);
                     // Antwort 
                     $responseData = json_encode($answer);
                 } else {
@@ -47,4 +47,3 @@ class ConfirmController extends BaseController
         }
     }
 }
-?>

@@ -49,10 +49,6 @@ const { competition, competitionDetails } = storeToRefs(competitionstore);
 //--------------- computed ------------------------------
 
 //--------------- funcions ------------------------------
-function remove(file: object) {
-    filesPng.value.splice(filesPng.value.indexOf(file), 1);
-}
-
 function changeUserModel(u: User) {
     usermodel.value = u;
 }
@@ -379,10 +375,4 @@ load();
         padding-right: -24px;
     }
 }
-/*h3 {*/
-/*    text-shadow: 1px 1px 1px black, 1px -1px 1px black, -1px 1px 1px black, -1px -1px 1px black;*/
-/*    color: #4967de46;*/
-/*    font-weight: bold;*/
-/*    text-align: center;*/
-/*}*/
 </style>

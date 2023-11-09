@@ -8,33 +8,33 @@ class CompetitionController extends BaseController
         // Kommunikations-Methode entnehmen
         $requestMethod = $_SERVER["REQUEST_METHOD"];
         try {
-            // abfrage ob es eine POST_Methode ist
+            // abfrage, ob es eine POST_Methode ist
             if (strtoupper($requestMethod) == 'POST') {
                 // Aufruf benötigter Klassen 
-                $newproject = new ModelProject();
-                $usermodel = new ModelTeilnehmende();
-                $competitionmodel = new ModelCompetition();
+                $newProject = new ModelProject();
+                $userModel = new ModelTeilnehmende();
+                $competitionModel = new ModelCompetition();
                 // Post Daten holen
                 $data = json_decode(file_get_contents('php://input'), true);
                 // User erstellen
-                $answerUser = $usermodel->createUser($data['user']);
+                $answerUser = $userModel->createUser($data['user']);
                 if ($answerUser == 0) {
                     $responseData = 2; //Falls etwas schief ging
                 } else {
                     // id von neuem User auf Variable speichern
-                    $data['project']['userid'] = $usermodel->id;
+                    $data['project']['userid'] = $userModel->id;
 	                // Bilder in seperate Variable platzieren
-	                $picturebase64 = $data['pics'];
+	                $pictureBase64 = $data['pics'];
                     // Projekt erstellen 
-                    $answerProject = $newproject->createProject($data['project'], count($picturebase64));
+                    $answerProject = $newProject->createProject($data['project'], count($pictureBase64));
                     // Abfrage Betriebssystem
                     if (PHP_OS == "Linux") {
                         // BilderPfad auf dem Server
-                        $generalpath =getenv('F_PATH') . '/project';
+                        $generalPath =getenv('F_PATH') . '/project';
                         // ProjectId auf Variable setzen
-                        $number = $newproject->getId();
+                        $number = $newProject->getId();
                         // Dem Pfad die Nummer anbinden
-                        $newPath = $generalpath . strval($number);
+                        $newPath = $generalPath . strval($number);
                         // erstellen des Projektordners
 	                    mkdir($newPath, 0775, true);
                         // neuen Pfad mit GUID
@@ -42,14 +42,14 @@ class CompetitionController extends BaseController
                         // GUID Ordner erstellen (Sicherheitsvorkehrung)
 	                    mkdir($newPath, 0775, true);
                         // Bilder Speichern und auf DB Pfad speichern
-                        $this->saveImage($picturebase64, $newPath, $newproject->getId());
+                        $this->saveImage($pictureBase64, $newPath, $newProject->getId());
                     } elseif (PHP_OS == "Windows") {
                         // BilderPfad auf dem Server
-                        $generalpath = "C:\Wettbewerb\project";
+                        $generalPath = "C:\Wettbewerb\project";
                         // ProjectId auf Variable setzen
-                        $number = $newproject->getId();
+                        $number = $newProject->getId();
                         // Dem Pfad die Nummer anbinden
-                        $newPath = $generalpath . strval($number);
+                        $newPath = $generalPath . strval($number);
                         // erstellen des Projektordners
                         mkdir($newPath, 0777, false);
                         // neuen Pfad mit GUID
@@ -57,19 +57,19 @@ class CompetitionController extends BaseController
                         // GUID Ordner erstellen (Sicherheitsvorkehrung)
                         mkdir($newPath, 0777, false);
                         // Bilder Speichern und auf DB Pfad speichern
-                        $this->saveImage($picturebase64, $newPath, $newproject->getId());
+                        $this->saveImage($pictureBase64, $newPath, $newProject->getId());
                     }
                     // Information Wettbewerb holen
-                    $ans = $competitionmodel->getCompetition();
+                    $ans = $competitionModel->getCompetition();
                     // Mail versenden (param: Mail, Token, PW, Name, Surname, Wettbewerbende)
-	                $anzahlProjekte = $newproject->checkProjectOnPerson($usermodel->id);
-                    if ($competitionmodel->isMailAllowed() && $anzahlProjekte == 1) {
-                       $this->sendmail($data['user']['email'], $usermodel->getToken(), $usermodel->getPw(), $data['user']['name'], $data['user']['surname'], $ans['wettbewerbende']);
+	                $anzahlProjekte = $newProject->checkProjectOnPerson($userModel->id);
+                    if ($competitionModel->isMailAllowed() && $anzahlProjekte == 1) {
+                       $this->sendmail($data['user']['email'], $userModel->getToken(), $userModel->getPw(), $data['user']['name'], $data['user']['surname'], $ans['wettbewerbende']);
                     } else {
 	                    error_log('Usermail:' . $data['user']['email']);
 	                    if ($anzahlProjekte == 1) {
-		                    error_log('Token: ' . $usermodel->getToken());
-		                    error_log('PW: ' . $usermodel->getPw());
+		                    error_log('Token: ' . $userModel->getToken());
+		                    error_log('PW: ' . $userModel->getPw());
 	                    }
                     }
                     // Überprüfung ob erstellung von Projekt und User erfolgreich waren
@@ -110,9 +110,9 @@ class CompetitionController extends BaseController
             // abfrage ob es eine GET_Methode ist
             if (strtoupper($requestMethod) == 'GET') {
                 // Aufruf benötigter Klassen 
-                $competitionmodel = new ModelCompetition();
+                $competitionModel = new ModelCompetition();
                 // Wettbewerbinformationen von der DB holen
-                $ans = $competitionmodel->getCompetition();
+                $ans = $competitionModel->getCompetition();
                 // als Antwort Daten in Json formatieren 
                 $responseData = json_encode($ans);
 

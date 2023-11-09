@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { onBeforeMount, ref } from "vue";
 import { useQuasar } from "quasar";
+import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { useUserStore } from "@/stores/users";
-import { useRouter } from "vue-router";
 
 const $q = useQuasar();
 const authStore = useAuthStore();

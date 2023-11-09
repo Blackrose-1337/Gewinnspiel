@@ -88,33 +88,33 @@ class BaseController
     }
 
     // Funktion zum abspeichern von Bildern
-    protected function saveImage($picturebase64, $path, $projectid, $number = 1)
+    protected function saveImage($pictureBase64, $path, $projectId, $number = 1): void
     {
         // Aufruf benötigter Klassen 
-        $modelimage = new ModelBilder;
+        $modelImage = new ModelBilder;
 		$modelProject = new ModelProject();
 
-        // Zähler variable für namesgebung
+        // Zähler variable für namensgebung
         $count = $number;
 
         // Array von Bildern durcharbeiten zum abspeichern
-        foreach ($picturebase64 as $base64) {
+        foreach ($pictureBase64 as $base64) {
             // Base64 Code trennen von nicht benötigten informationen
             $picture = explode(',', $base64['bildbase']);
 			// ändern der Nummerierungsart
-	        $newcount = sprintf("%03d", $count);
+	        $newCount = sprintf("%03d", $count);
             // Pfadbestimmung zum abspeichern der Bilder auf dem Server
-            $newpath = $path . "/image" . $newcount . ".png";
+            $newPath = $path . "/image" . $newCount . ".png";
             // Auf neuem Pfad Datei öffnen zum bearbeiten
-            $ifp = fopen($newpath, 'w');
+            $ifp = fopen($newPath, 'w');
             // Base64code in die geöffnete Datei schreiben
             fwrite($ifp, base64_decode($picture[1]));
             // Datei schliessen (führt zum abspeichern der Datei)
             fclose($ifp);
             // Zähler um 1 erhöhen
             $count++;
-            // Model Bilder ansprechen um Pfad auf der Datenbank zu hinterlegen inclusive zugewissem Projekt
-            $modelimage->createImagePath($projectid, $newpath);
+            // Model Bilder ansprechen, um Pfad auf der Datenbank zu hinterlegen, inclusive zugeteilten Projekt
+            $modelImage->createImagePath($projectId, $newPath);
         }
 		$modelProject->setPictureIncrement($projectId, $count -1);
     }
@@ -130,7 +130,7 @@ class BaseController
 	}
 
     // Pfad Hinterlegung zur Antwortversendung
-    protected function getImage($path)
+    protected function getImage($path): array
     {
         $answer = [
             'img' => $path,
@@ -139,7 +139,7 @@ class BaseController
     }
 
     // GUID-Generator für Ordner-Beschriftung
-    protected function GUID()
+    protected function GUID(): string
     {
         if (function_exists('com_create_guid') === true) {
             return trim(com_create_guid(), '{}');
@@ -149,7 +149,7 @@ class BaseController
     }
 
     // Mailversendung mit Bestätigungslink und Passwort
-    protected function sendmail($empfaenger, $link, $pw, $name, $surname, $date)
+    protected function sendmail($empfaenger, $link, $pw, $name, $surname, $date): void
     {
         // Aufruf benötigter Klassen 
         $mail = new PHPMailer(true);
@@ -159,7 +159,7 @@ class BaseController
             // Betreff
             $betreff = 'Bestätigungsmail Stickstoff Wettbewerb';
             // Link anpassung
-            $link = "https://gewinnspiel.stickstoff-magazin.de/" . $link;
+            $link = "https://gewinnspiel.stickstoff-magazin.de/token" . $link;
             // Nachricht
             $nachricht = '<!DOCTYPE html>
             <html lang="de"> 
@@ -217,7 +217,7 @@ class BaseController
     }
 
     // Mailversendung von neuem Passwort
-    protected function sendMailWithNewPW($empfaenger, $pw, $name, $surname)
+    protected function sendMailWithNewPW($empfaenger, $pw, $name, $surname): void
     {
         // Aufruf benötigter Klassen 
         $mail = new PHPMailer(true);
@@ -272,7 +272,7 @@ class BaseController
     }
 
     // Überprüfung von mitgegebener PHPSESSID(Session-Id im Cookie) mit aktiver Session-Id
-    protected function sessionCheck()
+    protected function sessionCheck(): bool
     {
         if (isset($_COOKIE['PHPSESSID']) && isset($_SESSION['id']) && $_COOKIE['PHPSESSID'] == $_SESSION['id']) {
             return 1;
@@ -282,17 +282,11 @@ class BaseController
     }
 
     // Überprüfung von übergebenen Rollen mit aktiver Session Rolle
-    protected function userCheck($val1, $val2 = "1", $val3 = "2")
+    protected function userCheck($val1, $val2 = "1", $val3 = "2"): bool
     {
-        switch ($_SESSION['user_role']) {
-            case $val1:
-                return 1;
-            case $val2:
-                return 1;
-            case $val3:
-                return 1;
-            default:
-                return 0;
-        }
+	    return match ($_SESSION['user_role']) {
+		    $val1, $val2, $val3 => 1,
+		    default => 0,
+	    };
     }
 }

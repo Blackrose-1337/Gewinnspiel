@@ -1,13 +1,13 @@
 <script setup lang="ts">
 //--------------------- import ----------------------------------
-import Formular from "@/components/Formular.vue";
+import Loading from "vue-loading-overlay";
+import { computed, onBeforeMount, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
-import { computed, onBeforeMount, ref } from "vue";
+import Formular from "@/components/Formular.vue";
 import { useUserStore } from "@/stores/users";
 import { useAuthStore } from "@/stores/auth";
 import { useCompetitionStore } from "@/stores/competition";
-import Loading from "vue-loading-overlay";
 
 //--------------------- Storeload --------------------------------
 const authStore = useAuthStore();
@@ -25,11 +25,7 @@ const formularRef = ref(null); //ref to child component
 const selectedUser = computed(() => userStore.user);
 const competitionDetails = computed(() => competitionStore.competitionDetails);
 
-//--------------------- storeToRefs ------------------------------
-
-//--------------------- function's -------------------------------
 //----------------- function's for check -------------------------
-//check if user is logged in
 async function check() {
     const answer: boolean = await authStore.check();
     if (!answer) {
@@ -50,7 +46,6 @@ function dateCheck() {
     );
 }
 //----------------- function's from child ------------------------
-//call child function
 async function callChildFunction() {
     if (formularRef.value.myvalidate()) {
         isLoading.value = true;
@@ -77,8 +72,6 @@ async function callChildFunction() {
     }
     isLoading.value = false;
 }
-//----------------- function's for load --------------------------
-
 //----------------- function's for Mount -------------------------
 onBeforeMount(async () => {
     await check();

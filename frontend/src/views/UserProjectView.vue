@@ -1,13 +1,13 @@
 <script setup lang="ts">
 //--------------------- import ----------------------------------
+import Loading from "vue-loading-overlay";
+import { computed, onBeforeMount, Ref, ref } from "vue";
+import { useRouter } from "vue-router";
+import type { Project } from "@/stores/interfaces";
 import ProjectItem from "@/components/Project.vue";
 import Sidebar from "@/components/SidebarUser.vue";
-import type { Project } from "@/stores/interfaces";
-import { useRouter } from "vue-router";
-import { computed, onBeforeMount, Ref, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useCompetitionStore } from "@/stores/competition";
-import Loading from "vue-loading-overlay";
 
 //--------------------- Storeload --------------------------------
 const authStore = useAuthStore();
@@ -41,7 +41,7 @@ async function check() {
     }
 }
 
-//check if competition is open
+//----------------- check if competition is open -------------------------
 function dateCheck() {
     const currentDateWithFormat = new Date().toJSON().slice(0, 10).replace(/-/g, "/");
     return (

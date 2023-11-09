@@ -2,11 +2,11 @@
 import type { Ref } from "vue";
 import { ref, onBeforeMount } from "vue";
 import { useQuasar } from "quasar";
-import { useAuthStore } from "@/stores/auth";
+import { useRouter } from "vue-router";
 import Formular from "@/components/Formular.vue";
 import Sidebar from "@/components/Sidebar.vue";
 import type { User } from "@/stores/interfaces";
-import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -24,14 +24,14 @@ async function onUserChanged(u: User) {
 async function check() {
     const answer: boolean = await authStore.check();
     if (!answer) {
-        router.push("/login");
+        await router.push("/login");
     } else if (authStore.role != "admin") {
         $q.notify({
             type: "negative",
             message: "Keine Berechtigung für diese Seite",
             color: "red",
         });
-        router.push("/");
+        await router.push("/");
     }
 }
 

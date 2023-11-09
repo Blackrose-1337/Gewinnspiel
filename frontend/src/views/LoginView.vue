@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useQuasar } from "quasar";
-import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 
 const redirectTo = ref();
 const $q = useQuasar();

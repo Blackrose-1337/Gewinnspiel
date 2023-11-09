@@ -139,6 +139,7 @@ async function remove() {
             message: answer["message"],
         });
     }
+
     emit("aktion:reload");
 }
 // removepic:  Löschen des Bildes per Post Initialisieren

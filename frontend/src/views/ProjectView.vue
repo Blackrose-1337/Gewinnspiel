@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { Ref } from "vue";
-import Sidebar from "@/components/Sidebar.vue";
 import { ref, onBeforeMount } from "vue";
 import { useQuasar } from "quasar";
-import Managment from "@/components/Project.vue";
-import type { Project } from "@/stores/interfaces";
 import { useRouter } from "vue-router";
+import Managment from "@/components/Project.vue";
+import Sidebar from "@/components/Sidebar.vue";
+import type { Project } from "@/stores/interfaces";
 import { useAuthStore } from "@/stores/auth";
 
 const router = useRouter();

@@ -141,8 +141,13 @@ class EvaluationController extends BaseController
                             $message = [ 'exists' => $answer, 'meldung' => 'Es besteht kein Projekt mit dieser ID'];
                             $responseData = json_encode($message);
                         } else {
-                            $message = [ 'exists' => $answer, 'meldung' => 'Es besteht noch keine Bewertung für das Projekt'];
-                            $responseData = json_encode($message);
+							if ($_SESSION['user_role'] != 'admin')
+							{
+								$message = [ 'exists' => $answer, 'meldung' => 'Es besteht noch keine Bewertung für das Projekt'];
+								$responseData = json_encode($message);
+							} else {
+								$responseData = 1;
+							}
                         }
                     } else {
                         // Antwort als json verpacken
@@ -257,24 +262,21 @@ class EvaluationController extends BaseController
                     $strErrorHeader = $this->fehler(405);
 
                     // Überprüfung erlaubter Rollen
-                } else if (!$this->userCheck('admin')) {
-                    $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
-                    $strErrorHeader = $this->fehler(401);
-
-                    // Doppelte Überprüfung der Rolle
-                } else if ($_SESSION['user_role'] == 'admin') {
+                }
+				else if ($this->userCheck('admin'))
+				{
                     // Aufruf benötigter Klassen
-                    $bewertungmodel = new ModelBewertung();
-                    $projectmodel = new ModelProject();
-                    $usermodel = new ModelTeilnehmende();
+                    $bewertungModel = new ModelBewertung();
+                    $projectModel = new ModelProject();
+                    $userModel = new ModelTeilnehmende();
 
                     // Alle Auswertungen von DB holen (Summe Bewertungen pro Projekt)
-                    $auswertungen = $bewertungmodel->getAuswertung();
+                    $auswertungen = $bewertungModel->getAuswertung();
                     // Array bereitstellen
                     $arr = [];
                     // jede Auswertung mit User-Id verpacken und in Array pushen
                     foreach ($auswertungen as $auswertung) {
-                        $ans = $projectmodel->getUserIdWithId(json_encode($auswertung['projectId']));
+                        $ans = $projectModel->getUserIdWithId(json_encode($auswertung['projectId']));
                         $auswertung['userId'] = $ans[0]['userId'];
                         array_push($arr, $auswertung);
                     }
@@ -282,17 +284,16 @@ class EvaluationController extends BaseController
                     $responseData = [];
                     // Für jede Auswertung noch Userinformationen hinzufügen
                     foreach ($arr as $a) {
-                        $ans = $usermodel->getUserinfo($a);
+                        $ans = $userModel->getUserinfo($a);
                         array_push($responseData, $ans);
                     }
                     // Vorbereitung für Frontend Bezeichnung
-                    $oldkey = 'projectId';
-                    $newkey = 'id';
-                    $responseData = str_replace('"' . $oldkey . '":', '"' . $newkey . '":', json_encode($responseData));
-
-
-                } else if ($_SESSION['user_role'] != 'admin') {
-                    $responseData = 0;
+                    $oldKey = 'projectId';
+                    $newKey = 'id';
+                    $responseData = str_replace('"' . $oldKey . '":', '"' . $newKey . '":', json_encode($responseData));
+                } else {
+	                $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
+	                $strErrorHeader = $this->fehler(401);
                 }
             } else {
                 // Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde
@@ -336,8 +337,8 @@ class EvaluationController extends BaseController
             // abfrage ob es eine GET_Methode ist
             if (strtoupper($requestMethod) == 'GET') {
                     // Aufruf benötigter Klassen
-                    $bewertungmodel = new ModelBewertung();
-                    $responseData = json_encode($bewertungmodel->getMissingProject());
+                    $bewertungModel = new ModelBewertung();
+                    $responseData = json_encode($bewertungModel->getMissingProject());
             } else {
                 // Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde
                 $strErrorDesc = 'Method not supported';

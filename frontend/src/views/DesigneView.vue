@@ -12,14 +12,14 @@ const $q = useQuasar();
 async function check() {
     const answer: boolean = await authStore.check();
     if (!answer) {
-        router.push("/login");
+        await router.push("/login");
     } else if (authStore.role != "admin") {
         $q.notify({
             type: "negative",
             message: "Keine Berechtigung für diese Seite",
             color: "red",
         });
-        router.push("/");
+        await router.push("/");
     }
 }
 onBeforeMount(() => {

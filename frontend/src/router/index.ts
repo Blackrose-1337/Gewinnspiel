@@ -35,6 +35,12 @@ const router = createRouter({
             component: () => import("../views/UserProjectView.vue"),
         },
         {
+            path: "/user-newproject",
+            name: "user-newproject",
+            meta: { requiresAuth: false },
+            component: () => import("../views/UserNewProjectView.vue"),
+        },
+        {
             path: "/verwaltung",
             name: "verwaltung",
             meta: { requiresAuth: false },
@@ -59,7 +65,7 @@ const router = createRouter({
             component: () => import("../views/AuswertungView.vue"),
         },
         {
-            path: "/:value",
+            path: "/token/:value",
             name: "confirm",
             meta: { requiresAuth: false },
             component: () => import("../views/BestaetigungView.vue"),
@@ -73,7 +79,7 @@ const router = createRouter({
         {
             path: "/password-set",
             name: "password-set",
-            meta: { requiresAuth: false },
+            meta: { requiresAuth: true },
             component: () => import("../views/PasswordView.vue"),
         },
         {
