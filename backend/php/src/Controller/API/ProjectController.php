@@ -154,7 +154,7 @@ class ProjectController extends BaseController
                     // update Projekt
                  $responseData = $projectmodel->updateProject($data);
                 } else {
-                    $responseData = false;
+                    $responseData = $projectmodel->createProject($data);
                 }
             } else {
                 // Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde
@@ -631,6 +631,98 @@ class ProjectController extends BaseController
 		    );
 	    }
     }
+
+	public function newProjectAction()
+	{
+		$strErrorDesc = '';
+		// Kommunikations-Methode entnehmen
+		$requestMethod = $_SERVER["REQUEST_METHOD"];
+		try {
+			// abfrage, ob es eine POST_Methode ist
+			if(!$this->sessionCheck()) {
+				$strErrorDesc = "Nicht akzeptierte Session";
+				$strErrorHeader = $this->fehler(405);
+			} else if (!$this->userCheck('teilnehmende')) {
+				$strErrorDesc = "Unberechtigt diese Aktion auszuführen";
+				$strErrorHeader = $this->fehler(401);
+			} else if (strtoupper($requestMethod) == 'POST') {
+				// Aufruf benötigter Klassen
+				$newProject = new ModelProject();
+				$userModel = new ModelTeilnehmende();
+				// Post Daten holen
+				$data = json_decode(file_get_contents('php://input'), true);
+				// User erstellen
+				$answerUser = $userModel->getUser($_SESSION['user_id']);
+				if ($answerUser == 0) {
+					$responseData = 2; //Falls etwas schief ging
+				} else {
+					// id von neuem User auf Variable speichern
+					$data['project']['userid'] = $_SESSION['user_id'];
+					// Bilder in seperate Variable platzieren
+					$pictureBase64 = $data['pics'];
+					// Projekt erstellen
+					$answerProject = $newProject->createProject($data['project'], count($pictureBase64));
+					// Abfrage Betriebssystem
+					if (PHP_OS == "Linux") {
+						// BilderPfad auf dem Server
+						$generalPath =getenv('F_PATH') . '/project';
+						// ProjectId auf Variable setzen
+						$number = $newProject->getId();
+						// Dem Pfad die Nummer anbinden
+						$newPath = $generalPath . strval($number);
+						// erstellen des Projektordners
+						mkdir($newPath, 0775, true);
+						// neuen Pfad mit GUID
+						$newPath = $newPath . '/' . $this->GUID();
+						// GUID Ordner erstellen (Sicherheitsvorkehrung)
+						mkdir($newPath, 0775, true);
+						// Bilder Speichern und auf DB Pfad speichern
+						$this->saveImage($pictureBase64, $newPath, $newProject->getId());
+					} elseif (PHP_OS == "Windows") {
+						// BilderPfad auf dem Server
+						$generalPath = "C:\Wettbewerb\project";
+						// ProjectId auf Variable setzen
+						$number = $newProject->getId();
+						// Dem Pfad die Nummer anbinden
+						$newPath = $generalPath . strval($number);
+						// erstellen des Projektordners
+						mkdir($newPath, 0777, false);
+						// neuen Pfad mit GUID
+						$newPath = $newPath . '/' . $this->GUID();
+						// GUID Ordner erstellen (Sicherheitsvorkehrung)
+						mkdir($newPath, 0777, false);
+						// Bilder Speichern und auf DB Pfad speichern
+						$this->saveImage($pictureBase64, $newPath, $newProject->getId());
+					}
+					// Überprüfung ob erstellung von Projekt und User erfolgreich waren
+					if ($answerProject == 1 & $answerUser != 0) {
+						$responseData = true;
+					} else {
+						$responseData = false;
+					}
+				}
+			} else {
+				// Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde
+				$strErrorDesc = 'Method not supported';
+				$strErrorHeader = $this->fehler(422);
+			}
+		} catch (Error $e) {
+			// Fehlermeldung, falls ein serverseitiger Fehler entstanden ist
+			$strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+			$strErrorHeader = $this->fehler(500);
+		}
+		// Falls kein Fehler enthalten ist wird die Antwort verpackt und versendet
+		if (!$strErrorDesc && ($requestMethod == 'POST')) {
+			$this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
+
+			// Falls ein Fehler enthalten ist wird dieser verpackt und versendet
+		} else {
+			$this->sendOutput(
+				json_encode(array('error' => $strErrorDesc)),
+				array('Content-Type: application/json', $strErrorHeader)
+			);
+		}
+	}
 
 	// API Funktion Projekt Freigeben
     public function approvalAction()

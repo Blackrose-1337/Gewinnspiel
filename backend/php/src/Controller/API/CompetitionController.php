@@ -159,4 +159,57 @@ class CompetitionController extends BaseController
             );
         }
     }
+
+	public function logoAction()
+	{
+		$strErrorDesc = '';
+		// Kommunikations-Methode entnehmen
+		$requestMethod = $_SERVER["REQUEST_METHOD"];
+		try {
+
+			// abfrage ob es eine GET_Methode ist
+			if (strtoupper($requestMethod) == 'GET') {
+
+				$path = "./inc/logo.png";
+				// als Antwort Daten in Json formatieren
+				$responseData = json_encode($path);
+
+				// abfrage ob es eine POST_Methode ist
+			} else if (strtoupper($requestMethod) == 'POST') {
+				if (!$this->sessionCheck()) {
+					$strErrorDesc = "Nicht akzeptierte Session";
+					$strErrorHeader = $this->fehler(405);
+				} else if (!$this->userCheck('admin')) {
+					$strErrorDesc = "Unberechtigt diese Aktion auszuführen";
+					$strErrorHeader = $this->fehler(401);
+				} else {
+					// Post Daten holen
+					$data = json_decode(file_get_contents('php://input'), true);
+					// Wettbewerbsdaten Updaten
+					$this->saveLogo($data);
+					// Reaktion zurücksenden
+					$responseData = true;
+				}
+			}
+			else {
+				// Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde
+				$strErrorDesc = 'Method not supported';
+				$strErrorHeader = $this->fehler(422);
+			}
+		} catch (Error $e) {
+			// Fehlermeldung, falls ein serverseitiger Fehler entstanden ist
+			$strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
+			$strErrorHeader = $this->fehler(500);
+		}
+		// Falls kein Fehler enthalten ist wird die Antwort verpackt und versendet
+		if (!$strErrorDesc && ($requestMethod == 'GET' || $requestMethod == 'POST')) {
+			$this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
+		} else {
+			// Falls ein Fehler enthalten ist wird dieser verpackt und versendet
+			$this->sendOutput(
+				json_encode(array('error' => $strErrorDesc)),
+				array('Content-Type: application/json', $strErrorHeader)
+			);
+		}
+	}
 }

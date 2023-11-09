@@ -116,8 +116,18 @@ class BaseController
             // Model Bilder ansprechen um Pfad auf der Datenbank zu hinterlegen inclusive zugewissem Projekt
             $modelimage->createImagePath($projectid, $newpath);
         }
-		$modelProject->setPictureIncrement($projectid, $count -1);
+		$modelProject->setPictureIncrement($projectId, $count -1);
     }
+
+	protected function saveLogo($pictureBase64): void
+	{
+
+		$picture = explode(',', $pictureBase64);
+		$path = "inc/logo.png";
+		$ifp = fopen($path, 'w');
+		fwrite($ifp, base64_decode($picture[1]));
+		fclose($ifp);
+	}
 
     // Pfad Hinterlegung zur Antwortversendung
     protected function getImage($path)

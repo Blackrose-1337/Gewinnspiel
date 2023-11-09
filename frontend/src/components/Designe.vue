@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { useQuasar, QEditor } from "quasar";
+import { QEditor, useQuasar } from "quasar";
 import { useCompetitionStore } from "@/stores/competition";
-import { onBeforeMount } from "vue";
+import { onBeforeMount, ref } from "vue";
 
 const $q = useQuasar();
 const competitionstore = useCompetitionStore();
 const { competitionDetails } = storeToRefs(competitionstore);
-
+const logo = ref();
+const fileRef = ref(null);
+let isLoading = ref(false);
 const toolbar = [
     [
         {
@@ -64,6 +66,38 @@ async function save() {
 async function load() {
     await competitionstore.getCompetitionDeclarations();
 }
+async function setLogo() {
+    isLoading.value = true;
+
+    // Erstellen Sie ein Promise und eine zugehörige Auflösungsfunktion
+    let resolveSetLogo;
+    const promiseSetLogo = new Promise(resolve => {
+        resolveSetLogo = resolve;
+    });
+
+    const reader = new FileReader();
+
+    reader.onloadend = function () {
+        if (reader.result) {
+            competitionstore.bildbase = reader.result as string;
+            console.log("competitionstore.bildbase");
+
+            // Wenn das Bild erfolgreich geladen wurde, rufen Sie die Auflösungsfunktion des Promises auf.
+            resolveSetLogo();
+        }
+    };
+
+    reader.readAsDataURL(logo.value);
+
+    // Warten Sie, bis das Promise von promiseSetLogo aufgelöst wird.
+    await promiseSetLogo;
+
+    // Jetzt können Sie competitionstore.setLogo() aufrufen, da sicher ist, dass bildbase befüllt ist.
+    await competitionstore.setLogo();
+
+    await competitionstore.getLogoFresh();
+    isLoading.value = false;
+}
 
 onBeforeMount(() => {
     load();
@@ -97,29 +131,44 @@ onBeforeMount(() => {
                 <q-editor v-model="competitionDetails.wettbewerbCloseText" ref="editorRef" :toolbar="toolbar" />
             </div>
         </div>
-        <div>
-            <div class="bg-grey-8k q-pa-md col-5 closetext">
-                <q-checkbox
-                    left-label
-                    label="Werden Mails versendet bei der Anmeldung"
-                    model-value=""
-                    v-model="competitionDetails.istEmailAktiv"
-                    color="black"
-                />
+        <div class="row q-pa-md">
+            <div>
+                <div class="q-ma-sm">
+                    <q-checkbox
+                        right-label
+                        label="Mail versenden"
+                        model-value=""
+                        v-model="competitionDetails.istEmailAktiv"
+                        color="black"
+                    />
+                </div>
+                <div class="q-ma-sm">
+                    <q-checkbox
+                        right-label
+                        label="Benutzern Projekt löschen erlauben"
+                        v-model="competitionDetails.istProjektLoeschenUserErlaubt"
+                        color="black"
+                    />
+                </div>
             </div>
-            <div class="bg-grey-8k q-pa-md col-5 closetext">
-                <q-checkbox
-                    left-label
-                    label="Können User ihr Projekt Löschen"
-                    v-model="competitionDetails.istProjektLoeschenUserErlaubt"
-                    color="black"
-                />
-            </div>
-        </div>
 
-        <div class="muh row q-gutter-md q-pb-xl q-pa-md">
             <q-space />
-            <q-btn label="Änderungen Speichern" color="accent" @click="save" class="col-2 genBtn" />
+            <q-btn label="Änderungen Speichern" class="col-2 genBtn" color="accent" @click="save" />
+        </div>
+        <div class="row q-ma-md">
+            <q-file
+                max-files="1"
+                max-file-size="5242880"
+                class="col-8"
+                clearable
+                ref="fileRef"
+                filled
+                color="purple-12"
+                v-model="logo"
+                label="Logo"
+            />
+            <q-space />
+            <q-btn label="Logo Speichern" class="col-2 genBtn" color="accent" @click="setLogo"></q-btn>
         </div>
     </div>
 </template>
@@ -136,7 +185,8 @@ onBeforeMount(() => {
     }
     .closetext {
         margin: 0 auto;
-        width: 100%;
+        width: 100vw;
+        min-width: auto;
     }
 }
 

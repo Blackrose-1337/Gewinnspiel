@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onBeforeMount } from "vue";
 import { RouterView } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
+import { useCompetitionStore } from "@/stores/competition";
 
 const authStore = useAuthStore();
 const router = useRouter();
+const competitionStore = useCompetitionStore();
 const role = computed(() => authStore.role);
+const logo = computed(() => competitionStore.logo);
 const title = ref("Admin");
 let menuHover = ref(false);
 
@@ -26,10 +29,11 @@ function menuShow() {
 function menuHide() {
     menuHover.value = false;
 }
-onMounted(() => {
-    const answer = authStore.check();
+onBeforeMount(async () => {
+    const answer = await authStore.check();
+    await competitionStore.getLogo();
     if (answer === false) {
-        router.push("/login");
+        await router.push("/login");
     }
 });
 </script>
@@ -39,7 +43,7 @@ onMounted(() => {
         <q-header elevated class="bg-secondary text-black float-right" height-hint="98">
             <q-toolbar>
                 <q-toolbar-title class="row">
-                    <img src="@/assets/Stickstoff.png" alt="Logo Stickstoffmagazin" />
+                    <img style="max-height: 120px" :src="logo" alt="Logo betreiber" />
                     <q-space />
                 </q-toolbar-title>
             </q-toolbar>
@@ -52,6 +56,7 @@ onMounted(() => {
                 />
                 <q-route-tab to="/user" label="User" v-if="role === 'teilnehmende'" />
                 <q-route-tab to="/user-project" label="Projekte" v-if="role === 'teilnehmende'" />
+                <q-route-tab to="/user-newproject" label="Neues Projekt" v-if="role === 'teilnehmende'" />
                 <q-route-tab
                     @click="settitle('Admin')"
                     to="/evaluation"
@@ -125,6 +130,7 @@ header {
 .genBtn {
     border-radius: 5px;
     max-height: 56px;
+    min-width: 120px !important;
     min-height: 56px;
     margin-top: 20px;
     margin-left: 24px;

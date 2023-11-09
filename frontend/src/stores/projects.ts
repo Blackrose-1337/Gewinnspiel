@@ -140,12 +140,6 @@ export const useProjectStore = defineStore({
             }
             return bool;
         },
-        // async projectUserRemove($id: number) {
-        //     const param = {
-        //         id: $id,
-        //     };
-        //     return await api.post<boolean>("project/delete", param);
-        // },
         async projectRemove($id: number) {
             const param = {
                 id: $id,
