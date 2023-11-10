@@ -48,6 +48,7 @@ const toolbar = [
 
 async function save() {
     const bool: boolean = await competitionstore.postCompetitionDeclarations();
+    competitionDetails.value.istEmailAktiv = !competitionDetails.value.istEmailAktiv;
     if (bool) {
         $q.notify({
             type: "positive",
@@ -104,7 +105,7 @@ onBeforeMount(() => {
 });
 </script>
 <template>
-    <div>
+    <div v-if="competitionDetails.title">
         <div class="q-pa-md">
             <h5>Titel vom Gewinnspiel</h5>
             <q-editor v-model="competitionDetails.title" ref="editorRef" :toolbar="toolbar" />
@@ -136,8 +137,7 @@ onBeforeMount(() => {
                 <div class="q-ma-sm">
                     <q-checkbox
                         right-label
-                        label="Mail versenden"
-                        model-value=""
+                        label="Soll das Mailversenden vom System deaktiviert werden?"
                         v-model="competitionDetails.istEmailAktiv"
                         color="black"
                     />
@@ -151,11 +151,16 @@ onBeforeMount(() => {
                     />
                 </div>
             </div>
-
             <q-space />
-            <q-btn label="Änderungen Speichern" class="col-2 genBtn" color="accent" @click="save" />
+            <q-btn
+                label="Änderungen Speichern"
+                style="margin: auto"
+                class="col-2 genBtn"
+                color="accent"
+                @click="save"
+            />
         </div>
-        <div class="row q-ma-md">
+        <div class="row q-pa-md">
             <q-file
                 max-files="1"
                 max-file-size="5242880"
@@ -168,7 +173,13 @@ onBeforeMount(() => {
                 label="Logo"
             />
             <q-space />
-            <q-btn label="Logo Speichern" class="col-2 genBtn" color="accent" @click="setLogo"></q-btn>
+            <q-btn
+                label="Logo Speichern"
+                class="col-2 justify-center items-center genBtn"
+                style="margin: auto"
+                color="accent"
+                @click="setLogo"
+            ></q-btn>
         </div>
     </div>
 </template>

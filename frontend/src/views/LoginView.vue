@@ -8,7 +8,7 @@ const redirectTo = ref();
 const $q = useQuasar();
 const authStore = useAuthStore();
 const router = useRouter();
-const email = ref(import.meta.env.MODE === "production" ? "" : "poppel@gmx.ch");
+const email = ref(import.meta.env.MODE === "production" ? "" : "admin@admin.ch");
 const password = ref(import.meta.env.MODE === "production" ? "" : "exampel1DDH?");
 const showPassword = ref(false);
 

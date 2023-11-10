@@ -36,7 +36,7 @@ export const useCompetitionStore = defineStore({
                 competitionDetails.wettbewerbbeginn = competitionDetails.wettbewerbbeginn.replaceAll("-", "/");
                 competitionDetails.wettbewerbende = competitionDetails.wettbewerbende.replaceAll("-", "/");
                 this.competitionDetails = competitionDetails;
-                this.competitionDetails.istEmailAktiv = competitionDetails.istEmailAktiv != 0;
+                this.competitionDetails.istEmailAktiv = competitionDetails.istEmailAktiv != 1;
                 this.competitionDetails.istProjektLoeschenUserErlaubt =
                     competitionDetails.istProjektLoeschenUserErlaubt != 0;
             } catch (err) {
@@ -47,6 +47,7 @@ export const useCompetitionStore = defineStore({
             }
         },
         async postCompetitionDeclarations() {
+            this.competitionDetails.istEmailAktiv = !this.competitionDetails.istEmailAktiv;
             return api.post<number>("competition/competitionDetails", this.competitionDetails);
         },
         async postCompetition(c: Competition) {
