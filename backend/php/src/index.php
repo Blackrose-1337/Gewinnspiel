@@ -18,8 +18,8 @@ if ($env){
     putenv("ENVIRONMENT=".$env['ENVIRONMENT']);
     putenv("F_PATH=".$env['F_PATH']);
 	putenv("SEND_MAIL_CUSTOMER_BOOLEAN=".$env['SEND_MAIL_CUSTOMER_BOOLEAN']);
-    $allowedOrigins = $env["CORS_ALLOWED_ORIGINS"];
-    header("Access-Control-Allow-Origin: $allowedOrigins");
+	$allowedOrigins = $env["CORS_ALLOWED_ORIGINS"];
+	header("Access-Control-Allow-Origin: $allowedOrigins");
 }
 if(file_exists('install.php')) {
 	// starte file um DB zu erstellen mit initscripts für tabels und admin login daten

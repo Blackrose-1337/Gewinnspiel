@@ -106,13 +106,13 @@ export const useEvaluationStore = defineStore({
             const param = {
                 projectId: projectId,
             };
-            const ans = await api.get<Bewertung[] | Message>("evaluation/Bewertung", param);
-            if (ans.exists) {
-                Notify.create({
-                    message: ans.meldung,
-                    type: "info",
-                });
-            } else {
+            function isBewertungArray(response: Bewertung[] | Message): response is Bewertung[] {
+                return Array.isArray(response) && response.length > 0 && "projectId" in response[0];
+            }
+
+            const ans: Bewertung[] | Message = await api.get<Bewertung[] | Message>("evaluation/Bewertung", param);
+
+            if (isBewertungArray(ans)) {
                 this.bewertung.splice(0);
                 ans.forEach(a => {
                     this.bewertung.push({
@@ -128,6 +128,38 @@ export const useEvaluationStore = defineStore({
                         }
                     });
                 });
+            } else if (ans === 1) {
+                return;
+            } else {
+                // Hier wird TypeScript wissen, dass ans eine Meldung ist.
+                Notify.create({
+                    message: ans.meldung,
+                    type: "info",
+                });
+
+                //
+                // const ans: Bewertung[] | Message = await api.get<Bewertung[] | Message>("evaluation/Bewertung", param);
+                // if (ans.exists) {
+                //     Notify.create({
+                //         message: ans.meldung,
+                //         type: "info",
+                //     });
+                // } else {
+                //     this.bewertung.splice(0);
+                //     ans.forEach(a => {
+                //         this.bewertung.push({
+                //             id: a.id,
+                //             projectId: a.projectId,
+                //             kriterienId: a.kriterienId,
+                //             bewertung: a.bewertung,
+                //             finish: a.finish,
+                //         });
+                //         this.kriterien.forEach(b => {
+                //             if (b.id == a.kriterienId) {
+                //                 b.value = a.bewertung;
+                //             }
+                //         });
+                //     });
             }
         },
         async getmissing() {

@@ -18,13 +18,14 @@ INSERT INTO `Kriterien` (`id`, `frage`) VALUES
 
 
 INSERT INTO `Pw` (`id`, `hash`) VALUES
-                                    (1,	'c8828f8e1633bd8e42b6b20fd96583a54eb14dcd522963506e90c67233387207323f8855b9758526b60f70682f99bcba3f4f4a78d02b50bb551008741619153b'),
-                                    (4,	'ce670ee7ba34c1a9eb527fcde2ec2c1e5feac41ee70a4505734eb9d18d5bc8d62e61fe9762910ee2a0ecc7ef459353052cc5eec3fac19a841647b2f668f39c1c');
+                                    (1,	'10cc670a8240b03e93bf85bad1ac523faf55e925f51f3303426d9cb7675dce802deee6152d3b4b49bb8f5ba0784213a83b29bf553de5529f090c710afc2ae68b'),
+                                    (4,	'9f6e1f9dd678621cc33e6a6c05c12abedff8fbae0ab76c78e59923610c47f7d566885f728762eafce31c1a63d286607a15e5cf8727924cb5aea57298fc2752f0');
 
 INSERT INTO `Salt` (`id`, `salt`) VALUES
-                                      (1,	1000000000),
-                                      (4,	1000000000);
+                                      (1,	6218090845),
+                                      (4,	9607202281);
 
 INSERT INTO `User` (`id`, `name`, `surname`, `role`, `email`, `land`, `plz`, `ortschaft`, `strasse`, `strNr`, `tel`, `vorwahl`, `pwId`, `saltId`, `optIn`, `token`) VALUES
                                                                                                                                                                         (3,	'Admin',	'Admin',	'admin',	'admin@admin.ch',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	1,	1,	1,	''),
-                                                                                                                                                                        (4,	'JuryMitglied',	'Beispiel',	'jury',	'jurymitglied@beispiel.beispiel',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	4,	4,	NULL,	NULL);
+                                                                                                                                                                        (4,	'JuryMitglied',	'Beispiel',	'jury',	'jurymitglied@beispiel.bsp',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	4,	4,	1,	NULL);
+

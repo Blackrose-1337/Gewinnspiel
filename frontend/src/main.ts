@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { Quasar, Notify, Dialog } from "quasar";
-import Loading from "vue-loading-overlay";
+import { LoadingPlugin } from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
 // import { QuasarTiptapPlugin, RecommendedExtensions } from 'quasar-tiptap'
 
@@ -17,7 +17,7 @@ import router from "./router";
 const app = createApp(App);
 app.use(createPinia());
 app.use(router);
-app.use(Loading);
+app.use(LoadingPlugin);
 // app.use(QuasarTiptapPlugin, {
 //   language: 'zh-hans',
 //   spellcheck: true
