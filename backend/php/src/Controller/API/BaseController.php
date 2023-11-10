@@ -159,7 +159,7 @@ class BaseController
             // Betreff
             $betreff = 'Bestätigungsmail Stickstoff Wettbewerb';
             // Link anpassung
-            $link = "https://gewinnspiel.stickstoff-magazin.de/token" . $link;
+            $link = getenv('MAIN_PAGE_URL') ."/token" . $link;
             // Nachricht
             $nachricht = '<!DOCTYPE html>
             <html lang="de"> 
@@ -170,7 +170,7 @@ class BaseController
         <p>Bitte bestätigen Sie mit klick auf folgenden Link ihre E-Mail-Adresse, erst nach dieser Bestätigung können Sie am Gewinnnspiel teilnehmen.</br>
         <a href=' . $link . '>Bestätigungslink</a></p>
         <p>Mit Ihrer Teilnahme wurde automatisch ein Account angelegt, mit dem Ihren Beitrag falls nötig nochmal anpassen können. Dies ist bis zum Teilnahmeschluss des Gewinnspiels am ' . $date . ' möglich.</p>
-        <p> Sie können sich unter https://gewinnspiel.stickstoff-magazin.de/login mit folgenden Zugangsdaten anmelden:</br>
+        <p> Sie können sich unter '. getenv('MAIN_PAGE_URL').'login mit folgenden Zugangsdaten anmelden:</br>
         Benutzer: ' . $empfaenger . '</br>
         Passwort: ' . $pw . '</p>
        

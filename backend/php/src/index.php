@@ -6,13 +6,11 @@ if(file_exists('.env')){
 $env = parse_ini_file('.env');
 }elseif (file_exists('../../../.env')){
     $env = parse_ini_file('../../../.env');
-
 } else {
     $env = false;
 }
 
 if ($env){
-
     putenv("DB_HOST=".$env['DB_HOST']);
     putenv("DB_USERNAME=".$env['DB_USERNAME']);
     putenv("DB_PASSWORD=".$env['DB_PASSWORD']);
@@ -22,6 +20,11 @@ if ($env){
 	putenv("SEND_MAIL_CUSTOMER_BOOLEAN=".$env['SEND_MAIL_CUSTOMER_BOOLEAN']);
     $allowedOrigins = $env["CORS_ALLOWED_ORIGINS"];
     header("Access-Control-Allow-Origin: $allowedOrigins");
+}
+if(file_exists('install.php')) {
+	// starte file um DB zu erstellen mit initscripts für tabels und admin login daten
+	require_once __DIR__ . '/install.php';
+	rename('install.php', 'install.php.ausgeführt');
 }
 
 
