@@ -3,27 +3,26 @@
 Autor: Yannick Basler
 Klasse: INB20-24
 
-## Projekt beschreibung
+## Projektbeschreibung V.2.0.0:
 
-### V.2.0.0
-#### Neue Features
-    - Logo kann als Admin in der Konfiguration angepasst werden
-    - Teilnehmer können neu mehrere Projekte einreichen
-    - Teilnehmer haben ein neuen Reiter "Projekte" wo sie ihre Projekte einsehen können
-    - Teilnehmer haben ein neuen Reiter "Neues Projekt" um ein neues Projekt 
-      einzureichen, wenn Sie angemeldet sind
-    - Einrichtung der Ersteinrichtung für Datenbank wurde hinzugefügt mittels Install.php (Richtige DB Connections in .env setzen)
+### Neue Features:
 
-#### Updates
+- Das Logo kann nun vom Administrator in der Konfiguration angepasst werden.
+- Teilnehmer können jetzt mehrere Projekte einreichen.
+- Ein neuer Reiter "Projekte" ermöglicht es Teilnehmern, ihre Projekte einzusehen.
+- Ein weiterer Reiter "Neues Projekt" ermöglicht es angemeldeten Teilnehmern, neue Projekte einzureichen.
+- Die Ersteinrichtung der Datenbank wurde durch Install.php hinzugefügt (Bitte korrekte DB-Verbindungen in .env setzen).
 
-    - Quasar wurde auf die neuste Version geupdatet
-    - vite wurde auf die neuste Version geupdatet
-    - Strukturelle Änderungen im Frontend
+### Updates:
 
-#### Bugfixes
-    - Bewertungen werden nun richtig validiert und abgefangen, wenn sie nicht 
-      vollständig sind beim Abschliessen der Bewertung
-    - mehere kleine Bugfixes
+- Quasar und Vite wurden auf die neuesten Versionen aktualisiert.
+- Strukturelle Änderungen im Frontend wurden vorgenommen.
 
-### V.1.0.0
-Das Projekt soll eine Webplattform bieten bei der ein Wettbewerb gestellt wird und Teilnehmde schnell und einfach ihr Projekt einreichen können. Der Verwalter des Ganzen soll die Projekte noch anpassen können bezüglich anonymisierung und dann einer Jury zur Bewertung bereitstellen können. Die Bewertung soll einfach auszuwerten sein. Der Verwalter soll auch in der Lage sein neue Wettbewerbe zu initialisieren.# lb1-Blackrose-1337
+### Bugfixes:
+
+- Bewertungen werden nun korrekt validiert und abgefangen, wenn sie beim Abschliessen der Bewertung nicht vollständig sind.
+- Mehrere kleinere Bugfixes wurden durchgeführt.
+
+## Projektbeschreibung V.1.0.0:
+
+Das Projekt bietet eine Webplattform, auf der Wettbewerbe veranstaltet werden können. Teilnehmer können ihre Projekte schnell und einfach einreichen. Der Administrator kann die Projekte bezüglich Anonymisierung anpassen und sie dann zur Bewertung durch eine Jury bereitstellen. Die Bewertung ist einfach auszuwerten. Der Administrator kann auch neue Wettbewerbe initialisieren.

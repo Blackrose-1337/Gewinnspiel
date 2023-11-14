@@ -1,0 +1,18 @@
+# Beispiel .env-Datei für das Gewinnspiel-Projekt
+
+# Datenbankkonfiguration
+DB_HOST=127.0.0.1       # Wenn die Datenbank auf demselben Server läuft, verwende 127.0.0.1, ansonsten die IP des DB-Servers  
+DB_USERNAME=DBUser      # Benutzername für den Datenbankzugriff  
+DB_PASSWORD=passwort    # Passwort für den Datenbankzugriff  
+DB_DATABASE_NAME=gewinnspielDB # Name der Datenbank
+
+# Umgebungseinstellungen
+ENVIRONMENT=production    # Wähle zwischen 'production' oder 'development'
+
+# Dateipfad für Bilder
+F_PATH=./ablage/Bilder    # Der Pfad zu den Bildern
+
+# CORS-Einstellungen
+CORS_ALLOWED_ORIGINS=https://gewinnspiel-mainpage.com   # Die erlaubte Ursprungs-URL für CORS
+
+# Bitte am Ende die Datei in .env umbenennen
