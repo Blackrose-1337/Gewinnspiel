@@ -14,6 +14,7 @@ const props = defineProps<{
     user?: User;
     selectedproject?: Project;
     view?: string;
+    isDeleteallowed?: boolean;
 }>();
 const emit = defineEmits<{
     (event: "aktion:reload"): void;
@@ -341,7 +342,7 @@ watch(selectedproject, () => {
                         class="genBtn"
                     />
                 </div>
-                <div class="row">
+                <div v-if="isDeleteallowed || view === 'Project'" class="row">
                     <q-space />
                     <q-btn
                         label="Projekt Löschen"

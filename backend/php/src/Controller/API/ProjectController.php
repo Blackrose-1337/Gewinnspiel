@@ -294,7 +294,7 @@ class ProjectController extends BaseController
 				$projectmodel = new ModelProject();
 				$bewertungmodel = new ModelBewertung();
 
-				if($competitionmodel->isDeleteAllowed()) {
+				if($competitionmodel->isDeleteAllowed() || $_SESSION['user_role'] == 'admin') {
 					// Post Daten holen
 					$data = json_decode(file_get_contents('php://input'), true);
 					$message = new stdClass();
@@ -318,14 +318,14 @@ class ProjectController extends BaseController
 							}
 						} else {
 							$message->answer = false;
-							$message->message = 'Projekt konnten nicht gelöscht werden';
+							$message->message = 'Projekt konnte nicht gelöscht werden';
 							$message->type = 'negative';
 						}
 					}
 				} else {
 					$message = new stdClass();
 					$message->answer = false;
-					$message->message = 'Projekt kann nicht gelöscht werden';
+					$message->message = 'Projekt löschen ist nicht gestattet';
 					$message->type = 'negative';
 				}
 				$responseData = json_encode($message);

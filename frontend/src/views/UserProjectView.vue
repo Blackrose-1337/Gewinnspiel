@@ -66,7 +66,11 @@ onBeforeMount(async () => {
     <div v-if="dateCheck()" class="row">
         <Sidebar @change:selectproject="projectChange" />
         <div class="q-ma-md col user-E">
-            <ProjectItem :selectedproject="selectedProject" :view="'User'" />
+            <ProjectItem
+                :selectedproject="selectedProject"
+                :view="'User'"
+                :isDeleteallowed="competitionDetails.istProjektLoeschenUserErlaubt"
+            />
         </div>
     </div>
     <div v-else>
