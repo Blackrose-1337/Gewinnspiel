@@ -109,7 +109,6 @@ async function approval() {
             type: "positive",
             message: `Das Projekt wurde freigegeben`,
         });
-        await projectStore.getProjects();
     } else {
         $q.notify({
             type: "negative",
@@ -378,7 +377,7 @@ watch(selectedproject, () => {
                     </q-dialog>
                 </div>
                 <div v-if="view === 'Project'">
-                    <div class="row">
+                    <div v-if="!project.finish" class="row">
                         <q-space />
                         <q-btn
                             label="Projekt Freigeben"

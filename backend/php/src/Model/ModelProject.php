@@ -23,7 +23,7 @@ class ModelProject extends ModelBase
     }
     public function getAllProjectwithfinish()
     {
-        $this->db->query("SELECT * FROM Project");
+        $this->db->query("SELECT * FROM Project WHERE finish=1");
         $datas =  $this->db->resultSet();
         $newdatas=[];
         foreach ($datas as $data) {

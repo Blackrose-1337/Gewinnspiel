@@ -179,99 +179,6 @@ class ProjectController extends BaseController
         }
     }
 
-    // API Funktion Projekt löschen (auch der User wird gelöscht)
-   /* public function deleteAction()
-    {
-        $strErrorDesc = '';
-        // Kommunikations-Methode entnehmen
-        $requestMethod = $_SERVER["REQUEST_METHOD"];
-        try {
-            // Überprüfung gültiger Session
-            if (!$this->sessionCheck()) {
-                $strErrorDesc = "Nicht akzeptierte Session";
-                $strErrorHeader = $this->fehler(405);
-            } // Überprüfung erlaubter Rollen
-            else if (!$this->userCheck('admin')) {
-                $strErrorDesc = "Unberechtigt diese Aktion auszuführen";
-                $strErrorHeader = $this->fehler(401);
-            }
-            // abfrage ob es eine POST_Methode ist
-            if (strtoupper($requestMethod) == 'POST') {
-                // Aufruf benötigter Klassen 
-                $projectmodel = new ModelProject();
-				$bewertungmodel = new ModelBewertung();
-				$usermodel = new ModelTeilnehmende();
-	            $saltmodel = new ModelSalt();
-	            $pwmodel = new ModelPw();
-                // Post Daten holen
-                $data = json_decode(file_get_contents('php://input'), true);
-	            $message = new stdClass();
-	            if ($data['id'] !== 0) {
-		            // User id holen aus projekt
-		            $userID = $projectmodel->getUserIdWithId($data['id']);
-		            // User holen
-		            $user = $usermodel->getUser($userID[0]['userId']);
-					$projects = $projectmodel->getAnyProject($userID[0]['userId']);
-					$count = count($projects);
-					$liste = "Folgende Projekte konnten nicht gelöscht werden: ";
-					foreach ($projects as $project) {
-						if (!$bewertungmodel->checkBewertung($project['id'])) {
-							if (!$projectmodel->deleteProject($project)) {
-								$liste .= $project['title'] . ', ';
-							} else {
-								$count--;
-							}
-						}
-						if ($count == 0) {
-							// Löschen des Users (übergabe voller User)
-							$checkuserdelete = $usermodel->deleteUser($userID[0]);
-							// Salt und Pw Löschen
-							$checksaltdelete = $saltmodel->deleteSaltDB($user['saltId']);
-							$checkpwdelete = $pwmodel->deleteHashDB($user['pwId']);
-							if ($checkuserdelete && $checksaltdelete && $checkpwdelete) {
-								$message->answer = true;
-								$message->message = 'User & Projekte erfolgreich gelöscht';
-								$message->type = 'positive';
-							} else {
-								$message->answer = false;
-								$message->message = 'User konnte nicht gelöscht werden';
-								$message->type = 'negative';
-							}
-						} else {
-							$message->answer = false;
-							$message->message = 'User & '.$liste;
-							$message->type = 'negative';
-						}
-					}
-	            }  else {
-	            $message->answer = false;
-	            $message->message = 'User & Projekt konnten nicht gelöscht werden';
-	            $message->type = 'negative';
-                }
-	            $responseData = json_encode($message);
-            } else {
-                // Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde
-                $strErrorDesc = 'Method not supported';
-                $strErrorHeader = $this->fehler(422);
-            }
-        } catch (Error $e) {
-            // Fehlermeldung, falls ein serverseitiger Fehler entstanden ists
-            $strErrorDesc = $e->getMessage() . 'Something went wrong! Please contact support.';
-            $strErrorHeader = $this->fehler(500);
-        }
-        // Falls kein Fehler enthalten ist wird die Antwort verpackt und versendet
-        if (!$strErrorDesc) {
-            $this->sendOutput($responseData, array('Content-Type: application/json', $this->success(200)));
-
-            // Falls ein Fehler enthalten ist wird dieser verpackt und versendet
-        } else {
-            $this->sendOutput(
-                json_encode(array('error' => $strErrorDesc)),
-                array('Content-Type: application/json', $strErrorHeader)
-            );
-        }
-    }*/
-
 	public function deleteProjectAction()
 	{
 		$strErrorDesc = '';
@@ -522,6 +429,7 @@ class ProjectController extends BaseController
 				$projectmodel = new ModelProject();
 				// Abfrage aller Projekte direkt zu Json formatiert
 				$responseData = json_encode($projectmodel->getAllProjectwithfinish());
+				error_log(print_r($responseData, true));
 			} else {
 				// Fehlermeldung, falls eine nicht unterstütze Kommunikations-Methode verwendet wurde
 				$strErrorDesc = 'Method not supported';
