@@ -2,6 +2,10 @@
 
 Autor: Yannick Basler
 Klasse: INB20-24
+## Security Updates noch nicht geprüft
+***
+Die Updates von dependabot wurden noch nicht getestet auf Produktive Umgebung
+***
 
 ## Projektbeschreibung V.2.0.0:
 
